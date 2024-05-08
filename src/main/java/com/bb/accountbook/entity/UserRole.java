@@ -1,11 +1,15 @@
 package com.bb.accountbook.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
 @Table(name = "tb_user_role")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserRole extends BaseEntity {
 
     @Id @GeneratedValue
@@ -19,4 +23,9 @@ public class UserRole extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id")
     private Role role;
+
+    public UserRole(User user, Role role) {
+        this.user = user;
+        this.role = role;
+    }
 }

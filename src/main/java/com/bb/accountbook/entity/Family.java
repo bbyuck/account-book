@@ -5,20 +5,26 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
-@Table(name = "tb_role")
+@Table(name = "tb_family")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Role extends BaseEntity {
+public class Family {
 
     @Id @GeneratedValue
-    @Column(name = "role_id")
+    @Column(name = "family_id")
     private Long id;
 
-    @Column(name = "role_name")
+    @Column(name = "family_name")
     private String name;
 
-    public Role(String name) {
+    @OneToMany(mappedBy = "family")
+    private List<User> users = new ArrayList<>();
+
+    public Family(String name) {
         this.name = name;
     }
 }
