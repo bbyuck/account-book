@@ -8,7 +8,7 @@ class AccountBookApplicationTests {
 
 	@Test
 	void contextLoads() {
-		
+
 	}
 
 }
