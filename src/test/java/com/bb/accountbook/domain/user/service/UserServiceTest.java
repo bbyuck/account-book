@@ -37,7 +37,7 @@ class UserServiceTest {
     public void 회원가입() throws Exception {
         // given
         String email = "k941026h@naver.com";
-        String password = "kang9411**";
+        String password = "pass1";
 
         // when
         Long joinedUserId = userService.join(email, password);
