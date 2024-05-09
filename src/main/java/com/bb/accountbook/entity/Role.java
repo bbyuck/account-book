@@ -1,9 +1,15 @@
 package com.bb.accountbook.entity;
 
+import com.bb.accountbook.common.model.codes.RoleCode;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static com.bb.accountbook.common.model.codes.RoleCode.*;
 
 @Entity
 @Getter
@@ -16,9 +22,10 @@ public class Role extends BaseEntity {
     private Long id;
 
     @Column(name = "role_name")
-    private String name;
+    @Enumerated(EnumType.STRING)
+    private RoleCode name;
 
-    public Role(String name) {
-        this.name = name;
+    public Role(RoleCode roleCode) {
+        this.name = roleCode;
     }
 }

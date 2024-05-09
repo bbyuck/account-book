@@ -1,4 +1,4 @@
-package com.bb.accountbook.enums;
+package com.bb.accountbook.common.model.codes;
 
 public enum AccountDetailCode {
     /* INCOME : 소득 */

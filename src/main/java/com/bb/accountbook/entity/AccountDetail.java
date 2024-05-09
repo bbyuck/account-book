@@ -1,15 +1,17 @@
 package com.bb.accountbook.entity;
 
-import com.bb.accountbook.enums.AccountDetailCode;
+import com.bb.accountbook.common.model.codes.AccountDetailCode;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Table(name = "tb_account_detail")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AccountDetail extends BaseEntity {
 
     @Id @GeneratedValue
@@ -37,4 +39,6 @@ public class AccountDetail extends BaseEntity {
         user.getAccountDetails().add(this);
         this.owner = user;
     }
+
+
 }

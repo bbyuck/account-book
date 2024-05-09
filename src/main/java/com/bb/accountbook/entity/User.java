@@ -37,11 +37,16 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "owner")
     private List<AccountDetailType> accountDetailTypes = new ArrayList<>();
 
-    public User(String email, String password, String nickname) {
+    public User(String email, String password) {
         this.email = email;
         this.password = password;
-        this.nickname = nickname;
     }
+
+    public void changeNickname(String newNickname) {
+        this.nickname = newNickname;
+    }
+
+
 
     /**
      * 유저 편의 메서드
@@ -51,5 +56,6 @@ public class User extends BaseEntity {
         this.family = family;
         family.getUsers().add(this);
     }
+
 
 }
