@@ -25,9 +25,6 @@ public class Group {
     @Column(name = "group_code", length = 20, nullable = false)
     private GroupCode groupCode;
 
-    @OneToMany(mappedBy = "group")
-    private List<User> users = new ArrayList<>();
-
     public Group(String name, GroupCode code) {
         this.name = name;
         this.groupCode = code;
