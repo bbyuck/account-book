@@ -1,7 +1,6 @@
 package com.bb.accountbook.common.exception;
 
 import com.bb.accountbook.common.model.ApiResponse;
-import com.bb.accountbook.common.model.codes.CommonCode;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -9,7 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
-import static com.bb.accountbook.common.model.codes.CommonCode.*;
+import static com.bb.accountbook.common.model.codes.ErrorCode.*;
 
 
 @Slf4j
@@ -25,7 +24,7 @@ public class ServletExceptionHandler {
     @ExceptionHandler(GlobalException.class)
     public ApiResponse handleGlobalException(GlobalException e, HttpServletResponse response) {
         response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-        return new ApiResponse(e.getCommonCode().getValue());
+        return new ApiResponse(e.getErrorCode().getValue());
     }
 
     @ExceptionHandler(NoHandlerFoundException.class)

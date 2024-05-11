@@ -1,16 +1,16 @@
 package com.bb.accountbook.common.exception;
 
-import com.bb.accountbook.common.model.codes.CommonCode;
+import com.bb.accountbook.common.model.codes.ErrorCode;
 import lombok.Getter;
 
 @Getter
 public class GlobalException extends RuntimeException {
 
-    private CommonCode commonCode;
+    private ErrorCode errorCode;
 
-    public GlobalException(CommonCode commonCode) {
-        super(commonCode.getValue());
-        this.commonCode = commonCode;
+    public GlobalException(ErrorCode errorCode) {
+        super(errorCode.getValue());
+        this.errorCode = errorCode;
     }
 
     public GlobalException(String message) {

@@ -1,5 +1,6 @@
 package com.bb.accountbook.entity;
 
+import com.bb.accountbook.common.model.codes.GroupCode;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -10,21 +11,26 @@ import java.util.List;
 
 @Entity
 @Getter
-@Table(name = "tb_family")
+@Table(name = "tb_group")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Family {
+public class Group {
 
     @Id @GeneratedValue
-    @Column(name = "family_id")
+    @Column(name = "group_id")
     private Long id;
 
-    @Column(name = "family_name")
+    @Column(name = "group_name")
     private String name;
 
-    @OneToMany(mappedBy = "family")
+    @Column(name = "group_code", length = 20, nullable = false)
+    private GroupCode groupCode;
+
+    @OneToMany(mappedBy = "group")
     private List<User> users = new ArrayList<>();
 
-    public Family(String name) {
+    public Group(String name, GroupCode code) {
         this.name = name;
+        this.groupCode = code;
     }
+
 }

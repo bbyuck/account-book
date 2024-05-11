@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.bb.accountbook.common.model.codes.CommonCode.*;
+import static com.bb.accountbook.common.model.codes.ErrorCode.*;
 
 @Slf4j
 @Service
@@ -31,8 +31,8 @@ public class UserService {
     public Long join(String email, String password) {
         // 1. 중복 체크
         userRepository.findByEmail(email).ifPresent((user) -> {
-            log.debug("{} ====== {}", ERR_USER_001.getValue(), user.getEmail());
-            throw new GlobalException(ERR_USER_001);
+            log.debug("{} ====== {}", ERR_USR_001.getValue(), user.getEmail());
+            throw new GlobalException(ERR_USR_001);
         });
 
         // 2. User Entity 생성 && insert

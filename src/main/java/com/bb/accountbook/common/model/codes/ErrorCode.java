@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum CommonCode {
+public enum ErrorCode {
     /**
      * SYSTEM Error
      */
@@ -15,7 +15,12 @@ public enum CommonCode {
     /**
      * USER Error
      */
-    ERR_USER_001("이미 가입된 메일입니다.");
+    ERR_USR_001("이미 가입된 메일입니다."),
+
+    /**
+     * Group Error
+     */
+    ERR_GRP_000("선택한 그룹에 존재하지 않는 멤버 코드입니다.");
 
     private final String value;
 }

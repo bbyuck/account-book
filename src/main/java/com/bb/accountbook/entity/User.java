@@ -24,38 +24,15 @@ public class User extends BaseEntity {
     @Column(name = "user_password")
     private String password;
 
-    @Column(name = "user_nickname")
-    private String nickname;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_family_id")
-    private Family family;
+    @OneToMany(mappedBy = "owner")
+    private List<Ledger> ledgers = new ArrayList<>();
 
     @OneToMany(mappedBy = "owner")
-    private List<AccountDetail> accountDetails = new ArrayList<>();
-
-    @OneToMany(mappedBy = "owner")
-    private List<AccountDetailType> accountDetailTypes = new ArrayList<>();
+    private List<Cause> causes = new ArrayList<>();
 
     public User(String email, String password) {
         this.email = email;
         this.password = password;
     }
-
-    public void changeNickname(String newNickname) {
-        this.nickname = newNickname;
-    }
-
-
-
-    /**
-     * 유저 편의 메서드
-     * @param family
-     */
-    public void joinFamily(Family family) {
-        this.family = family;
-        family.getUsers().add(this);
-    }
-
 
 }
