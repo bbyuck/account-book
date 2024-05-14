@@ -18,11 +18,11 @@ public enum ErrorCode {
     ERR_USR_000("유저를 찾을 수 없습니다."),
     ERR_USR_001("이미 가입된 메일입니다."),
     /**
-     * Group Error
+     * Couple Error
      */
-    ERR_GRP_000("선택한 그룹에 존재하지 않는 멤버 코드입니다."),
-    ERR_GRP_001("그룹을 찾을 수 없습니다."),
-    ERR_GRP_002("이미 가입된 그룹입니다."),
+    ERR_CPL_000("선택한 커플 Entity에 연결 된 유저수가 정확하지 않습니다."),
+    ERR_CPL_001("커플 Entity를 찾을 수 없습니다."),
+    ERR_CPL_002("이미 커플로 연결되어 있습니다."),
 
     /**
      * Ledger Error

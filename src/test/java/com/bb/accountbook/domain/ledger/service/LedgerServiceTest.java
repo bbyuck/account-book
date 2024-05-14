@@ -1,5 +1,6 @@
 package com.bb.accountbook.domain.ledger.service;
 
+import com.bb.accountbook.common.model.codes.GenderCode;
 import com.bb.accountbook.common.model.codes.LedgerCode;
 import com.bb.accountbook.domain.ledger.dto.LedgerInsertRequestDto;
 import com.bb.accountbook.domain.ledger.dto.LedgerUpdateRequestDto;
@@ -29,13 +30,13 @@ class LedgerServiceTest {
 
     @BeforeEach
     public void initData() {
-        User testUser1 = new User("test1@naver.com", "1234");
+        User testUser1 = new User("test1@naver.com", "1234", GenderCode.M);
         em.persist(testUser1);
 
-        User testUser2 = new User("test2@naver.com", "1234");
+        User testUser2 = new User("test2@naver.com", "1234", GenderCode.M);
         em.persist(testUser2);
 
-        User testUser3 = new User("test2@naver.com", "1234");
+        User testUser3 = new User("test2@naver.com", "1234", GenderCode.W);
         em.persist(testUser3);
     }
 
@@ -45,10 +46,9 @@ class LedgerServiceTest {
     public void insert() throws Exception {
         // given
         Long userId = 1L;
-        LedgerInsertRequestDto ledgerInsertRequestDto = new LedgerInsertRequestDto(LocalDate.now(), LedgerCode.I, 4000000L, "월급");
 
         // when
-        Long insertedLedgerId = ledgerService.insertLedger(userId, ledgerInsertRequestDto);
+        Long insertedLedgerId = ledgerService.insertLedger(userId, LedgerCode.I, LocalDate.now(), 4000000L, "월급");
 
         // then
         Ledger savedLedger = ledgerService.findLedger(insertedLedgerId);
@@ -63,13 +63,11 @@ class LedgerServiceTest {
     public void update() throws Exception {
         // given
         Long userId = 1L;
-        LedgerInsertRequestDto ledgerInsertRequestDto = new LedgerInsertRequestDto(LocalDate.now(), LedgerCode.I, 4000000L, "월급");
+        Long insertedLedgerId = ledgerService.insertLedger(userId, LedgerCode.I, LocalDate.now(), 4000000L, "월급");
 
-        Long insertedLedgerId = ledgerService.insertLedger(userId, ledgerInsertRequestDto);
 
         // when
-        LedgerUpdateRequestDto requestDto = new LedgerUpdateRequestDto(LocalDate.of(2024, 5, 1), LedgerCode.S, 500000L, "저축");
-        Long updatedLedgerId = ledgerService.updateLedger(insertedLedgerId, requestDto);
+        Long updatedLedgerId = ledgerService.updateLedger(insertedLedgerId, LedgerCode.S, LocalDate.of(2024, 5, 1), 500000L, "저축");
 
         Ledger ledger = ledgerService.findLedger(updatedLedgerId);
         // then

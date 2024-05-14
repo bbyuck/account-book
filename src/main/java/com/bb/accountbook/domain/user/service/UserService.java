@@ -1,10 +1,12 @@
 package com.bb.accountbook.domain.user.service;
 
 import com.bb.accountbook.common.exception.GlobalException;
+import com.bb.accountbook.common.model.codes.GenderCode;
 import com.bb.accountbook.common.model.codes.RoleCode;
 import com.bb.accountbook.domain.user.repository.RoleRepository;
 import com.bb.accountbook.domain.user.repository.UserRepository;
 import com.bb.accountbook.domain.user.repository.UserRoleRepository;
+import com.bb.accountbook.entity.Role;
 import com.bb.accountbook.entity.User;
 import com.bb.accountbook.entity.UserRole;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +30,7 @@ public class UserService {
 
     private final UserRoleRepository userRoleRepository;
 
-    public Long join(String email, String password) {
+    public Long join(String email, String password, GenderCode gender) {
         // 1. 중복 체크
         userRepository.findByEmail(email).ifPresent((user) -> {
             log.debug("{} ====== {}", ERR_USR_001.getValue(), user.getEmail());
@@ -36,17 +38,20 @@ public class UserService {
         });
 
         // 2. User Entity 생성 && insert
-        User joinedUser = userRepository.save(new User(email, password));
+        User joinedUser = userRepository.save(new User(email, password, gender));
 
         // 3. default Role Entity 생성 및 UserRole Entity mapping
         List<UserRole> newUserRoles = RoleCode.DEFAULT
                 .stream()
                 .map(roleCode ->
-                        new UserRole(joinedUser, roleRepository.findByName(roleCode)
-                                .orElseThrow(() -> {
-                                    log.error("Role Entity를 찾을 수 없습니다. ====== {}", roleCode.name());
-                                    return new GlobalException(ERR_SYS_000);
-                                }))
+                        {
+                            Role role = roleRepository.findByName(roleCode)
+                                    .orElseThrow(() -> {
+                                        log.error("Role Entity를 찾을 수 없습니다. ====== {}", roleCode.name());
+                                        return new GlobalException(ERR_SYS_000);
+                                    });
+                            return new UserRole(joinedUser, role);
+                        }
                 ).toList();
         userRoleRepository.saveAll(newUserRoles);
 
@@ -67,7 +72,7 @@ public class UserService {
     public User findUserByEmail(String email) {
         return userRepository.findByEmail(email).orElseThrow(() -> {
             log.error(ERR_USR_000.getValue());
-            return new GlobalException(ERR_GRP_000);
+            return new GlobalException(ERR_USR_000);
         });
     }
 

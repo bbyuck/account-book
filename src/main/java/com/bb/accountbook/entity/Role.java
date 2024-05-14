@@ -6,11 +6,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.Arrays;
-import java.util.List;
-
-import static com.bb.accountbook.common.model.codes.RoleCode.*;
-
 @Entity
 @Getter
 @Table(name = "tb_role")

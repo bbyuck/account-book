@@ -20,7 +20,7 @@ public class UserController {
 
     @PostMapping("/api/v1/user")
     public ApiResponse<UserJoinResponseDto> join(@RequestBody @Valid UserJoinRequestDto userJoinRequestDto) {
-        Long joinedUserId = userService.join(userJoinRequestDto.getEmail(), userJoinRequestDto.getPassword());
+        Long joinedUserId = userService.join(userJoinRequestDto.getEmail(), userJoinRequestDto.getPassword(), userJoinRequestDto.getGender());
         return new ApiResponse<>(new UserJoinResponseDto(joinedUserId));
     }
 
