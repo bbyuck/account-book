@@ -6,7 +6,6 @@ import com.bb.accountbook.common.model.codes.RoleCode;
 import com.bb.accountbook.domain.user.repository.RoleRepository;
 import com.bb.accountbook.domain.user.repository.UserRepository;
 import com.bb.accountbook.domain.user.repository.UserRoleRepository;
-import com.bb.accountbook.entity.Role;
 import com.bb.accountbook.entity.User;
 import com.bb.accountbook.entity.UserRole;
 import lombok.RequiredArgsConstructor;
@@ -44,14 +43,11 @@ public class UserService {
         List<UserRole> newUserRoles = RoleCode.DEFAULT
                 .stream()
                 .map(roleCode ->
-                        {
-                            Role role = roleRepository.findByName(roleCode)
-                                    .orElseThrow(() -> {
-                                        log.error("Role Entity를 찾을 수 없습니다. ====== {}", roleCode.name());
-                                        return new GlobalException(ERR_SYS_000);
-                                    });
-                            return new UserRole(joinedUser, role);
-                        }
+                        new UserRole(joinedUser, roleRepository.findByName(roleCode)
+                                .orElseThrow(() -> {
+                                    log.error("Role Entity를 찾을 수 없습니다. ====== {}", roleCode.name());
+                                    return new GlobalException(ERR_SYS_000);
+                                }))
                 ).toList();
         userRoleRepository.saveAll(newUserRoles);
 
