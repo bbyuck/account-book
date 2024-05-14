@@ -1,5 +1,6 @@
 package com.bb.accountbook.config;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
@@ -14,5 +15,10 @@ public class JpaConfig {
     @Bean
     public EntityManager em() {
         return emf.createEntityManager();
+    }
+
+    @Bean
+    public JPAQueryFactory queryFactory() {
+        return new JPAQueryFactory(em());
     }
 }

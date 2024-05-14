@@ -32,16 +32,22 @@ public class Ledger extends BaseEntity {
     @Column(name = "ledger_amount", nullable = false)
     private Long amount = 0L;
 
-    @Column(name = "ledger_contents", length = 100)
-    private String contents;
+    @Column(name = "ledger_description", length = 100)
+    private String description;
 
-    public Ledger(User user, LedgerCode code, LocalDate date, Long amount, String contents) {
+    public Ledger(User user, LedgerCode code, LocalDate date, Long amount, String description) {
         this.owner = user;
         this.code = code;
         this.date = date;
         this.amount = amount;
-        this.contents = contents;
+        this.description = description;
     }
 
+    public void update(LedgerCode code, LocalDate date, Long amount, String description) {
+        this.code = code;
+        this.date = date;
+        this.amount = amount;
+        this.description = description;
+    }
 
 }

@@ -55,4 +55,21 @@ public class UserService {
         return joinedUser.getId();
     }
 
+    @Transactional(readOnly = true)
+    public User findUserById(Long userId) {
+        return userRepository.findById(userId).orElseThrow(() -> {
+            log.error(ERR_USR_000.getValue());
+            return new GlobalException(ERR_USR_000);
+        });
+    }
+
+    @Transactional(readOnly = true)
+    public User findUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(() -> {
+            log.error(ERR_USR_000.getValue());
+            return new GlobalException(ERR_GRP_000);
+        });
+    }
+
+
 }

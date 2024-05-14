@@ -3,6 +3,7 @@ package com.bb.accountbook.entity;
 import com.bb.accountbook.common.exception.GlobalException;
 import com.bb.accountbook.common.model.codes.GroupCode;
 import com.bb.accountbook.common.model.codes.MemberCode;
+import com.bb.accountbook.common.model.status.UserGroupStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -36,6 +37,10 @@ public class UserGroup {
     @Column(name = "member_code", length = 20)
     private MemberCode memberCode;
 
+    @Column(name = "user_group_status")
+    @Enumerated(EnumType.STRING)
+    private UserGroupStatus status = UserGroupStatus.WAIT;
+
     public UserGroup(User user, Group group, String nickname, MemberCode memberCode) {
         this.user = user;
         this.group = group;
@@ -47,5 +52,9 @@ public class UserGroup {
         }
 
         this.memberCode = memberCode;
+    }
+
+    public void changeStatus(UserGroupStatus status) {
+        this.status = status;
     }
 }
