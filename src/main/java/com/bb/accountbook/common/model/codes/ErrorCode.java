@@ -17,7 +17,6 @@ public enum ErrorCode {
      */
     ERR_USR_000("유저를 찾을 수 없습니다."),
     ERR_USR_001("이미 가입된 메일입니다."),
-
     /**
      * Group Error
      */

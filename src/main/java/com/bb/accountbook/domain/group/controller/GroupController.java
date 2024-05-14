@@ -5,8 +5,8 @@ import com.bb.accountbook.domain.group.dto.ConnectRequestDto;
 import com.bb.accountbook.domain.group.dto.ConnectResponseDto;
 import com.bb.accountbook.domain.group.service.GroupService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,7 +21,7 @@ public class GroupController {
 
 
     @PostMapping("/api/v1/connect")
-    public ApiResponse<ConnectResponseDto> connectToOpponent(@RequestBody @Validated ConnectRequestDto connectRequestDto) {
+    public ApiResponse<ConnectResponseDto> connectToOpponent(@RequestBody @Valid ConnectRequestDto connectRequestDto) {
         return new ApiResponse<>(
                 new ConnectResponseDto(
                         groupService.connectToOpponent(

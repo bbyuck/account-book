@@ -1,19 +1,20 @@
 package com.bb.accountbook.domain.group.dto;
 
 import com.bb.accountbook.common.model.codes.MemberCode;
-import jakarta.annotation.Nonnull;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
 public class ConnectRequestDto {
 
-    @Nonnull
+    @NotBlank
     private String nickname;
 
-    @Nonnull
+    @NotBlank
     private MemberCode memberCode;
 
-    @Nonnull
+    @Email
     private String opponentEmail;
 
 }
