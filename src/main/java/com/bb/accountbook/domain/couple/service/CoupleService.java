@@ -29,16 +29,21 @@ public class CoupleService {
 
     private final UserService userService;
 
-    public Long joinCouple(Long userId, Long coupleId, String nickname) {
-        User findUser = userService.findUserById(userId);
-        Couple findCouple = this.findCouple(coupleId);
+    public List<UserCouple> findUserCouples(Long userId) {
+        List<UserCouple> userCouplesByUserId = coupleRepository.findUserCouplesByUserId(userId);
+        return userCouplesByUserId;
+    }
 
-        if (coupleRepository.isExistUserCouple(findUser, findCouple)) {
+    public Long joinCouple(Long userId, Long coupleId, String nickname) {
+        User user = userService.findUserById(userId);
+        Couple couple = this.findCouple(coupleId);
+
+        if (coupleRepository.isExistUserCouple(userId, coupleId)) {
             log.error(ERR_CPL_002.getValue());
             throw new GlobalException(ERR_CPL_002);
         }
 
-        UserCouple savedUserCouple = coupleRepository.saveUserCouple(new UserCouple(findUser, findCouple, nickname));
+        UserCouple savedUserCouple = coupleRepository.saveUserCouple(new UserCouple(user, couple, nickname));
 
         return savedUserCouple.getId();
     }
@@ -59,7 +64,7 @@ public class CoupleService {
 
     /**
      * 1. 커플 Entity 확인
-     * 2. 새로운 커플 Entity 생성
+     *     -> API 호출자와 매핑되어 있는 Couple 엔티티가 없는 경우 새로운 커플 Entity 생성
      * 3. 그룹에 참여
      * 4. 상대방 그룹에 초대
      *
@@ -69,17 +74,15 @@ public class CoupleService {
      * @return userCoupleId
      */
     public Long connectToOpponent(Long apiCallerId, String opponentEmail, String nickname, String coupleName) {
-        coupleRepository.findCoupleByUserId(apiCallerId);
-
-        // 새 그룹 생성
-        Long createdCoupleId = createCouple(coupleName);
+        Couple couple = coupleRepository.findCoupleByUserId(apiCallerId)
+                .orElse(findCouple(createCouple(coupleName)));
 
         // 그룹에 참여
-        UserCouple callersUserCouple = coupleRepository.findUserCouple(joinCouple(apiCallerId, createdCoupleId, nickname));
+        UserCouple callersUserCouple = coupleRepository.findUserCouple(joinCouple(apiCallerId, couple.getId(), nickname));
         callersUserCouple.changeStatus(ACTIVE);
 
         // 상대방 그룹에 초대
-        inviteToCouple(opponentEmail, createdCoupleId);
+        inviteToCouple(opponentEmail, couple.getId());
 
         return callersUserCouple.getId();
     }
@@ -93,7 +96,6 @@ public class CoupleService {
             log.error(ERR_CPL_000.getValue());
             throw new GlobalException(ERR_SYS_000);
         }
-
 
         User opponent = userService.findUserByEmail(opponentEmail);
         if (usersInCouple.contains(opponent)) {

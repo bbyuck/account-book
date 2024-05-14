@@ -2,8 +2,6 @@ package com.bb.accountbook.domain.ledger.service;
 
 import com.bb.accountbook.common.model.codes.GenderCode;
 import com.bb.accountbook.common.model.codes.LedgerCode;
-import com.bb.accountbook.domain.ledger.dto.LedgerInsertRequestDto;
-import com.bb.accountbook.domain.ledger.dto.LedgerUpdateRequestDto;
 import com.bb.accountbook.entity.Ledger;
 import com.bb.accountbook.entity.User;
 import jakarta.persistence.EntityManager;

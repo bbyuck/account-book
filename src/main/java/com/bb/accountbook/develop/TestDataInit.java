@@ -2,12 +2,18 @@ package com.bb.accountbook.develop;
 
 import com.bb.accountbook.common.model.codes.GenderCode;
 import com.bb.accountbook.common.model.codes.RoleCode;
+import com.bb.accountbook.domain.couple.repository.CoupleRepository;
 import com.bb.accountbook.domain.user.repository.RoleRepository;
 import com.bb.accountbook.domain.user.service.UserService;
+import com.bb.accountbook.entity.Couple;
 import com.bb.accountbook.entity.Role;
+import com.bb.accountbook.entity.User;
+import com.bb.accountbook.entity.UserCouple;
 import jakarta.annotation.PostConstruct;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -16,20 +22,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class TestDataInit {
 
-    private final RoleRepository roleRepository;
-    private final UserService userService;
-    
+    private final TestData testData;
+
     @PostConstruct
     public void init() {
-        roleRepository.saveAllAndFlush(Arrays.stream(RoleCode.values()).map(Role::new).collect(Collectors.toList()));
-        
-        String email1 = "k941026h@naver.com";
-        String password1 = "pass1";
-        userService.join(email1, password1, GenderCode.M);
-        
-        String email2 = "abc123@naver.com";
-        String password2 = "pass2";
-        userService.join(email2, password2, GenderCode.W);
+        testData.init();
     }
     
 }
