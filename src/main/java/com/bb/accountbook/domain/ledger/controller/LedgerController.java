@@ -23,13 +23,13 @@ public class LedgerController {
 
     @PostMapping("/api/v1/ledger")
     public ApiResponse<LedgerInsertResponseDto> insertLedger(@RequestBody @Valid LedgerInsertRequestDto requestDto) {
-        Long savedLedgerId = ledgerService.insertLedger(context.getUserId(), requestDto);
+        Long savedLedgerId = ledgerService.insertLedger(context.getUserId(), requestDto.getLedgerCode(), requestDto.getLedgerDate(), requestDto.getLedgerAmount(), requestDto.getLedgerDescription());
         return new ApiResponse<>(new LedgerInsertResponseDto(savedLedgerId));
     }
 
     @PutMapping("/api/v1/ledger/{ledgerId}")
-    public ApiResponse<LedgerUpdateResponseDto> updateLedger(@PathVariable Long ledgerId, @RequestBody @Valid LedgerUpdateRequestDto requestDto) {
-        Long updatedLedgerId = ledgerService.updateLedger(ledgerId, requestDto);
+    public ApiResponse<LedgerUpdateResponseDto> updateLedger(@PathVariable("ledgerId") Long ledgerId, @RequestBody @Valid LedgerUpdateRequestDto requestDto) {
+        Long updatedLedgerId = ledgerService.updateLedger(ledgerId, requestDto.getLedgerCode(), requestDto.getLedgerDate(), requestDto.getLedgerAmount(), requestDto.getLedgerDescription());
         return new ApiResponse<>(new LedgerUpdateResponseDto(updatedLedgerId));
     }
 }

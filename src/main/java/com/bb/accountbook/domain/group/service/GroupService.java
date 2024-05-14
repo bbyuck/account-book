@@ -52,7 +52,7 @@ public class GroupService {
         });
     }
 
-    public Long connectToOpponent(Long userId, String opponentEmail, String nickname, MemberCode memberCode) {
+    public Long connectToOpponent(Long apiCallerId, String opponentEmail, String nickname, MemberCode memberCode) {
         // 상대방 정보 get
         User opponent = userService.findUserByEmail(opponentEmail);
         MemberCode opponentMemberCode = memberCode == MemberCode.HUSBAND ? MemberCode.WIFE : MemberCode.HUSBAND;
@@ -60,7 +60,7 @@ public class GroupService {
         // 새 그룹 생성
         Long newGroupId = makeGroup("부부", GroupCode.MARRIED_COUPLE);
 
-        UserGroup callersUserGroup = groupRepository.findUserGroup(joinGroup(userId, newGroupId, nickname, memberCode));
+        UserGroup callersUserGroup = groupRepository.findUserGroup(joinGroup(apiCallerId, newGroupId, nickname, memberCode));
 
         // 상대방에게 알림 전송
         joinGroup(opponent.getId(), newGroupId, null, opponentMemberCode);

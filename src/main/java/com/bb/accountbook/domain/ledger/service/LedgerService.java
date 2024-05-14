@@ -2,6 +2,7 @@ package com.bb.accountbook.domain.ledger.service;
 
 import com.bb.accountbook.common.exception.GlobalException;
 import com.bb.accountbook.common.model.codes.ErrorCode;
+import com.bb.accountbook.common.model.codes.LedgerCode;
 import com.bb.accountbook.domain.ledger.dto.LedgerInsertRequestDto;
 import com.bb.accountbook.domain.ledger.dto.LedgerUpdateRequestDto;
 import com.bb.accountbook.domain.ledger.repository.LedgerRepository;
@@ -11,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
 
 import static com.bb.accountbook.common.model.codes.ErrorCode.*;
 
@@ -24,15 +27,9 @@ public class LedgerService {
 
     private final UserService userService;
 
-    public Long insertLedger(Long apiCallerId, LedgerInsertRequestDto requestDto) {
+    public Long insertLedger(Long apiCallerId, LedgerCode ledgerCode, LocalDate ledgerDate, Long ledgerAmount, String ledgerDescription) {
         Ledger savedLedger = ledgerRepository.save(
-                new Ledger(
-                        userService.findUserById(apiCallerId),
-                        requestDto.getLedgerCode(),
-                        requestDto.getLedgerDate(),
-                        requestDto.getLedgerAmount(),
-                        requestDto.getLedgerDescription()
-                )
+                new Ledger(userService.findUserById(apiCallerId), ledgerCode, ledgerDate, ledgerAmount, ledgerDescription)
         );
         return savedLedger.getId();
     }
@@ -46,9 +43,9 @@ public class LedgerService {
                 });
     }
 
-    public Long updateLedger(Long ledgerId, LedgerUpdateRequestDto requestDto) {
+    public Long updateLedger(Long ledgerId, LedgerCode ledgerCode, LocalDate ledgerDate, Long ledgerAmount, String ledgerDescription) {
         Ledger targetLedger = findLedger(ledgerId);
-        targetLedger.update(requestDto.getLedgerCode(), requestDto.getLedgerDate(), requestDto.getLedgerAmount(), requestDto.getLedgerDescription());
+        targetLedger.update(ledgerCode, ledgerDate, ledgerAmount, ledgerDescription);
 
         return targetLedger.getId();
     }
