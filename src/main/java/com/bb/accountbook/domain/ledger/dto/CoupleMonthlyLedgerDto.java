@@ -12,7 +12,7 @@ import java.time.LocalDate;
 public class CoupleMonthlyLedgerDto extends MonthlyLedgerDto {
     private String ownerNickname;
 
-    public CoupleMonthlyLedgerDto(String ownerNickname, String ledgerCodeValue, LocalDate date, Long amount, String description) {
+    public CoupleMonthlyLedgerDto(String ledgerCodeValue, LocalDate date, Long amount, String description, String ownerNickname) {
         super(ledgerCodeValue, date, amount, description);
         this.ownerNickname = ownerNickname;
     }

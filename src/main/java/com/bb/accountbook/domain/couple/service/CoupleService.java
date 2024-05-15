@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -133,5 +134,16 @@ public class CoupleService {
             log.error(ERR_CPL_001.getValue());
             return new GlobalException(ERR_CPL_001);
         });
+    }
+
+    @Transactional(readOnly = true)
+    public boolean isExistCouple(Long userId) {
+        Optional<UserCouple> optional = coupleRepository.findUserCoupleByUserId(userId);
+
+        if (optional.isEmpty() || optional.get().getStatus() != ACTIVE) {
+            return false;
+        }
+
+        return true;
     }
 }

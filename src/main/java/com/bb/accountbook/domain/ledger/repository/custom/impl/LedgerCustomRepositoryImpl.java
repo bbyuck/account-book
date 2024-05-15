@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -53,5 +54,23 @@ public class LedgerCustomRepositoryImpl implements LedgerCustomRepository {
                 .setParameter("startDate", startDate)
                 .setParameter("endDate", endDate)
                 .getResultList();
+    }
+
+    @Override
+    public Optional<Ledger> findLedgerWithUserCouple(Long coupleId, Long ledgerId) {
+        String jpql = "select l " +
+                "from Ledger l " +
+                "join fetch User u " +
+                "on l.owner = u " +
+                "join fetch UserCouple uc " +
+                "on uc.user = u " +
+                "join fetch Couple c " +
+                "on uc.couple = c " +
+                "where c.id = :coupleId " +
+                "and l.id = :ledgerId";
+        return em.createQuery(jpql, Ledger.class)
+                .setParameter("coupleId", coupleId)
+                .setParameter("ledgerId", ledgerId)
+                .getResultList().stream().findFirst();
     }
 }

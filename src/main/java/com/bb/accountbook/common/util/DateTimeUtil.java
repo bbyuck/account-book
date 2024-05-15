@@ -11,8 +11,8 @@ public class DateTimeUtil {
     public static LocalDate[] getMonthlyDuration(String yearMonth) {
         LocalDate[] answer = new LocalDate[2];
 
-        int year = Integer.parseInt(yearMonth.substring(0, 3));
-        int month = Integer.parseInt(yearMonth.substring(4, 5));
+        int year = Integer.parseInt(yearMonth.substring(0, 4));
+        int month = Integer.parseInt(yearMonth.substring(4, 6));
 
         answer[0] = getMonthlyStartDate(year, month);
         answer[1] = getMonthlyEndDate(year, month);

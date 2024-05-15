@@ -36,16 +36,26 @@ public class LedgerController {
         Long updatedLedgerId = ledgerService.updateLedger(ledgerId, requestDto.getLedgerCode(), requestDto.getLedgerDate(), requestDto.getLedgerAmount(), requestDto.getLedgerDescription());
         return new ApiResponse<>(new LedgerUpdateResponseDto(updatedLedgerId));
     }
+    @GetMapping("/api/v1/personal/ledger/{ledgerId}")
+    public ApiResponse<LedgerDetailDto> findPersonalLedger(@PathVariable("ledgerId") Long ledgerId) {
+        return new ApiResponse<>(ledgerService.findPersonalLedger(ledgerId));
+    }
+
+    @GetMapping("/api/v1/couple/ledger/{ledgerId}")
+    public ApiResponse<LedgerDetailDto> findCoupleLedger(@PathVariable("ledgerId") Long ledgerId, @Param("ci") Long coupleId) {
+        return new ApiResponse<>(ledgerService.findCoupleLedger(coupleId, ledgerId));
+    }
+
 
     @GetMapping("/api/v1/couple/monthly/ledger")
     public ApiResponse<MonthlyLedgerResponseDto> findCoupleMonthlyLedger(@Param("ym") String yearMonth) {
         List<MonthlyLedgerDto> monthlyLedgers = ledgerService.findCoupleMonthlyLedger(context.getUserId(), yearMonth).stream()
                 .map(ledger -> new CoupleMonthlyLedgerDto(
-                        ledger.getOwner().getUserCouple().getNickname(),
                         ledger.getCode().getValue(),
                         ledger.getDate(),
                         ledger.getAmount(),
-                        ledger.getDescription()))
+                        ledger.getDescription(),
+                        ledger.getOwner().getUserCouple().getNickname()))
                 .collect(Collectors.toList());
 
         return new ApiResponse<>(new MonthlyLedgerResponseDto(yearMonth, monthlyLedgers));
@@ -64,5 +74,4 @@ public class LedgerController {
 
         return new ApiResponse<>(new MonthlyLedgerResponseDto(yearMonth, monthlyLedgers));
     }
-
 }

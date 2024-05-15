@@ -81,7 +81,19 @@ public class CoupleCustomRepositoryImpl implements CoupleCustomRepository {
     }
 
     @Override
-    public Optional<UserCouple> findUserCoupleById(Long userId) {
-        return Optional.of(em.find(UserCouple.class, userId));
+    public Optional<UserCouple> findUserCoupleById(Long userCoupleId) {
+        return Optional.of(em.find(UserCouple.class, userCoupleId));
+    }
+
+    @Override
+    public Optional<UserCouple> findUserCoupleByUserId(Long userId) {
+        String jpql = "select uc " +
+                "from UserCouple uc " +
+                "join fetch User u " +
+                "on uc.user = u " +
+                "where u.id = :userId";
+        return em.createQuery(jpql, UserCouple.class)
+                .setParameter("userId", userId)
+                .getResultList().stream().findFirst();
     }
 }

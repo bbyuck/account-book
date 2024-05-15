@@ -6,8 +6,9 @@ import com.bb.accountbook.common.model.codes.LedgerCode;
 import com.bb.accountbook.common.model.status.CoupleStatus;
 import com.bb.accountbook.common.util.DateTimeUtil;
 import com.bb.accountbook.domain.couple.service.CoupleService;
-import com.bb.accountbook.domain.ledger.dto.CoupleMonthlyLedgerDto;
-import com.bb.accountbook.domain.ledger.dto.MonthlyLedgerDto;
+import com.bb.accountbook.domain.ledger.dto.LedgerCoupleDetailDto;
+import com.bb.accountbook.domain.ledger.dto.LedgerDetailDto;
+import com.bb.accountbook.domain.ledger.dto.LedgerPersonalDetailDto;
 import com.bb.accountbook.domain.ledger.repository.LedgerRepository;
 import com.bb.accountbook.domain.user.service.UserService;
 import com.bb.accountbook.entity.Couple;
@@ -42,7 +43,7 @@ public class LedgerService {
     }
 
     @Transactional(readOnly = true)
-    public Ledger findLedger(Long ledgerId) {
+    public Ledger findLedgerById(Long ledgerId) {
         return ledgerRepository.findById(ledgerId)
                 .orElseThrow(() -> {
                     log.error(ERR_LED_000.getValue());
@@ -51,7 +52,7 @@ public class LedgerService {
     }
 
     public Long updateLedger(Long ledgerId, LedgerCode ledgerCode, LocalDate ledgerDate, Long ledgerAmount, String ledgerDescription) {
-        Ledger targetLedger = findLedger(ledgerId);
+        Ledger targetLedger = findLedgerById(ledgerId);
         targetLedger.update(ledgerCode, ledgerDate, ledgerAmount, ledgerDescription);
 
         return targetLedger.getId();
@@ -59,13 +60,13 @@ public class LedgerService {
 
     /**
      * yearMonth -> yyyyMM
+     *
      * @param userId
      * @param yearMonth
      * @return
      */
     @Transactional(readOnly = true)
     public List<Ledger> findCoupleMonthlyLedger(Long userId, String yearMonth) {
-
         LocalDate[] monthlyDuration = DateTimeUtil.getMonthlyDuration(yearMonth);
 
         Couple couple = coupleService.findCoupleByUserId(userId);
@@ -79,6 +80,7 @@ public class LedgerService {
 
     /**
      * yearMonth -> yyyyMM
+     *
      * @param userId
      * @param yearMonth
      * @return
@@ -86,7 +88,23 @@ public class LedgerService {
     @Transactional(readOnly = true)
     public List<Ledger> findPersonalMonthlyLedger(Long userId, String yearMonth) {
         LocalDate[] monthlyDuration = DateTimeUtil.getMonthlyDuration(yearMonth);
-
         return ledgerRepository.findPersonalMonthlyLedger(userId, monthlyDuration[0], monthlyDuration[1]);
+    }
+
+
+    @Transactional(readOnly = true)
+    public LedgerPersonalDetailDto findPersonalLedger(Long ledgerId) {
+        Ledger ledger = findLedgerById(ledgerId);
+        return new LedgerPersonalDetailDto(ledger.getId(), ledger.getCode(), ledger.getDate(), ledger.getAmount(), ledger.getDescription());
+    }
+
+    @Transactional(readOnly = true)
+    public LedgerCoupleDetailDto findCoupleLedger(Long coupleId, Long ledgerId) {
+        Ledger ledger = ledgerRepository.findLedgerWithUserCouple(coupleId, ledgerId).orElseThrow(() -> {
+            log.error(ERR_LED_000.getValue());
+            return new GlobalException(ERR_LED_000);
+        });
+
+        return new LedgerCoupleDetailDto(ledger.getId(), ledger.getCode(), ledger.getDate(), ledger.getAmount(), ledger.getDescription(), ledger.getOwner().getUserCouple().getNickname());
     }
 }
