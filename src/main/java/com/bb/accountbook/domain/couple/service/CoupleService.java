@@ -139,11 +139,6 @@ public class CoupleService {
     @Transactional(readOnly = true)
     public boolean isExistCouple(Long userId) {
         Optional<UserCouple> optional = coupleRepository.findUserCoupleByUserId(userId);
-
-        if (optional.isEmpty() || optional.get().getStatus() != ACTIVE) {
-            return false;
-        }
-
-        return true;
+        return optional.isPresent() && optional.get().getStatus() == ACTIVE;
     }
 }
