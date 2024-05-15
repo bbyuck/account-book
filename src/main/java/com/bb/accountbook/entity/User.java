@@ -35,6 +35,9 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "owner")
     private List<Cause> causes = new ArrayList<>();
 
+    @OneToOne(mappedBy = "user")
+    private UserCouple userCouple;
+
     public User(String email, String password, GenderCode gender) {
         this.email = email;
         this.password = password;

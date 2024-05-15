@@ -1,4 +1,4 @@
-package com.bb.accountbook.domain.couple.repository.custom.impl;
+package com.bb.accountbook.domain.couple.repository.custom;
 
 import com.bb.accountbook.common.exception.GlobalException;
 import com.bb.accountbook.common.model.codes.ErrorCode;
@@ -18,7 +18,7 @@ import java.util.List;
 
 @SpringBootTest
 @Transactional
-class CoupleCustomRepositoryImplTest {
+class CoupleCustomRepositoryTest {
 
     @Autowired
     CoupleRepository coupleRepository;

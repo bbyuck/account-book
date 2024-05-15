@@ -1,5 +1,6 @@
 package com.bb.accountbook.entity;
 
+import com.bb.accountbook.common.model.status.CoupleStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -22,11 +23,18 @@ public class Couple {
     @Column(name = "couple_name")
     private String name;
 
+    @Column(name = "couple_status")
+    private CoupleStatus status;
+
     @OneToMany(mappedBy = "couple")
     private List<UserCouple> userCouples = new ArrayList<>();
 
     public Couple(String name) {
         this.name = name;
+        this.status = CoupleStatus.INACTIVE;
     }
 
+    public void changeStatus(CoupleStatus status) {
+        this.status = status;
+    }
 }
