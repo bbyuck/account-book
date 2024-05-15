@@ -11,7 +11,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -72,11 +71,9 @@ class LedgerServiceTest {
     }
 
     @Test
-    @DisplayName("개인 - 월별 가계부 조회")
-    @Rollback
+    @DisplayName("월별 가계부 조회")
     public void personalMonthly() throws Exception {
         // given
-        testData.ledgerServiceTestData();
         Long manId = 3L;
         Long womanId = 4L;
 
@@ -95,10 +92,8 @@ class LedgerServiceTest {
 
     @Test
     @DisplayName("커플 가계부 상세 항목 조회")
-    @Rollback
     public void findCoupleLedger() throws Exception {
         // given
-        testData.ledgerServiceTestData();
         Long manId = 3L;
         Long womanId = 4L;
 

@@ -27,6 +27,7 @@ public class TestDataInit {
     @PostConstruct
     public void init() {
         testData.init();
+        testData.ledgerServiceTestData();
     }
     
 }

@@ -1,9 +1,7 @@
 package com.bb.accountbook.domain.couple.service;
 
 import com.bb.accountbook.common.exception.GlobalException;
-import com.bb.accountbook.common.model.codes.ErrorCode;
 import com.bb.accountbook.common.model.status.CoupleStatus;
-import com.bb.accountbook.common.model.status.UserCoupleStatus;
 import com.bb.accountbook.domain.couple.repository.CoupleRepository;
 import com.bb.accountbook.domain.user.service.UserService;
 import com.bb.accountbook.entity.Couple;

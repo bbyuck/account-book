@@ -102,6 +102,7 @@ public class LedgerService {
     public LedgerCoupleDetailDto findCoupleLedger(Long coupleId, Long ledgerId) {
         Ledger ledger = ledgerRepository.findLedgerWithUserCouple(coupleId, ledgerId).orElseThrow(() -> {
             log.error(ERR_LED_000.getValue());
+            log.error("{}, {}",coupleId, ledgerId);
             return new GlobalException(ERR_LED_000);
         });
 
