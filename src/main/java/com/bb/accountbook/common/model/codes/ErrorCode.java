@@ -23,6 +23,7 @@ public enum ErrorCode {
     ERR_CPL_000("선택한 커플 Entity에 연결 된 유저수가 정확하지 않습니다."),
     ERR_CPL_001("커플 Entity를 찾을 수 없습니다."),
     ERR_CPL_002("이미 커플로 연결되어 있습니다."),
+    ERR_CPL_003("커플 매핑 정보를 찾을 수 없습니다."),
 
     /**
      * Ledger Error

@@ -39,22 +39,6 @@ class CoupleCustomRepositoryImplTest {
     }
 
     @Test
-    @DisplayName("유저 - 커플 매핑 여부 조회")
-    public void isExistUserCouple() throws Exception {
-        // given
-        Long userId = 3L;
-        Long coupleId = 1L;
-
-
-        // when
-        boolean existUserCouple = coupleRepository.isExistUserCouple(userId, coupleId);
-
-        // then
-        Assertions.assertThat(existUserCouple).isTrue();
-
-    }
-
-    @Test
     @DisplayName("커플에 매핑되어 있는 유저 - 커플 엔티티 조회")
     public void findUserCouplesByCoupleId() throws Exception {
         // given
@@ -79,5 +63,20 @@ class CoupleCustomRepositoryImplTest {
         Assertions.assertThat(userCouples.size()).isEqualTo(2);
         Assertions.assertThat(userCouples.get(0).getNickname()).isEqualTo("히욱");
         Assertions.assertThat(userCouples.get(0).getStatus()).isEqualTo(UserCoupleStatus.ACTIVE);
+    }
+
+    @Test
+    @DisplayName("유저ID - 커플ID로 UserCouple Entity 조회")
+    public void findUserCoupleByUserIdAndCoupleId() throws Exception {
+        // given
+        Long userId = 3L;
+        Long coupleId = 1L;
+
+        // when
+        UserCouple userCouple = coupleRepository.findUserCoupleByUserIdAndCoupleId(userId, coupleId).orElseThrow(IllegalStateException::new);
+
+        // then
+        Assertions.assertThat(userCouple.getNickname()).isEqualTo("히욱");
+        Assertions.assertThat(userCouple.getStatus()).isEqualTo(UserCoupleStatus.ACTIVE);
     }
 }

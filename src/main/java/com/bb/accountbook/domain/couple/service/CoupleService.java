@@ -2,6 +2,7 @@ package com.bb.accountbook.domain.couple.service;
 
 import com.bb.accountbook.common.exception.GlobalException;
 import com.bb.accountbook.common.model.codes.ErrorCode;
+import com.bb.accountbook.common.model.status.UserCoupleStatus;
 import com.bb.accountbook.domain.couple.repository.CoupleRepository;
 import com.bb.accountbook.domain.user.service.UserService;
 import com.bb.accountbook.entity.Couple;
@@ -29,23 +30,22 @@ public class CoupleService {
 
     private final UserService userService;
 
-    public List<UserCouple> findUserCouples(Long userId) {
-        List<UserCouple> userCouplesByUserId = coupleRepository.findUserCouplesByUserId(userId);
-        return userCouplesByUserId;
+    @Transactional
+    public UserCouple findUserCouple(Long userCoupleId) {
+        return coupleRepository.findUserCoupleById(userCoupleId).orElseThrow(() -> {
+            log.error(ERR_CPL_003.getValue());
+            return new GlobalException(ERR_CPL_003);
+        });
     }
 
     public Long joinCouple(Long userId, Long coupleId, String nickname) {
         User user = userService.findUserById(userId);
-        Couple couple = this.findCouple(coupleId);
+        Couple couple = findCouple(coupleId);
 
-        if (coupleRepository.isExistUserCouple(userId, coupleId)) {
-            log.error(ERR_CPL_002.getValue());
-            throw new GlobalException(ERR_CPL_002);
-        }
+        UserCouple userCouple = coupleRepository.findUserCoupleByUserIdAndCoupleId(userId, coupleId)
+                .orElseGet(() -> coupleRepository.saveUserCouple(new UserCouple(user, couple, nickname)));
 
-        UserCouple savedUserCouple = coupleRepository.saveUserCouple(new UserCouple(user, couple, nickname));
-
-        return savedUserCouple.getId();
+        return userCouple.getId();
     }
 
     public Long createCouple(String coupleName) {
@@ -59,32 +59,6 @@ public class CoupleService {
             log.error(ERR_CPL_001.getValue());
             return new GlobalException(ERR_CPL_001);
         });
-    }
-
-
-    /**
-     * 1. 커플 Entity 확인
-     *     -> API 호출자와 매핑되어 있는 Couple 엔티티가 없는 경우 새로운 커플 Entity 생성
-     * 3. 그룹에 참여
-     * 4. 상대방 그룹에 초대
-     *
-     * @param apiCallerId
-     * @param opponentEmail
-     * @param nickname
-     * @return userCoupleId
-     */
-    public Long connectToOpponent(Long apiCallerId, String opponentEmail, String nickname, String coupleName) {
-        Couple couple = coupleRepository.findCoupleByUserId(apiCallerId)
-                .orElse(findCouple(createCouple(coupleName)));
-
-        // 그룹에 참여
-        UserCouple callersUserCouple = coupleRepository.findUserCouple(joinCouple(apiCallerId, couple.getId(), nickname));
-        callersUserCouple.changeStatus(ACTIVE);
-
-        // 상대방 그룹에 초대
-        inviteToCouple(opponentEmail, couple.getId());
-
-        return callersUserCouple.getId();
     }
 
     public void inviteToCouple(String opponentEmail, Long coupleId) {
@@ -109,4 +83,44 @@ public class CoupleService {
         joinCouple(opponent.getId(), coupleId, null);
     }
 
+    /**
+     * 1. 커플 Entity 확인
+     * -> API 호출자와 매핑되어 있는 Couple 엔티티가 없는 경우 새로운 커플 Entity 생성
+     * 3. 그룹에 참여
+     * 4. 상대방 그룹에 초대
+     *
+     * @param apiCallerId
+     * @param opponentEmail
+     * @param nickname
+     * @return userCoupleId
+     */
+    public Long connectToOpponent(Long apiCallerId, String opponentEmail, String nickname, String coupleName) {
+        Couple couple = coupleRepository.findCoupleByUserId(apiCallerId)
+                .orElse(findCouple(createCouple(coupleName)));
+
+        // 그룹에 참여
+        UserCouple callersUserCouple = findUserCouple(joinCouple(apiCallerId, couple.getId(), nickname));
+
+        callersUserCouple.changeStatus(ACTIVE);
+
+        // 상대방 그룹에 초대
+        inviteToCouple(opponentEmail, couple.getId());
+
+        return callersUserCouple.getId();
+    }
+
+    /**
+     * userCouple 객체 상태 변경
+     *
+     * @param userCoupleId
+     * @param nickname
+     * @return
+     */
+    public Long applyConnectRequest(Long userCoupleId, String nickname) {
+        UserCouple userCouple = findUserCouple(userCoupleId);
+        userCouple.changeStatus(ACTIVE);
+        userCouple.changeNickname(nickname);
+
+        return userCouple.getId();
+    }
 }

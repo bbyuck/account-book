@@ -42,4 +42,6 @@ public class UserCouple {
     public void changeStatus(UserCoupleStatus status) {
         this.status = status;
     }
+
+    public void changeNickname(String nickname) { this.nickname = nickname; }
 }

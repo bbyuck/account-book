@@ -6,7 +6,6 @@ import com.bb.accountbook.entity.UserCouple;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,11 +25,6 @@ public class CoupleCustomRepositoryImpl implements CoupleCustomRepository {
     }
 
     @Override
-    public UserCouple findUserCouple(Long userCoupleId) {
-        return em.find(UserCouple.class, userCoupleId);
-    }
-
-    @Override
     public Optional<Couple> findCoupleByUserId(Long userId) {
         String jpql = "select c " +
                 "from Couple c " +
@@ -43,26 +37,6 @@ public class CoupleCustomRepositoryImpl implements CoupleCustomRepository {
         return em.createQuery(jpql, Couple.class)
                 .setParameter("userId", userId)
                 .getResultList().stream().findFirst();
-    }
-
-    @Override
-    public boolean isExistUserCouple(Long userId, Long coupleId) {
-        String jpql2 = "select uc " +
-                "from UserCouple uc " +
-                "join fetch Couple c " +
-                "on uc.couple = c " +
-                "join fetch User u " +
-                "on uc.user = u " +
-                "where uc.user.id = :userId " +
-                "and uc.couple.id = :coupleId";
-
-        int count = em.createQuery(jpql2, UserCouple.class)
-                .setParameter("userId", userId)
-                .setParameter("coupleId", coupleId)
-                .getResultList()
-                .size();
-
-        return count > 0;
     }
 
     @Override
@@ -88,6 +62,26 @@ public class CoupleCustomRepositoryImpl implements CoupleCustomRepository {
                 "on uc.user = u " +
                 "where u.id = :userId";
 
-        return em.createQuery(jpql, UserCouple.class).setParameter("userId", userId).getResultList();
+        return em.createQuery(jpql, UserCouple.class)
+                .setParameter("userId", userId)
+                .getResultList();
+    }
+
+    @Override
+    public Optional<UserCouple> findUserCoupleByUserIdAndCoupleId(Long userId, Long coupleId) {
+        String jpql = "select uc " +
+                "from UserCouple uc " +
+                "where uc.user.id = :userId " +
+                "and uc.couple.id = :coupleId";
+
+        return em.createQuery(jpql, UserCouple.class)
+                .setParameter("userId", userId)
+                .setParameter("coupleId", coupleId)
+                .getResultList().stream().findFirst();
+    }
+
+    @Override
+    public Optional<UserCouple> findUserCoupleById(Long userId) {
+        return Optional.of(em.find(UserCouple.class, userId));
     }
 }

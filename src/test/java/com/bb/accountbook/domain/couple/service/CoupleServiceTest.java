@@ -38,7 +38,7 @@ class CoupleServiceTest {
 
         // when
         Long userCoupleId = coupleService.connectToOpponent(man.getId(), woman.getEmail(), "남편", "부부");
-        List<UserCouple> userCouples = coupleService.findUserCouples(man.getId());
+        List<UserCouple> userCouples = coupleRepository.findUserCouplesByUserId(man.getId());
 
         List<UserCouple> waitList = userCouples.stream().filter(userCouple -> userCouple.getStatus() == UserCoupleStatus.WAIT).toList();
         Set<String> nicknameSet = userCouples.stream().map(UserCouple::getNickname).collect(Collectors.toSet());
@@ -47,5 +47,24 @@ class CoupleServiceTest {
         Assertions.assertThat(userCouples.size()).isEqualTo(2);
         Assertions.assertThat(nicknameSet).contains("남편");
         Assertions.assertThat(waitList.size()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("남 -> 여 커플로 연결 신청 후 여자 계정으로 수락")
+    public void applyConnectRequest() throws Exception {
+        // given
+        Long manId = 3L;
+        Long manUserCoupleId = 1L;
+
+        Long womanId = 4L;
+        Long womanUserCoupleId = 2L;
+
+        // when
+        Long womanUserId = coupleService.applyConnectRequest(2L, "test");
+        UserCouple userCouple = coupleService.findUserCouple(womanUserCoupleId);
+
+        // then
+        Assertions.assertThat(userCouple.getStatus()).isEqualTo(UserCoupleStatus.ACTIVE);
+        Assertions.assertThat(userCouple.getNickname()).isEqualTo("test");
     }
 }
