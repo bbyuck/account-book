@@ -78,7 +78,7 @@ public class SecurityContextProvider implements InitializingBean {
                 .parseClaimsJws(token);
 
         Claims body = claimsJws.getBody();
-        return Long.valueOf(body.get(Claims.ISSUER).toString());
+        return Long.valueOf(body.get(Claims.SUBJECT).toString());
     }
 
 }

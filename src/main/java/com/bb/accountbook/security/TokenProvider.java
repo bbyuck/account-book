@@ -1,7 +1,5 @@
 package com.bb.accountbook.security;
 
-import com.bb.accountbook.common.exception.GlobalException;
-import com.bb.accountbook.common.model.codes.ErrorCode;
 import com.bb.accountbook.domain.user.dto.AdditionalPayloadDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -14,9 +12,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -32,12 +28,15 @@ public class TokenProvider implements InitializingBean {
     private final String secret;
     private final long tokenExpirationTime;
     private Key key;
+    private final String iss;
 
     public TokenProvider(
             @Value("${jwt.secret}") String secret,
-            @Value("${jwt.token-expiration-time}") long tokenExpirationTimeInSecond) {
+            @Value("${jwt.token-expiration-time}") long tokenExpirationTimeInSecond,
+            @Value("${jwt.iss}") String iss) {
         this.secret = secret;
         this.tokenExpirationTime = tokenExpirationTimeInSecond * 1000;
+        this.iss = iss;
     }
 
     // 빈이 생성되고 주입을 받은 후에 secret값을 Base64 Decode해서 key 변수에 할당하기 위해
@@ -60,7 +59,8 @@ public class TokenProvider implements InitializingBean {
         return Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim(AUTHORITIES_KEY, authorities)
-                .claim(Claims.ISSUER, additionalPayloadDto.getUid())
+                .claim(Claims.SUBJECT, additionalPayloadDto.getUid())
+                .claim(Claims.ISSUER, iss)
                 .signWith(key, SignatureAlgorithm.HS512)
                 .setExpiration(validity)
                 .compact();

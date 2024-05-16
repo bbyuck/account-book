@@ -26,6 +26,7 @@ spring:
 jwt:
   secret: secret1234secret1234secret1234secret1234secret1234secret1234secret1234secret1234secret1234secret1234secret1234secret1234
   token-expiration-time: 300
+  iss: hay-account-book
 
 logging:
   level:
