@@ -23,6 +23,10 @@ spring:
       enabled: true
       path: /h2-console
 
+jwt:
+  secret: secret1234secret1234secret1234secret1234secret1234secret1234secret1234secret1234secret1234secret1234secret1234secret1234
+  token-expiration-time: 300
+
 logging:
   level:
     org.hibernate:

@@ -18,8 +18,8 @@ public class UserController {
 
     private final UserService userService;
 
-    @PostMapping("/api/v1/user")
-    public ApiResponse<UserJoinResponseDto> join(@RequestBody @Valid UserJoinRequestDto userJoinRequestDto) {
+    @PostMapping("/api/v1/signup")
+    public ApiResponse<UserJoinResponseDto> signup(@RequestBody @Valid UserJoinRequestDto userJoinRequestDto) {
         Long joinedUserId = userService.join(userJoinRequestDto.getEmail(), userJoinRequestDto.getPassword(), userJoinRequestDto.getGender());
         return new ApiResponse<>(new UserJoinResponseDto(joinedUserId));
     }
