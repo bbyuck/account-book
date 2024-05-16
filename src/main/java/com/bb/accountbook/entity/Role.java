@@ -16,11 +16,11 @@ public class Role extends BaseEntity {
     @Column(name = "role_id")
     private Long id;
 
-    @Column(name = "role_name")
+    @Column(name = "role_code")
     @Enumerated(EnumType.STRING)
-    private RoleCode name;
+    private RoleCode code;
 
-    public Role(RoleCode roleCode) {
-        this.name = roleCode;
+    public Role(RoleCode code) {
+        this.code = code;
     }
 }

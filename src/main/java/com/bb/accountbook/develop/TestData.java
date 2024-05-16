@@ -3,7 +3,7 @@ package com.bb.accountbook.develop;
 import com.bb.accountbook.common.model.codes.GenderCode;
 import com.bb.accountbook.common.model.codes.LedgerCode;
 import com.bb.accountbook.common.model.codes.RoleCode;
-import com.bb.accountbook.common.model.status.UserCoupleStatus;
+import com.bb.accountbook.common.model.status.UserStatus;
 import com.bb.accountbook.domain.couple.repository.CoupleRepository;
 import com.bb.accountbook.domain.couple.service.CoupleService;
 import com.bb.accountbook.domain.ledger.service.LedgerService;
@@ -36,23 +36,29 @@ public class TestData {
 
         String email1 = "k941026h@naver.com";
         String password1 = "pass1";
-        Long userId1 = userService.join(email1, password1, GenderCode.M);
+        Long userId1 = userService.signup(email1, password1, GenderCode.M);
+        User userById = userService.findUserById(userId1);
+        userById.changeStatus(UserStatus.ACTIVE);
+
 
         String email2 = "abc123@naver.com";
         String password2 = "pass2";
-        Long userId2 = userService.join(email2, password2, GenderCode.W);
+        Long userId2 = userService.signup(email2, password2, GenderCode.W);
 
         String email3 = "man3@naver.com";
         String password3 = "pass1";
-        Long userId3 = userService.join(email3, password3, GenderCode.M);
+        Long userId3 = userService.signup(email3, password3, GenderCode.M);
 
         String email4 = "woman4@naver.com";
         String password4 = "pass2";
-        Long userId4 = userService.join(email4, password4, GenderCode.W);
+        Long userId4 = userService.signup(email4, password4, GenderCode.W);
 
 
         User user3 = userService.findUserById(userId3);
+        user3.changeStatus(UserStatus.ACTIVE);
+
         User user4 = userService.findUserById(userId4);
+        user3.changeStatus(UserStatus.ACTIVE);
 
         coupleService.connectToOpponent(user3.getId(), "woman4@naver.com", "히욱", "bubu");
     }

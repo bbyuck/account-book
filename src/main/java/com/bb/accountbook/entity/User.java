@@ -1,6 +1,7 @@
 package com.bb.accountbook.entity;
 
 import com.bb.accountbook.common.model.codes.GenderCode;
+import com.bb.accountbook.common.model.status.UserStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -29,11 +30,18 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private GenderCode gender;
 
+    @Column(name = "user_status")
+    @Enumerated(EnumType.STRING)
+    private UserStatus status;
+
     @OneToMany(mappedBy = "owner")
     private List<Ledger> ledgers = new ArrayList<>();
 
     @OneToMany(mappedBy = "owner")
     private List<Cause> causes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<UserRole> userRoles = new ArrayList<>();
 
     @OneToOne(mappedBy = "user")
     private UserCouple userCouple;
@@ -42,6 +50,14 @@ public class User extends BaseEntity {
         this.email = email;
         this.password = password;
         this.gender = gender;
+    }
+
+    public boolean isActive() {
+        return this.status == UserStatus.ACTIVE;
+    }
+
+    public void changeStatus(UserStatus status) {
+        this.status = status;
     }
 
 }

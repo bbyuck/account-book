@@ -16,8 +16,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import java.util.List;
-
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -26,11 +24,11 @@ public class SecurityConfig {
     private final TokenProvider tokenProvider;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
-    private final List<String> PERMIT_URL = List.of(
+    private final String[] WHITE_LIST = {
             "/api/v1/authenticate", // 회원가입
             "/api/v1/signup",       // 로그인
             "/favicon.ico"          // 파비콘
-    );
+    };
 
     // PasswordEncoder는 BCryptPasswordEncoder를 사용
     @Bean
@@ -50,7 +48,7 @@ public class SecurityConfig {
                 .sessionManagement(sessionManagementConfigurer -> sessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(registry -> {
                     registry.requestMatchers(PathRequest.toH2Console()).permitAll();
-                    PERMIT_URL.stream().forEach(url -> registry.requestMatchers(url).permitAll());
+                    registry.requestMatchers(WHITE_LIST).permitAll();
                     registry.anyRequest().authenticated(); // 그 외 인증 없이 접근 x
                 })
                 .apply(new JwtSecurityConfig(tokenProvider));

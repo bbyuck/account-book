@@ -18,6 +18,7 @@ public enum ErrorCode {
      */
     ERR_USR_000("유저를 찾을 수 없습니다."),
     ERR_USR_001("이미 가입된 메일입니다."),
+    ERR_USR_002("계정이 활성화되지 않았습니다."),
     /**
      * Couple Error
      */
@@ -31,7 +32,15 @@ public enum ErrorCode {
      * Ledger Error
      */
     ERR_LED_000("가계부 상세 항목을 찾을 수 없습니다."),
+
+    /**
+     * Authentication, Authorization
+     */
+    ERR_AUTH_000("Security Context에 인증 정보가 없습니다.")
+
+
     ;
 
     private final String value;
+
 }

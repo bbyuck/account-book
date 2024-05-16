@@ -1,5 +1,6 @@
 package com.bb.accountbook.security;
 
+import com.bb.accountbook.domain.user.dto.AdditionalPayloadDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -50,9 +51,12 @@ public class TokenProvider implements InitializingBean {
         long now = new Date().getTime();
         Date validity = new Date(now + this.tokenExpirationTime);
 
+        AdditionalPayloadDto additionalPayloadDto = (AdditionalPayloadDto) authentication.getDetails();
+
         return Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim(AUTHORITIES_KEY, authorities)
+                .claim(Claims.ISSUER, additionalPayloadDto.getUid())
                 .signWith(key, SignatureAlgorithm.HS512)
                 .setExpiration(validity)
                 .compact();
@@ -97,4 +101,6 @@ public class TokenProvider implements InitializingBean {
 
         return false;
     }
+
+
 }

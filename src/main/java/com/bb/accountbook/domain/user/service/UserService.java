@@ -3,13 +3,21 @@ package com.bb.accountbook.domain.user.service;
 import com.bb.accountbook.common.exception.GlobalException;
 import com.bb.accountbook.common.model.codes.GenderCode;
 import com.bb.accountbook.common.model.codes.RoleCode;
+import com.bb.accountbook.domain.user.dto.AdditionalPayloadDto;
+import com.bb.accountbook.domain.user.dto.TokenDto;
 import com.bb.accountbook.domain.user.repository.RoleRepository;
 import com.bb.accountbook.domain.user.repository.UserRepository;
 import com.bb.accountbook.domain.user.repository.UserRoleRepository;
 import com.bb.accountbook.entity.User;
 import com.bb.accountbook.entity.UserRole;
+import com.bb.accountbook.security.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,7 +37,13 @@ public class UserService {
 
     private final UserRoleRepository userRoleRepository;
 
-    public Long join(String email, String password, GenderCode gender) {
+    private final PasswordEncoder passwordEncoder;
+
+    private final TokenProvider tokenProvider;
+    private final AuthenticationManagerBuilder authenticationManagerBuilder;
+
+
+    public Long signup(String email, String password, GenderCode gender) {
         // 1. 중복 체크
         userRepository.findByEmail(email).ifPresent((user) -> {
             log.debug("{} ====== {}", ERR_USR_001.getValue(), user.getEmail());
@@ -37,13 +51,13 @@ public class UserService {
         });
 
         // 2. User Entity 생성 && insert
-        User joinedUser = userRepository.save(new User(email, password, gender));
+        User joinedUser = userRepository.save(new User(email, passwordEncoder.encode(password), gender));
 
         // 3. default Role Entity 생성 및 UserRole Entity mapping
         List<UserRole> newUserRoles = RoleCode.DEFAULT
                 .stream()
                 .map(roleCode ->
-                        new UserRole(joinedUser, roleRepository.findByName(roleCode)
+                        new UserRole(joinedUser, roleRepository.findByCode(roleCode)
                                 .orElseThrow(() -> {
                                     log.error("Role Entity를 찾을 수 없습니다. ====== {}", roleCode.name());
                                     return new GlobalException(ERR_SYS_000);
@@ -51,14 +65,14 @@ public class UserService {
                 ).toList();
         userRoleRepository.saveAll(newUserRoles);
 
-        // 4. 정상 처리 후 메일 발송ㅍ -> 메세지 큐로 구현
+        // TODO 4. 정상 처리 후 메일 발송ㅍ -> 메세지 큐로 구현
 
         return joinedUser.getId();
     }
 
     @Transactional(readOnly = true)
     public User findUserById(Long userId) {
-        return userRepository.findById(userId).orElseThrow(() -> {
+        return userRepository.findWithRolesById(userId).orElseThrow(() -> {
             log.error(ERR_USR_000.getValue());
             return new GlobalException(ERR_USR_000);
         });
@@ -66,11 +80,28 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public User findUserByEmail(String email) {
-        return userRepository.findByEmail(email).orElseThrow(() -> {
+        return userRepository.findWithRolesByEmail(email).orElseThrow(() -> {
             log.error(ERR_USR_000.getValue());
             return new GlobalException(ERR_USR_000);
         });
     }
 
 
+    public TokenDto login(String email, String password) {
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
+
+        User user = findUserByEmail(email);
+        authenticationToken.setDetails(new AdditionalPayloadDto(user.getId()));
+
+        // authenticate 메소드가 실행이 될 때 CustomUserDetailsService class의 loadUserByUsername 메소드가 실행
+        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+
+        // 해당 객체를 SecurityContextHolder에 저장
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        // authentication 객체를 createToken 메소드를 통해서 JWT Token을 생성
+        String jwt = tokenProvider.createToken(authentication);
+
+        return new TokenDto(jwt);
+    }
 }
