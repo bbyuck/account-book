@@ -3,21 +3,40 @@ package com.bb.accountbook.security;
 
 import com.bb.accountbook.common.exception.GlobalException;
 import com.bb.accountbook.common.model.codes.ErrorCode;
-import com.bb.accountbook.domain.user.dto.AdditionalPayloadDto;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
 
-import java.util.Optional;
+import java.security.Key;
 
 @Slf4j
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class SecurityContextProvider {
+@Component
+public class SecurityContextProvider implements InitializingBean {
 
-    public static String getCurrentEmail() {
+    private final String secret;
+    private Key key;
+
+    public SecurityContextProvider(@Value("${jwt.secret}") String secret) {
+        this.secret = secret;
+    }
+
+    @Override
+    public void afterPropertiesSet() {
+        byte[] keyBytes = Decoders.BASE64.decode(secret);
+        this.key = Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    public String getCurrentEmail() {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null) {
@@ -42,7 +61,7 @@ public class SecurityContextProvider {
         return email;
     }
 
-    public static Long getCurrentUserId() {
+    public Long getCurrentUserId() {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null) {
@@ -50,16 +69,16 @@ public class SecurityContextProvider {
             throw new GlobalException(ErrorCode.ERR_AUTH_000);
         }
 
-        Long userId = null;
-        if (authentication.getDetails() instanceof AdditionalPayloadDto additionalPayloadDto) {
-            userId = additionalPayloadDto.getUid();
-        }
 
-        if (userId == null) {
-            log.debug(ErrorCode.ERR_AUTH_000.getValue());
-            throw new GlobalException(ErrorCode.ERR_AUTH_000);
-        }
+        String token = (String) authentication.getCredentials();
 
-        return userId;
+        Jws<Claims> claimsJws = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token);
+
+        Claims body = claimsJws.getBody();
+        return Long.valueOf(body.get(Claims.ISSUER).toString());
     }
+
 }

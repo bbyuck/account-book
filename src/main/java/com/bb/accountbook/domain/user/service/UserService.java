@@ -1,6 +1,7 @@
 package com.bb.accountbook.domain.user.service;
 
 import com.bb.accountbook.common.exception.GlobalException;
+import com.bb.accountbook.common.model.codes.ErrorCode;
 import com.bb.accountbook.common.model.codes.GenderCode;
 import com.bb.accountbook.common.model.codes.RoleCode;
 import com.bb.accountbook.domain.user.dto.AdditionalPayloadDto;
@@ -87,14 +88,21 @@ public class UserService {
     }
 
 
-    public TokenDto login(String email, String password) {
+    public TokenDto authenticate(String email, String password) {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
 
         User user = findUserByEmail(email);
         authenticationToken.setDetails(new AdditionalPayloadDto(user.getId()));
 
         // authenticate 메소드가 실행이 될 때 CustomUserDetailsService class의 loadUserByUsername 메소드가 실행
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+        Authentication authentication = null;
+        try {
+            authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+        }
+        catch(Exception e) {
+            log.error(ERR_AUTH_001.getValue());
+            throw new GlobalException(ERR_AUTH_001);
+        }
 
         // 해당 객체를 SecurityContextHolder에 저장
         SecurityContextHolder.getContext().setAuthentication(authentication);

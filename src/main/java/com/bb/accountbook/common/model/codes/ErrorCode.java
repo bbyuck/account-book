@@ -36,7 +36,8 @@ public enum ErrorCode {
     /**
      * Authentication, Authorization
      */
-    ERR_AUTH_000("Security Context에 인증 정보가 없습니다.")
+    ERR_AUTH_000("Security Context에 인증 정보가 없습니다."),
+    ERR_AUTH_001("ID/PW 인증에 실패했습니다.")
 
 
     ;

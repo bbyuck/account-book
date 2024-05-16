@@ -1,5 +1,7 @@
 package com.bb.accountbook.security;
 
+import com.bb.accountbook.common.exception.GlobalException;
+import com.bb.accountbook.common.model.codes.ErrorCode;
 import com.bb.accountbook.domain.user.dto.AdditionalPayloadDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -12,7 +14,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
