@@ -42,13 +42,13 @@ public class LedgerController {
     }
 
     @GetMapping("/api/v1/couple/ledger/{ledgerId}")
-    public ApiResponse<LedgerDetailDto> findCoupleLedger(@PathVariable("ledgerId") Long ledgerId, @Param("ci") Long coupleId) {
+    public ApiResponse<LedgerDetailDto> findCoupleLedger(@PathVariable("ledgerId") Long ledgerId, @RequestParam("ci") Long coupleId) {
         return new ApiResponse<>(ledgerService.findCoupleLedger(coupleId, ledgerId));
     }
 
 
     @GetMapping("/api/v1/couple/monthly/ledger")
-    public ApiResponse<MonthlyLedgerResponseDto> findCoupleMonthlyLedger(@Param("ym") String yearMonth) {
+    public ApiResponse<MonthlyLedgerResponseDto> findCoupleMonthlyLedger(@RequestParam("ym") String yearMonth) {
         List<MonthlyLedgerDto> monthlyLedgers = ledgerService.findCoupleMonthlyLedger(getCurrentUserId(), yearMonth).stream()
                 .map(ledger -> new CoupleMonthlyLedgerDto(
                         ledger.getCode().getValue(),
@@ -62,7 +62,7 @@ public class LedgerController {
     }
 
     @GetMapping("/api/v1/personal/monthly/ledger")
-    public ApiResponse<MonthlyLedgerResponseDto> findPersonalMonthlyLedger(@Param("ym") String yearMonth) {
+    public ApiResponse<MonthlyLedgerResponseDto> findPersonalMonthlyLedger(@RequestParam("ym") String yearMonth) {
         List<MonthlyLedgerDto> monthlyLedgers = ledgerService.findPersonalMonthlyLedger(getCurrentUserId(), yearMonth)
                 .stream()
                 .map(ledger -> new PersonalMonthlyLedgerDto(
