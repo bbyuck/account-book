@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,6 +24,9 @@ class UserServiceTest {
 
     @Autowired
     RoleRepository roleRepository;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
 
     @Test
@@ -39,7 +43,7 @@ class UserServiceTest {
 
         // then
         assertThat(joinedUser.getEmail()).isEqualTo(email);
-        assertThat(joinedUser.getPassword()).isEqualTo(password);
+        assertThat(passwordEncoder.matches(password, joinedUser.getPassword())).isTrue();
         assertThat(joinedUser.getGender()).isEqualTo(gender);
     }
 
