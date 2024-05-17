@@ -1,6 +1,5 @@
 package com.bb.accountbook.common.model.codes;
 
-import com.bb.accountbook.common.constant.AdditionalHttpStatus;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -43,10 +42,13 @@ public enum ErrorCode {
      * Authentication, Authorization
      */
     ERR_AUTH_000("Security Context에 인증 정보가 없습니다.", SC_UNAUTHORIZED),
-    ERR_AUTH_001("ID/PW 인증에 실패했습니다.", SC_UNAUTHORIZED),
-    ERR_AUTH_002("잘못된 인증 정보입니다.", SC_UNAUTHORIZED),
-    ERR_AUTH_003("권한이 없습니다.", SC_FORBIDDEN),
-
+    ERR_AUTH_001("잘못된 ID/PW 입니다.", SC_UNAUTHORIZED),
+    ERR_AUTH_002("권한이 없습니다.", SC_FORBIDDEN),
+    ERR_AUTH_003("인증에 실패했습니다.", SC_UNAUTHORIZED),
+    ERR_AUTH_004("잘못된 JWT 서명입니다.", SC_UNAUTHORIZED),
+    ERR_AUTH_005("만료된 JWT 토큰입니다.", SC_UNAUTHORIZED),
+    ERR_AUTH_006("지원되지 않는 JWT 토큰입니다.", SC_UNAUTHORIZED),
+    ERR_AUTH_007("잘못된 JWT 토큰 입력입니다.", SC_UNAUTHORIZED),
 
     ;
 

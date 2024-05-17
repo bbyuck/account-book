@@ -1,5 +1,6 @@
 package com.bb.accountbook.security;
 
+import com.bb.accountbook.common.exception.GlobalException;
 import com.bb.accountbook.domain.user.dto.AdditionalPayloadDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -21,14 +22,18 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
 
+import static com.bb.accountbook.common.model.codes.ErrorCode.*;
+
 @Slf4j
 @Component
 public class TokenProvider implements InitializingBean {
+    public static final String AUTH_EXCEPTION = "auth-exception";
     private static final String AUTHORITIES_KEY = "auth";
     private final String secret;
     private final long tokenExpirationTime;
     private Key key;
     private final String iss;
+
 
     public TokenProvider(
             @Value("${jwt.secret}") String secret,
@@ -85,26 +90,25 @@ public class TokenProvider implements InitializingBean {
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);
     }
 
-    public boolean validate(String token) {
+    public void validate(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-            return true;
         }
         catch(SecurityException | MalformedJwtException e) {
-            log.error("잘못된 JWT 서명입니다.");
+            log.error(ERR_AUTH_004.getValue());
+            throw new GlobalException(ERR_AUTH_004);
         }
         catch(ExpiredJwtException e) {
-            log.error("만료된 JWT 토큰입니다.");
+            log.error(ERR_AUTH_005.getValue());
+            throw new GlobalException(ERR_AUTH_005);
         }
         catch(UnsupportedJwtException e) {
-            log.error("지원되지 않는 JWT 토큰입니다.");
+            log.error(ERR_AUTH_006.getValue());
+            throw new GlobalException(ERR_AUTH_006);
         }
         catch(IllegalArgumentException e) {
-            log.error("잘못된 JWT 토큰 입력입니다.");
+            log.error(ERR_AUTH_007.getValue());
+            throw new GlobalException(ERR_AUTH_007);
         }
-
-        return false;
     }
-
-
 }

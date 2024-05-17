@@ -1,5 +1,6 @@
 package com.bb.accountbook.security.filter;
 
+import com.bb.accountbook.common.exception.GlobalException;
 import com.bb.accountbook.security.TokenProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -28,13 +29,15 @@ public class JwtFilter extends GenericFilterBean {
         String jwt = resolveToken(httpServletRequest);
         String requestURI = httpServletRequest.getRequestURI();
 
-        if (StringUtils.hasText(jwt) && tokenProvider.validate(jwt)) {
+        try {
+            tokenProvider.validate(jwt);
+
             Authentication authentication = tokenProvider.getAuthentication(jwt);
             SecurityContextHolder.getContext().setAuthentication(authentication);
             log.debug("Security Context에 '{}' 인증 정보를 저장했습니다. URI : {}", authentication.getName(), requestURI);
-        }
-        else {
-            log.debug("유효한 JWT 토큰이 없습니다. URI : {}", requestURI);
+        } catch (GlobalException e) {
+            log.debug("{} : {}", e.getMessage(), requestURI);
+            request.setAttribute(TokenProvider.AUTH_EXCEPTION, e);
         }
 
         chain.doFilter(request, response);
