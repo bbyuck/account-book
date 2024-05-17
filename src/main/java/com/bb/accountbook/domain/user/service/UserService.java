@@ -1,9 +1,9 @@
 package com.bb.accountbook.domain.user.service;
 
 import com.bb.accountbook.common.exception.GlobalException;
-import com.bb.accountbook.common.model.codes.ErrorCode;
 import com.bb.accountbook.common.model.codes.GenderCode;
 import com.bb.accountbook.common.model.codes.RoleCode;
+import com.bb.accountbook.common.model.status.UserStatus;
 import com.bb.accountbook.domain.user.dto.AdditionalPayloadDto;
 import com.bb.accountbook.domain.user.dto.TokenDto;
 import com.bb.accountbook.domain.user.repository.RoleRepository;
@@ -67,6 +67,7 @@ public class UserService {
         userRoleRepository.saveAll(newUserRoles);
 
         // TODO 4. 정상 처리 후 메일 발송ㅍ -> 메세지 큐로 구현
+        joinedUser.changeStatus(UserStatus.ACTIVE);
 
         return joinedUser.getId();
     }

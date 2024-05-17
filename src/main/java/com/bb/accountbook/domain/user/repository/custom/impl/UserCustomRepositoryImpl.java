@@ -1,5 +1,6 @@
 package com.bb.accountbook.domain.user.repository.custom.impl;
 
+import com.bb.accountbook.common.model.status.UserStatus;
 import com.bb.accountbook.domain.user.repository.custom.UserCustomRepository;
 import com.bb.accountbook.entity.User;
 import jakarta.persistence.EntityManager;
@@ -22,10 +23,12 @@ public class UserCustomRepositoryImpl implements UserCustomRepository {
                 "on ur.user = u " +
                 "join fetch Role r " +
                 "on ur.role = r " +
-                "where u.email = :email";
+                "where u.email = :email " +
+                "and u.status = :active";
 
         return em.createQuery(jpql, User.class)
                 .setParameter("email", email)
+                .setParameter("active", UserStatus.ACTIVE)
                 .getResultList().stream().findFirst();
     }
 
@@ -37,9 +40,11 @@ public class UserCustomRepositoryImpl implements UserCustomRepository {
                 "on ur.user = u " +
                 "join fetch Role r " +
                 "on ur.role = r " +
-                "where u.id = :userId";
+                "where u.id = :userId " +
+                "and u.status = :active";
         return em.createQuery(jpql, User.class)
                 .setParameter("userId", userId)
+                .setParameter("active", UserStatus.ACTIVE)
                 .getResultList().stream().findFirst();
     }
 }

@@ -3,6 +3,7 @@ package com.bb.accountbook.domain.ledger.service;
 import com.bb.accountbook.common.exception.GlobalException;
 import com.bb.accountbook.common.model.codes.LedgerCode;
 import com.bb.accountbook.develop.TestData;
+import com.bb.accountbook.domain.ledger.dto.AssetDto;
 import com.bb.accountbook.domain.ledger.dto.LedgerCoupleDetailDto;
 import com.bb.accountbook.entity.Ledger;
 import jakarta.persistence.EntityManager;
@@ -108,5 +109,18 @@ class LedgerServiceTest {
 
         assertThat(coupleLedger.getLedgerDate()).isEqualTo(LocalDate.of(2024, 4, 1));
         assertThat(coupleLedger.getOwnerNickname()).isEqualTo("히욱");
+    }
+
+    @Test
+    @DisplayName("커플 자산 조회")
+    public void findCoupleAsset() throws Exception {
+        // given
+        Long manId = 3L;
+
+        // when
+        AssetDto coupleAsset = ledgerService.findCoupleAsset(manId);
+
+        // then
+        assertThat(coupleAsset.getAmount()).isEqualTo(740000L);
     }
 }

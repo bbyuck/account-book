@@ -61,6 +61,11 @@ public class LedgerController {
 
     @GetMapping("/api/v1/personal/asset")
     public ApiResponse<AssetDto> findPersonalAsset() {
-        ledgerService.findPersonalAsset(securityContextProvider.getCurrentUserId());
+        return new ApiResponse<>(ledgerService.findPersonalAsset(securityContextProvider.getCurrentUserId()));
+    }
+
+    @GetMapping("/api/v1/couple/asset")
+    public ApiResponse<AssetDto> findCoupleAsset() {
+        return new ApiResponse<>(ledgerService.findCoupleAsset(securityContextProvider.getCurrentUserId()));
     }
 }

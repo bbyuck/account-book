@@ -38,7 +38,6 @@ public class TestData {
         String password1 = "pass1";
         Long userId1 = userService.signup(email1, password1, GenderCode.M);
         User userById = userService.findUserById(userId1);
-        userById.changeStatus(UserStatus.ACTIVE);
 
 
         String email2 = "abc123@naver.com";

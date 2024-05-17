@@ -180,11 +180,22 @@ public class LedgerService {
         return dataDto;
     }
 
-    public AssetDto findPersonalAsset(Long currentUserId) {
-        List<Ledger> savings = ledgerRepository.findPersonalSavings(currentUserId);
+    @Transactional(readOnly = true)
+    public AssetDto findPersonalAsset(Long userId) {
+        List<Ledger> savings = ledgerRepository.findPersonalSavings(userId);
 
         return new AssetDto(savings.stream()
                 .mapToLong(Ledger::getAmount)
-                .reduce((a, b) -> a + b).getAsLong());
+                .reduce(Long::sum).orElse(0L));
+    }
+
+    @Transactional(readOnly = true)
+    public AssetDto findCoupleAsset(Long userId) {
+        Couple couple = coupleService.findCoupleByUserId(userId);
+        List<Ledger> savings = ledgerRepository.findCoupleSavings(couple.getId());
+
+        return new AssetDto(savings.stream()
+                .mapToLong(Ledger::getAmount)
+                .reduce(Long::sum).orElse(0L));
     }
 }
