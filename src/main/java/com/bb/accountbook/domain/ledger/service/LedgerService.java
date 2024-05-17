@@ -179,4 +179,12 @@ public class LedgerService {
 
         return dataDto;
     }
+
+    public AssetDto findPersonalAsset(Long currentUserId) {
+        List<Ledger> savings = ledgerRepository.findPersonalSavings(currentUserId);
+
+        return new AssetDto(savings.stream()
+                .mapToLong(Ledger::getAmount)
+                .reduce((a, b) -> a + b).getAsLong());
+    }
 }

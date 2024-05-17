@@ -6,7 +6,6 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SecurityException;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,10 +23,8 @@ import java.util.stream.Collectors;
 
 import static com.bb.accountbook.common.model.codes.ErrorCode.*;
 
-@Slf4j
 @Component
 public class TokenProvider implements InitializingBean {
-    public static final String AUTH_EXCEPTION = "auth-exception";
     private static final String AUTHORITIES_KEY = "auth";
     private final String secret;
     private final long tokenExpirationTime;
@@ -95,19 +92,15 @@ public class TokenProvider implements InitializingBean {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
         }
         catch(SecurityException | MalformedJwtException e) {
-            log.error(ERR_AUTH_004.getValue());
             throw new GlobalException(ERR_AUTH_004);
         }
         catch(ExpiredJwtException e) {
-            log.error(ERR_AUTH_005.getValue());
             throw new GlobalException(ERR_AUTH_005);
         }
         catch(UnsupportedJwtException e) {
-            log.error(ERR_AUTH_006.getValue());
             throw new GlobalException(ERR_AUTH_006);
         }
         catch(IllegalArgumentException e) {
-            log.error(ERR_AUTH_007.getValue());
             throw new GlobalException(ERR_AUTH_007);
         }
     }

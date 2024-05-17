@@ -13,4 +13,5 @@ public interface LedgerCustomRepository {
     List<Ledger> findPersonalMonthlyLedger(Long userId, LocalDate startDate, LocalDate endDate);
     List<Ledger> findCoupleMonthlyLedger(Long coupleId, LocalDate startDate, LocalDate endDate);
     Optional<Ledger> findLedgerWithUserCouple(Long coupleId, Long ledgerId);
+    List<Ledger> findPersonalSavings(Long currentUserId);
 }

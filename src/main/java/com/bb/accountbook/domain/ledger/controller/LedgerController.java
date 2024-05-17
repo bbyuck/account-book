@@ -58,4 +58,9 @@ public class LedgerController {
         List<Ledger> monthlyLedgers = ledgerService.findPersonalMonthlyLedger(securityContextProvider.getCurrentUserId(), yearMonth);
         return new ApiResponse<>(ledgerService.getMonthlyLedgerResponseDto(monthlyLedgers, yearMonth));
     }
+
+    @GetMapping("/api/v1/personal/asset")
+    public ApiResponse<AssetDto> findPersonalAsset() {
+        ledgerService.findPersonalAsset(securityContextProvider.getCurrentUserId());
+    }
 }

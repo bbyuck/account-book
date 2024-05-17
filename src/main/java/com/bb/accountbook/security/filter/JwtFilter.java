@@ -36,8 +36,7 @@ public class JwtFilter extends GenericFilterBean {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             log.debug("Security Context에 '{}' 인증 정보를 저장했습니다. URI : {}", authentication.getName(), requestURI);
         } catch (GlobalException e) {
-            log.debug("{} : {}", e.getMessage(), requestURI);
-            request.setAttribute(TokenProvider.AUTH_EXCEPTION, e);
+            log.error("{} : {}", e.getErrorCode().getValue(), requestURI);
         }
 
         chain.doFilter(request, response);
