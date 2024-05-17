@@ -35,6 +35,16 @@ public class LedgerService {
 
     private final CoupleService coupleService;
 
+    /**
+     * 가계부 상세 항목입력
+     *
+     * @param apiCallerId
+     * @param ledgerCode
+     * @param ledgerDate
+     * @param ledgerAmount
+     * @param ledgerDescription
+     * @return
+     */
     public Long insertLedger(Long apiCallerId, LedgerCode ledgerCode, LocalDate ledgerDate, Long ledgerAmount, String ledgerDescription) {
         Ledger savedLedger = ledgerRepository.save(
                 new Ledger(userService.findUserById(apiCallerId), ledgerCode, ledgerDate, ledgerAmount, ledgerDescription)
@@ -42,6 +52,11 @@ public class LedgerService {
         return savedLedger.getId();
     }
 
+    /**
+     * 가계부 상세 항목 ID로 가계부 상세 항목 조회
+     * @param ledgerId
+     * @return
+     */
     @Transactional(readOnly = true)
     public Ledger findLedgerById(Long ledgerId) {
         return ledgerRepository.findById(ledgerId)
@@ -51,6 +66,15 @@ public class LedgerService {
                 });
     }
 
+    /**
+     * 가계부 상세 항목 수정
+     * @param ledgerId
+     * @param ledgerCode
+     * @param ledgerDate
+     * @param ledgerAmount
+     * @param ledgerDescription
+     * @return
+     */
     public Long updateLedger(Long ledgerId, LedgerCode ledgerCode, LocalDate ledgerDate, Long ledgerAmount, String ledgerDescription) {
         Ledger targetLedger = findLedgerById(ledgerId);
         targetLedger.update(ledgerCode, ledgerDate, ledgerAmount, ledgerDescription);
@@ -59,6 +83,7 @@ public class LedgerService {
     }
 
     /**
+     * 커플 월별 가계부 상세 항목 목록 조회
      * yearMonth -> yyyyMM
      *
      * @param userId
@@ -79,6 +104,7 @@ public class LedgerService {
     }
 
     /**
+     * 개인 월별 가계부 상세 항목 목록 조회
      * yearMonth -> yyyyMM
      *
      * @param userId
@@ -92,12 +118,23 @@ public class LedgerService {
     }
 
 
+    /**
+     * 개인 가계부 상세 항목 조회
+     * @param ledgerId
+     * @return
+     */
     @Transactional(readOnly = true)
     public LedgerPersonalDetailDto findPersonalLedger(Long ledgerId) {
         Ledger ledger = findLedgerById(ledgerId);
         return new LedgerPersonalDetailDto(ledger.getId(), ledger.getCode(), ledger.getDate(), ledger.getAmount(), ledger.getDescription());
     }
 
+    /**
+     * 커플 가계부 상세 항목 조회
+     * @param coupleId
+     * @param ledgerId
+     * @return
+     */
     @Transactional(readOnly = true)
     public LedgerCoupleDetailDto findCoupleLedger(Long coupleId, Long ledgerId) {
         Ledger ledger = ledgerRepository.findLedgerWithUserCouple(coupleId, ledgerId).orElseThrow(() -> {
