@@ -6,9 +6,7 @@ import com.bb.accountbook.common.model.codes.LedgerCode;
 import com.bb.accountbook.common.model.status.CoupleStatus;
 import com.bb.accountbook.common.util.DateTimeUtil;
 import com.bb.accountbook.domain.couple.service.CoupleService;
-import com.bb.accountbook.domain.ledger.dto.LedgerCoupleDetailDto;
-import com.bb.accountbook.domain.ledger.dto.LedgerDetailDto;
-import com.bb.accountbook.domain.ledger.dto.LedgerPersonalDetailDto;
+import com.bb.accountbook.domain.ledger.dto.*;
 import com.bb.accountbook.domain.ledger.repository.LedgerRepository;
 import com.bb.accountbook.domain.user.service.UserService;
 import com.bb.accountbook.entity.Couple;
@@ -20,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 import static com.bb.accountbook.common.model.codes.ErrorCode.ERR_LED_000;
 
@@ -144,5 +144,39 @@ public class LedgerService {
         });
 
         return new LedgerCoupleDetailDto(ledger.getId(), ledger.getCode(), ledger.getDate(), ledger.getAmount(), ledger.getDescription(), ledger.getOwner().getUserCouple().getNickname());
+    }
+
+    public MonthlyLedgerResponseDto getMonthlyLedgerResponseDto(List<Ledger> monthlyLedgers, String yearMonth) {
+        MonthlyLedgerResponseDto dataDto = new MonthlyLedgerResponseDto();
+        AtomicReference<Long> totalAmount = new AtomicReference<>(0L);
+
+        List<MonthlyLedgerDto> monthlyLedgerDtos = monthlyLedgers.stream()
+                .map(ledger -> {
+                    switch (ledger.getCode()) {
+                        case I:
+                            totalAmount.updateAndGet(v -> v + ledger.getAmount());
+                            break;
+                        case E:
+                        case S:
+                            totalAmount.updateAndGet(v -> v - ledger.getAmount());
+                            break;
+                        default:
+                            break;
+                    }
+
+                    return new CoupleMonthlyLedgerDto(
+                            ledger.getCode().getValue(),
+                            ledger.getDate(),
+                            ledger.getAmount(),
+                            ledger.getDescription(),
+                            ledger.getOwner().getUserCouple().getNickname());
+                })
+                .collect(Collectors.toList());
+
+        dataDto.setLedgers(monthlyLedgerDtos);
+        dataDto.setTotalAmount(totalAmount.get());
+        dataDto.setYearMonth(yearMonth);
+
+        return dataDto;
     }
 }

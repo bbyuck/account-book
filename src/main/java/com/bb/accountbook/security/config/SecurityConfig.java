@@ -27,7 +27,8 @@ public class SecurityConfig {
     private final String[] WHITE_LIST = {
             "/api/v1/authenticate", // 회원가입
             "/api/v1/signup",       // 로그인
-            "/favicon.ico"          // 파비콘
+            "/favicon.ico",         // 파비콘
+            "/error"                // 에러
     };
 
     // PasswordEncoder는 BCryptPasswordEncoder를 사용

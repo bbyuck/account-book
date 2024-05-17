@@ -15,16 +15,10 @@ public class JwtSecurityConfig implements SecurityConfigurer<DefaultSecurityFilt
 
     @Override
     public void init(HttpSecurity http) throws Exception {
-        System.out.println("JwtSecurityConfig.init() ========================");
     }
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        System.out.println("JwtSecurityConfig.configure() ========================");
-
-        http.addFilterBefore(
-                new JwtFilter(tokenProvider),
-                UsernamePasswordAuthenticationFilter.class
-        );
+        http.addFilterBefore(new JwtFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
     }
 }

@@ -1,6 +1,8 @@
 package com.bb.accountbook.common.model;
 
 import com.bb.accountbook.common.util.DateTimeUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -12,6 +14,7 @@ public class ApiResponse<T> {
     private T data;
     private String message;
     private String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateTimeUtil.FORMAT));
+    private static ObjectMapper objectMapper = new ObjectMapper();
 
     public ApiResponse(T data) {
         this.data = data;
@@ -25,6 +28,10 @@ public class ApiResponse<T> {
 
     public ApiResponse(String message) {
         this.message = message;
+    }
+
+    public String serialize() throws JsonProcessingException {
+        return objectMapper.writeValueAsString(this);
     }
 
 }

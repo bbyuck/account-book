@@ -1,8 +1,10 @@
 package com.bb.accountbook.domain.ledger.controller;
 
 import com.bb.accountbook.common.model.ApiResponse;
+import com.bb.accountbook.common.validation.YearMonth;
 import com.bb.accountbook.domain.ledger.dto.*;
 import com.bb.accountbook.domain.ledger.service.LedgerService;
+import com.bb.accountbook.entity.Ledger;
 import com.bb.accountbook.security.SecurityContextProvider;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +35,7 @@ public class LedgerController {
         Long updatedLedgerId = ledgerService.updateLedger(ledgerId, requestDto.getLedgerCode(), requestDto.getLedgerDate(), requestDto.getLedgerAmount(), requestDto.getLedgerDescription());
         return new ApiResponse<>(new LedgerUpdateResponseDto(updatedLedgerId));
     }
+
     @GetMapping("/api/v1/personal/ledger/{ledgerId}")
     public ApiResponse<LedgerDetailDto> findPersonalLedger(@PathVariable("ledgerId") Long ledgerId) {
         return new ApiResponse<>(ledgerService.findPersonalLedger(ledgerId));
@@ -45,30 +48,14 @@ public class LedgerController {
 
 
     @GetMapping("/api/v1/couple/monthly/ledger")
-    public ApiResponse<MonthlyLedgerResponseDto> findCoupleMonthlyLedger(@RequestParam("ym") String yearMonth) {
-        List<MonthlyLedgerDto> monthlyLedgers = ledgerService.findCoupleMonthlyLedger(securityContextProvider.getCurrentUserId(), yearMonth).stream()
-                .map(ledger -> new CoupleMonthlyLedgerDto(
-                        ledger.getCode().getValue(),
-                        ledger.getDate(),
-                        ledger.getAmount(),
-                        ledger.getDescription(),
-                        ledger.getOwner().getUserCouple().getNickname()))
-                .collect(Collectors.toList());
-
-        return new ApiResponse<>(new MonthlyLedgerResponseDto(yearMonth, monthlyLedgers));
+    public ApiResponse<MonthlyLedgerResponseDto> findCoupleMonthlyLedger(@RequestParam("ym") @Valid @YearMonth String yearMonth) {
+        List<Ledger> monthlyLedgers = ledgerService.findCoupleMonthlyLedger(securityContextProvider.getCurrentUserId(), yearMonth);
+        return new ApiResponse<>(ledgerService.getMonthlyLedgerResponseDto(monthlyLedgers, yearMonth));
     }
 
     @GetMapping("/api/v1/personal/monthly/ledger")
-    public ApiResponse<MonthlyLedgerResponseDto> findPersonalMonthlyLedger(@RequestParam("ym") String yearMonth) {
-        List<MonthlyLedgerDto> monthlyLedgers = ledgerService.findPersonalMonthlyLedger(securityContextProvider.getCurrentUserId(), yearMonth)
-                .stream()
-                .map(ledger -> new PersonalMonthlyLedgerDto(
-                        ledger.getCode().getValue(),
-                        ledger.getDate(),
-                        ledger.getAmount(),
-                        ledger.getDescription()))
-                .collect(Collectors.toList());
-
-        return new ApiResponse<>(new MonthlyLedgerResponseDto(yearMonth, monthlyLedgers));
+    public ApiResponse<MonthlyLedgerResponseDto> findPersonalMonthlyLedger(@RequestParam("ym") @Valid @YearMonth String yearMonth) {
+        List<Ledger> monthlyLedgers = ledgerService.findPersonalMonthlyLedger(securityContextProvider.getCurrentUserId(), yearMonth);
+        return new ApiResponse<>(ledgerService.getMonthlyLedgerResponseDto(monthlyLedgers, yearMonth));
     }
 }
