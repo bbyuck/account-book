@@ -54,6 +54,7 @@ public class LedgerService {
 
     /**
      * 가계부 상세 항목 ID로 가계부 상세 항목 조회
+     *
      * @param ledgerId
      * @return
      */
@@ -68,6 +69,7 @@ public class LedgerService {
 
     /**
      * 가계부 상세 항목 수정
+     *
      * @param ledgerId
      * @param ledgerCode
      * @param ledgerDate
@@ -120,6 +122,7 @@ public class LedgerService {
 
     /**
      * 개인 가계부 상세 항목 조회
+     *
      * @param ledgerId
      * @return
      */
@@ -131,6 +134,7 @@ public class LedgerService {
 
     /**
      * 커플 가계부 상세 항목 조회
+     *
      * @param coupleId
      * @param ledgerId
      * @return
@@ -139,7 +143,7 @@ public class LedgerService {
     public LedgerCoupleDetailDto findCoupleLedger(Long coupleId, Long ledgerId) {
         Ledger ledger = ledgerRepository.findLedgerWithUserCouple(coupleId, ledgerId).orElseThrow(() -> {
             log.error(ERR_LED_000.getValue());
-            log.error("{}, {}",coupleId, ledgerId);
+            log.error("{}, {}", coupleId, ledgerId);
             return new GlobalException(ERR_LED_000);
         });
 
@@ -153,29 +157,26 @@ public class LedgerService {
         List<MonthlyLedgerDto> monthlyLedgerDtos = monthlyLedgers.stream()
                 .map(ledger -> {
                     switch (ledger.getCode()) {
-                        case I:
-                            totalAmount.updateAndGet(v -> v + ledger.getAmount());
-                            break;
-                        case E:
-                        case S:
-                            totalAmount.updateAndGet(v -> v - ledger.getAmount());
-                            break;
-                        default:
-                            break;
+                        case I -> totalAmount.updateAndGet(v -> v + ledger.getAmount());
+                        case E, S -> totalAmount.updateAndGet(v -> v - ledger.getAmount());
+                        default -> {
+                        }
                     }
 
-                    return new CoupleMonthlyLedgerDto(
-                            ledger.getCode().getValue(),
+                    return new MonthlyLedgerDto(
+                            ledger.getOwner().getUserCouple().getNickname(),
+                            ledger.getCode(),
                             ledger.getDate(),
                             ledger.getAmount(),
-                            ledger.getDescription(),
-                            ledger.getOwner().getUserCouple().getNickname());
+                            ledger.getDescription()
+                            );
                 })
                 .collect(Collectors.toList());
 
         dataDto.setLedgers(monthlyLedgerDtos);
         dataDto.setTotalAmount(totalAmount.get());
-        dataDto.setYearMonth(yearMonth);
+        dataDto.setYear(Integer.parseInt(yearMonth.substring(0, 4)));
+        dataDto.setMonth(Integer.parseInt(yearMonth.substring(5, 6)));
 
         return dataDto;
     }

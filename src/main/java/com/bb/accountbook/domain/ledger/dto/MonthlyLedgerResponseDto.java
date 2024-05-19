@@ -7,11 +7,10 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class MonthlyLedgerResponseDto {
-    private String yearMonth;
+    private int year;
+    private int month;
     private Long totalAmount = 0L;
     private List<MonthlyLedgerDto> ledgers;
-
 }
