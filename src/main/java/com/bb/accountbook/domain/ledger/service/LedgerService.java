@@ -17,8 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -158,30 +158,47 @@ public class LedgerService {
         dataDto.setYearMonth(yearMonth);
         AtomicReference<Long> totalAmount = new AtomicReference<>(0L);
 
-        dataDto.setLedgers(
-                monthlyLedgers.stream()
-                        .map(ledger -> {
-                            switch (ledger.getCode()) {
-                                case I -> totalAmount.updateAndGet(v -> v + ledger.getAmount());
-                                case E, S -> totalAmount.updateAndGet(v -> v - ledger.getAmount());
-                                default -> {
-                                }
-                            }
+        Map<Integer, DailyLedgerDto> ledgersPerDay = monthlyLedgers.stream()
+                .map(ledger -> {
+                    switch (ledger.getCode()) {
+                        case I -> totalAmount.updateAndGet(v -> v + ledger.getAmount());
+                        case E, S -> totalAmount.updateAndGet(v -> v - ledger.getAmount());
+                        default -> {
+                        }
+                    }
 
-                            return new MonthlyLedgerDto(
-                                    ledger.getOwner().getUserCouple().getNickname(),
-                                    ledger.getCode(),
-                                    ledger.getDate(),
-                                    ledger.getAmount(),
-                                    ledger.getDescription()
-                            );
-                        })
-                        .collect(groupingBy(MonthlyLedgerDto::getDay))
-        );
+                    return new LedgerDto(
+                            ledger.getOwner().getUserCouple().getNickname(),
+                            ledger.getCode(),
+                            ledger.getDate(),
+                            ledger.getAmount(),
+                            ledger.getDescription()
+                    );
+                })
+                .collect(groupingBy(LedgerDto::getDay))
+                .entrySet()
+                .stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        e -> {
+                            DailyLedgerDto dailyLedgerDto = new DailyLedgerDto();
+                            dailyLedgerDto.setLedgers(e.getValue());
+                            dailyLedgerDto.getLedgers().forEach(ledgerDto -> {
+                                if (ledgerDto.getLedgerCode() == LedgerCode.I) {
+                                    dailyLedgerDto.addDailyIncome(ledgerDto.getAmount());
+                                }
+                                else if (ledgerDto.getLedgerCode() == LedgerCode.E || ledgerDto.getLedgerCode() == LedgerCode.S) {
+                                    dailyLedgerDto.addDailyExpenditure(ledgerDto.getAmount());
+                                }
+                            });
+
+                            return dailyLedgerDto;
+                        }
+                ));
 
 
         dataDto.setTotalAmount(totalAmount.get());
-
+        dataDto.setLedgersPerDay(ledgersPerDay);
 
         return dataDto;
     }

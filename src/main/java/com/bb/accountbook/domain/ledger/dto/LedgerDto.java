@@ -6,7 +6,7 @@ import lombok.Data;
 import java.time.LocalDate;
 
 @Data
-public class MonthlyLedgerDto {
+public class LedgerDto {
     private String ownerNickname;
     private LedgerCode ledgerCode;
     private String ledgerCodeValue;
@@ -14,7 +14,7 @@ public class MonthlyLedgerDto {
     private Long amount;
     private String description;
 
-    public MonthlyLedgerDto(String nickname, LedgerCode code, LocalDate date, Long amount, String description) {
+    public LedgerDto(String nickname, LedgerCode code, LocalDate date, Long amount, String description) {
         this.ownerNickname = nickname;
         this.ledgerCode = code;
         this.ledgerCodeValue = code.getValue();
