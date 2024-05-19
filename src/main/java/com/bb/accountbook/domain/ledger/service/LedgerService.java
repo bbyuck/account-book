@@ -17,11 +17,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import static com.bb.accountbook.common.model.codes.ErrorCode.ERR_LED_000;
+import static java.util.stream.Collectors.groupingBy;
 
 @Slf4j
 @Service
@@ -152,31 +154,34 @@ public class LedgerService {
 
     public MonthlyLedgerResponseDto getMonthlyLedgerResponseDto(List<Ledger> monthlyLedgers, String yearMonth) {
         MonthlyLedgerResponseDto dataDto = new MonthlyLedgerResponseDto();
+
+        dataDto.setYearMonth(yearMonth);
         AtomicReference<Long> totalAmount = new AtomicReference<>(0L);
 
-        List<MonthlyLedgerDto> monthlyLedgerDtos = monthlyLedgers.stream()
-                .map(ledger -> {
-                    switch (ledger.getCode()) {
-                        case I -> totalAmount.updateAndGet(v -> v + ledger.getAmount());
-                        case E, S -> totalAmount.updateAndGet(v -> v - ledger.getAmount());
-                        default -> {
-                        }
-                    }
+        dataDto.setLedgers(
+                monthlyLedgers.stream()
+                        .map(ledger -> {
+                            switch (ledger.getCode()) {
+                                case I -> totalAmount.updateAndGet(v -> v + ledger.getAmount());
+                                case E, S -> totalAmount.updateAndGet(v -> v - ledger.getAmount());
+                                default -> {
+                                }
+                            }
 
-                    return new MonthlyLedgerDto(
-                            ledger.getOwner().getUserCouple().getNickname(),
-                            ledger.getCode(),
-                            ledger.getDate(),
-                            ledger.getAmount(),
-                            ledger.getDescription()
+                            return new MonthlyLedgerDto(
+                                    ledger.getOwner().getUserCouple().getNickname(),
+                                    ledger.getCode(),
+                                    ledger.getDate(),
+                                    ledger.getAmount(),
+                                    ledger.getDescription()
                             );
-                })
-                .collect(Collectors.toList());
+                        })
+                        .collect(groupingBy(MonthlyLedgerDto::getDay))
+        );
 
-        dataDto.setLedgers(monthlyLedgerDtos);
+
         dataDto.setTotalAmount(totalAmount.get());
-        dataDto.setYear(Integer.parseInt(yearMonth.substring(0, 4)));
-        dataDto.setMonth(Integer.parseInt(yearMonth.substring(5, 6)));
+
 
         return dataDto;
     }
