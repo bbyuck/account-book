@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class UserJoinResponseDto {
+public class UserSignUpResponseDto {
 
     private Long userId;
 }

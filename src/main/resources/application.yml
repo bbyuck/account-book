@@ -28,6 +28,11 @@ jwt:
   token-expiration-time: 300
   iss: hay-account-book
 
+email:
+  official:
+    email: k941026h@naver.com
+    password: 12341234
+
 logging:
   level:
     org.springframework: debug

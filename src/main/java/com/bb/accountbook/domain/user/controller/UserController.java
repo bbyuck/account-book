@@ -3,8 +3,8 @@ package com.bb.accountbook.domain.user.controller;
 import com.bb.accountbook.common.model.ApiResponse;
 import com.bb.accountbook.domain.user.dto.LoginDto;
 import com.bb.accountbook.domain.user.dto.TokenDto;
-import com.bb.accountbook.domain.user.dto.UserJoinRequestDto;
-import com.bb.accountbook.domain.user.dto.UserJoinResponseDto;
+import com.bb.accountbook.domain.user.dto.UserSignUpRequestDto;
+import com.bb.accountbook.domain.user.dto.UserSignUpResponseDto;
 import com.bb.accountbook.domain.user.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -22,9 +22,9 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/api/v1/signup")
-    public ApiResponse<UserJoinResponseDto> signup(@RequestBody @Valid UserJoinRequestDto userJoinRequestDto) {
-        Long joinedUserId = userService.signup(userJoinRequestDto.getEmail(), userJoinRequestDto.getPassword(), userJoinRequestDto.getGender());
-        return new ApiResponse<>(new UserJoinResponseDto(joinedUserId));
+    public ApiResponse<UserSignUpResponseDto> signup(@RequestBody @Valid UserSignUpRequestDto userSignUpRequestDto) {
+        Long joinedUserId = userService.signup(userSignUpRequestDto.getEmail(), userSignUpRequestDto.getPassword(), userSignUpRequestDto.getGender());
+        return new ApiResponse<>(new UserSignUpResponseDto(joinedUserId));
     }
 
     @PostMapping("/api/v1/authenticate")
