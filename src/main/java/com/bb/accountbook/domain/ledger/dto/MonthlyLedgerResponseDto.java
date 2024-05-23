@@ -10,7 +10,9 @@ import java.util.Map;
 public class MonthlyLedgerResponseDto {
     private int year;
     private int month;
-    private Long totalAmount = 0L;
+    private Long totalIncome = 0L;
+    private Long totalExpenditure = 0L;
+    private Long totalSave = 0L;
     private Map<Integer, DailyLedgerDto> ledgersPerDay;
 
     public void setYearMonth(String yearMonth) {

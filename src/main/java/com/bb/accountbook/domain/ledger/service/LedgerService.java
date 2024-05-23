@@ -156,18 +156,23 @@ public class LedgerService {
         MonthlyLedgerResponseDto dataDto = new MonthlyLedgerResponseDto();
 
         dataDto.setYearMonth(yearMonth);
-        AtomicReference<Long> totalAmount = new AtomicReference<>(0L);
+        AtomicReference<Long> totalIncome = new AtomicReference<>(0L);
+        AtomicReference<Long> totalExpenditure = new AtomicReference<>(0L);
+        AtomicReference<Long> totalSave = new AtomicReference<>(0L);
+
 
         Map<Integer, DailyLedgerDto> ledgersPerDay = monthlyLedgers.stream()
                 .map(ledger -> {
                     switch (ledger.getCode()) {
-                        case I -> totalAmount.updateAndGet(v -> v + ledger.getAmount());
-                        case E, S -> totalAmount.updateAndGet(v -> v - ledger.getAmount());
+                        case I -> totalIncome.updateAndGet(v -> v + ledger.getAmount());
+                        case E -> totalExpenditure.updateAndGet(v -> v + ledger.getAmount());
+                        case S -> totalSave.updateAndGet(v -> v + ledger.getAmount());
                         default -> {
                         }
                     }
 
                     return new LedgerDto(
+                            ledger.getId(),
                             ledger.getOwner().getUserCouple().getNickname(),
                             ledger.getCode(),
                             ledger.getDate(),
@@ -197,7 +202,9 @@ public class LedgerService {
                 ));
 
 
-        dataDto.setTotalAmount(totalAmount.get());
+        dataDto.setTotalIncome(totalIncome.get());
+        dataDto.setTotalExpenditure(totalExpenditure.get());
+        dataDto.setTotalSave(totalSave.get());
         dataDto.setLedgersPerDay(ledgersPerDay);
 
         return dataDto;

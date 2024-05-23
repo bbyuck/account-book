@@ -7,6 +7,7 @@ import java.time.LocalDate;
 
 @Data
 public class LedgerDto {
+    private Long ledgerId;
     private String ownerNickname;
     private LedgerCode ledgerCode;
     private String ledgerCodeValue;
@@ -14,7 +15,8 @@ public class LedgerDto {
     private Long amount;
     private String description;
 
-    public LedgerDto(String nickname, LedgerCode code, LocalDate date, Long amount, String description) {
+    public LedgerDto(Long ledgerId, String nickname, LedgerCode code, LocalDate date, Long amount, String description) {
+        this.ledgerId = ledgerId;
         this.ownerNickname = nickname;
         this.ledgerCode = code;
         this.ledgerCodeValue = code.getValue();
