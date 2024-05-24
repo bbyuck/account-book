@@ -1,7 +1,7 @@
 package com.bb.accountbook.domain.ledger.dto;
 
 import com.bb.accountbook.common.model.codes.LedgerCode;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,13 +13,13 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class LedgerInsertRequestDto {
 
-    @NotBlank
+    @NotNull
     private LocalDate ledgerDate;
 
-    @NotBlank
+    @NotNull
     private LedgerCode ledgerCode;
 
-    @NotBlank
+    @NotNull
     private Long ledgerAmount = 0L;
 
     private String ledgerDescription;
