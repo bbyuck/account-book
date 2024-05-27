@@ -48,6 +48,11 @@ public class LedgerService {
      * @return
      */
     public Long insertLedger(Long apiCallerId, LedgerCode ledgerCode, LocalDate ledgerDate, Long ledgerAmount, String ledgerDescription) {
+        if (ledgerAmount <= 0) {
+            log.error(ErrorCode.ERR_LED_001.getValue());
+            throw new GlobalException(ErrorCode.ERR_LED_001);
+        }
+
         Ledger savedLedger = ledgerRepository.save(
                 new Ledger(userService.findUserById(apiCallerId), ledgerCode, ledgerDate, ledgerAmount, ledgerDescription)
         );

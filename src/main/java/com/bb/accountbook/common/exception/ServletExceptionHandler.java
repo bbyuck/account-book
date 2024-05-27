@@ -23,7 +23,7 @@ public class ServletExceptionHandler {
 
     @ExceptionHandler(GlobalException.class)
     public ApiResponse handleGlobalException(GlobalException e, HttpServletResponse response) {
-        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        response.setStatus(e.getErrorCode().getHttpStatus());
         return new ApiResponse(e.getErrorCode().getValue());
     }
 
