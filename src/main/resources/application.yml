@@ -28,6 +28,7 @@ cors:
     origins:
       - http://localhost:3000
       - http://booroute.com
+      - https://booroute.com
     headers:
       - Origin
       - X-Requested-with
