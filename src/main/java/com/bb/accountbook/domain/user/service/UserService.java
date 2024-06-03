@@ -4,7 +4,6 @@ import com.bb.accountbook.common.exception.GlobalException;
 import com.bb.accountbook.common.model.codes.GenderCode;
 import com.bb.accountbook.common.model.codes.RoleCode;
 import com.bb.accountbook.common.model.status.UserStatus;
-import com.bb.accountbook.domain.user.dto.AdditionalPayloadDto;
 import com.bb.accountbook.domain.user.dto.TokenDto;
 import com.bb.accountbook.domain.user.repository.RoleRepository;
 import com.bb.accountbook.domain.user.repository.UserRepository;
@@ -94,7 +93,6 @@ public class UserService {
 
         User user = findUserByEmail(email);
 
-        authenticationToken.setDetails(new AdditionalPayloadDto(user.getId()));
         // authenticate 메소드가 실행이 될 때 CustomUserDetailsService class의 loadUserByUsername 메소드가 실행
         Authentication authentication = null;
         try {
@@ -105,13 +103,32 @@ public class UserService {
             throw new GlobalException(ERR_AUTH_001);
         }
 
-        // 해당 객체를 SecurityContextHolder에 저장
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
         // authentication 객체를 createToken 메소드를 통해서 JWT Token을 생성
         TokenDto token = tokenProvider.createToken(authentication);
-
         user.updateRefreshToken(token.getRefreshToken());
+
+        return token;
+    }
+
+    public TokenDto reissueToken(String refreshToken) {
+        tokenProvider.validate(refreshToken);
+
+        Authentication authentication = tokenProvider.getAuthentication(refreshToken);
+
+        org.springframework.security.core.userdetails.User principal = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
+        User apiCaller = userRepository.findByEmail(principal.getUsername()).orElseThrow(() -> {
+            log.error(ERR_USR_000.getValue());
+            // 유저를 찾을 수 없음
+            return new GlobalException(ERR_USR_000);
+        });
+
+        if (!apiCaller.getRefreshToken().equals(refreshToken)) {
+            // 인증에 실패
+            throw new GlobalException(ERR_AUTH_003);
+        }
+
+        TokenDto token = tokenProvider.createToken(authentication);
+        apiCaller.updateRefreshToken(token.getRefreshToken());
 
         return token;
     }

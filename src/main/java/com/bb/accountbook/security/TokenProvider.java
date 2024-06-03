@@ -1,20 +1,22 @@
 package com.bb.accountbook.security;
 
 import com.bb.accountbook.common.exception.GlobalException;
-import com.bb.accountbook.domain.user.dto.AdditionalPayloadDto;
 import com.bb.accountbook.domain.user.dto.TokenDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SecurityException;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.security.Key;
 import java.util.Arrays;
@@ -26,6 +28,8 @@ import static com.bb.accountbook.common.model.codes.ErrorCode.*;
 
 @Component
 public class TokenProvider implements InitializingBean {
+    private static final String REFRESH_TOKEN_HEADER = "Refresh-Token";
+    private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String AUTHORITIES_KEY = "auth";
     private final String secret;
     private final long accessTokenExpirationTime;
@@ -61,12 +65,9 @@ public class TokenProvider implements InitializingBean {
         Date accessTokenExpiration = new Date(now + this.accessTokenExpirationTime);
         Date refreshTokenExpiration = new Date(now + this.refreshTokenExpirationTime);
 
-        AdditionalPayloadDto additionalPayloadDto = (AdditionalPayloadDto) authentication.getDetails();
-
         String accessToken = Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim(AUTHORITIES_KEY, authorities)
-                .claim(Claims.SUBJECT, additionalPayloadDto.getUid())
                 .claim(Claims.ISSUER, iss)
                 .signWith(key, SignatureAlgorithm.HS512)
                 .setExpiration(accessTokenExpiration)
@@ -75,11 +76,13 @@ public class TokenProvider implements InitializingBean {
         String refreshToken = Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim(AUTHORITIES_KEY, authorities)
-                .claim(Claims.SUBJECT, additionalPayloadDto.getUid())
                 .claim(Claims.ISSUER, iss)
                 .signWith(key, SignatureAlgorithm.HS512)
                 .setExpiration(refreshTokenExpiration)
                 .compact();
+
+        // 해당 객체를 SecurityContextHolder에 저장
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
         return new TokenDto(accessToken, refreshToken);
     }
@@ -119,5 +122,26 @@ public class TokenProvider implements InitializingBean {
         catch(IllegalArgumentException e) {
             throw new GlobalException(ERR_AUTH_007);
         }
+    }
+
+    // Request Header 에서 토큰 정보를 꺼내오기 위한 메소드
+    public String resolveAccessToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
+
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        }
+
+        return null;
+    }
+
+    public String resolveRefreshToken(HttpServletRequest request) {
+        String refreshToken = request.getHeader(REFRESH_TOKEN_HEADER);
+
+        if (StringUtils.hasText(refreshToken)) {
+            return refreshToken;
+        }
+
+        return null;
     }
 }

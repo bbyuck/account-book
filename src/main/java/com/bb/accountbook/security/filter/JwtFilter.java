@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
@@ -21,14 +20,13 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtFilter extends GenericFilterBean {
 
-    private static final String AUTHORIZATION_HEADER = "Authorization";
     private final TokenProvider tokenProvider;
     private final CustomSecurityProperties customSecurityProperties;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-        String jwt = resolveToken(httpServletRequest);
+        String jwt = tokenProvider.resolveAccessToken(httpServletRequest);
         String requestURI = httpServletRequest.getRequestURI();
 
         if (!customSecurityProperties.getWhiteList().contains(requestURI)
@@ -45,17 +43,6 @@ public class JwtFilter extends GenericFilterBean {
         }
 
         chain.doFilter(request, response);
-    }
-
-    // Request Header 에서 토큰 정보를 꺼내오기 위한 메소드
-    private String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
-
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
-        }
-
-        return null;
     }
 
 }
