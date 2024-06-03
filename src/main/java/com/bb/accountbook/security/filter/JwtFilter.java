@@ -2,6 +2,7 @@ package com.bb.accountbook.security.filter;
 
 import com.bb.accountbook.common.exception.GlobalException;
 import com.bb.accountbook.security.TokenProvider;
+import com.bb.accountbook.security.config.CustomSecurityProperties;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
@@ -22,6 +23,7 @@ public class JwtFilter extends GenericFilterBean {
 
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private final TokenProvider tokenProvider;
+    private final CustomSecurityProperties customSecurityProperties;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -29,14 +31,17 @@ public class JwtFilter extends GenericFilterBean {
         String jwt = resolveToken(httpServletRequest);
         String requestURI = httpServletRequest.getRequestURI();
 
-        try {
-            tokenProvider.validate(jwt);
+        if (!customSecurityProperties.getWhiteList().contains(requestURI)
+                && !requestURI.startsWith("/h2-console")) {
+            try {
+                tokenProvider.validate(jwt);
 
-            Authentication authentication = tokenProvider.getAuthentication(jwt);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            log.debug("Security Context에 '{}' 인증 정보를 저장했습니다. URI : {}", authentication.getName(), requestURI);
-        } catch (GlobalException e) {
-            log.error("{} : {}", e.getErrorCode().getValue(), requestURI);
+                Authentication authentication = tokenProvider.getAuthentication(jwt);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+                log.debug("Security Context에 '{}' 인증 정보를 저장했습니다. URI : {}", authentication.getName(), requestURI);
+            } catch (GlobalException e) {
+                log.error("{} : {}", e.getErrorCode().getValue(), requestURI);
+            }
         }
 
         chain.doFilter(request, response);
@@ -52,4 +57,5 @@ public class JwtFilter extends GenericFilterBean {
 
         return null;
     }
+
 }

@@ -2,6 +2,7 @@ package com.bb.accountbook.security;
 
 import com.bb.accountbook.common.exception.GlobalException;
 import com.bb.accountbook.domain.user.dto.AdditionalPayloadDto;
+import com.bb.accountbook.domain.user.dto.TokenDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -27,17 +28,20 @@ import static com.bb.accountbook.common.model.codes.ErrorCode.*;
 public class TokenProvider implements InitializingBean {
     private static final String AUTHORITIES_KEY = "auth";
     private final String secret;
-    private final long tokenExpirationTime;
+    private final long accessTokenExpirationTime;
+    private final long refreshTokenExpirationTime;
     private Key key;
     private final String iss;
 
 
     public TokenProvider(
             @Value("${jwt.secret}") String secret,
-            @Value("${jwt.token-expiration-time}") long tokenExpirationTimeInSecond,
+            @Value("${jwt.access-token-expiration-time}") long accessTokenExpirationTimeInSecond,
+            @Value("${jwt.refresh-token-expiration-time}") long refreshTokenExpirationTimeInSecond,
             @Value("${jwt.iss}") String iss) {
         this.secret = secret;
-        this.tokenExpirationTime = tokenExpirationTimeInSecond * 1000;
+        this.accessTokenExpirationTime = accessTokenExpirationTimeInSecond * 1000;
+        this.refreshTokenExpirationTime = refreshTokenExpirationTimeInSecond * 1000;
         this.iss = iss;
     }
 
@@ -48,24 +52,36 @@ public class TokenProvider implements InitializingBean {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String createToken(Authentication authentication) {
+    public TokenDto createToken(Authentication authentication) {
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
         long now = new Date().getTime();
-        Date validity = new Date(now + this.tokenExpirationTime);
+        Date accessTokenExpiration = new Date(now + this.accessTokenExpirationTime);
+        Date refreshTokenExpiration = new Date(now + this.refreshTokenExpirationTime);
 
         AdditionalPayloadDto additionalPayloadDto = (AdditionalPayloadDto) authentication.getDetails();
 
-        return Jwts.builder()
+        String accessToken = Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim(AUTHORITIES_KEY, authorities)
                 .claim(Claims.SUBJECT, additionalPayloadDto.getUid())
                 .claim(Claims.ISSUER, iss)
                 .signWith(key, SignatureAlgorithm.HS512)
-                .setExpiration(validity)
+                .setExpiration(accessTokenExpiration)
                 .compact();
+
+        String refreshToken = Jwts.builder()
+                .setSubject(authentication.getName())
+                .claim(AUTHORITIES_KEY, authorities)
+                .claim(Claims.SUBJECT, additionalPayloadDto.getUid())
+                .claim(Claims.ISSUER, iss)
+                .signWith(key, SignatureAlgorithm.HS512)
+                .setExpiration(refreshTokenExpiration)
+                .compact();
+
+        return new TokenDto(accessToken, refreshToken);
     }
 
     // 토큰으로 클레임을 만들고 이를 이용해 유저 객체를 만들어서 최종적으로 authentication 객체를 리턴

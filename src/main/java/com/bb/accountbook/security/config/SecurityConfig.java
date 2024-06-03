@@ -24,12 +24,7 @@ public class SecurityConfig {
     private final TokenProvider tokenProvider;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
-    private final String[] WHITE_LIST = {
-            "/api/v1/authenticate", // 회원가입
-            "/api/v1/signup",       // 로그인
-            "/favicon.ico",         // 파비콘
-            "/error"                // 에러
-    };
+    private final CustomSecurityProperties customSecurityProperties;
 
     // PasswordEncoder는 BCryptPasswordEncoder를 사용
     @Bean
@@ -49,10 +44,10 @@ public class SecurityConfig {
                 .sessionManagement(sessionManagementConfigurer -> sessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(registry -> {
                     registry.requestMatchers(PathRequest.toH2Console()).permitAll();
-                    registry.requestMatchers(WHITE_LIST).permitAll();
+                    registry.requestMatchers(customSecurityProperties.getWhiteList().toArray(String[]::new)).permitAll();
                     registry.anyRequest().authenticated(); // 그 외 인증 없이 접근 x
                 })
-                .apply(new JwtSecurityConfig(tokenProvider));
+                .apply(new JwtSecurityConfig(tokenProvider, customSecurityProperties));
 
         return httpSecurity.build();
     }

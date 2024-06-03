@@ -93,8 +93,8 @@ public class UserService {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
 
         User user = findUserByEmail(email);
-        authenticationToken.setDetails(new AdditionalPayloadDto(user.getId()));
 
+        authenticationToken.setDetails(new AdditionalPayloadDto(user.getId()));
         // authenticate 메소드가 실행이 될 때 CustomUserDetailsService class의 loadUserByUsername 메소드가 실행
         Authentication authentication = null;
         try {
@@ -109,8 +109,10 @@ public class UserService {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         // authentication 객체를 createToken 메소드를 통해서 JWT Token을 생성
-        String jwt = tokenProvider.createToken(authentication);
+        TokenDto token = tokenProvider.createToken(authentication);
 
-        return new TokenDto(jwt);
+        user.updateRefreshToken(token.getRefreshToken());
+
+        return token;
     }
 }

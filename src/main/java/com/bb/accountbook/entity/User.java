@@ -34,6 +34,9 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private UserStatus status;
 
+    @Column(name = "refresh_token")
+    private String refreshToken;
+
     @OneToMany(mappedBy = "owner")
     private List<Ledger> ledgers = new ArrayList<>();
 
@@ -58,6 +61,10 @@ public class User extends BaseEntity {
 
     public void changeStatus(UserStatus status) {
         this.status = status;
+    }
+
+    public void updateRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 
 }

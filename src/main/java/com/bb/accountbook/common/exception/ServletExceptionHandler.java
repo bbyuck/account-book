@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import static com.bb.accountbook.common.model.codes.ErrorCode.*;
 
@@ -16,20 +17,26 @@ import static com.bb.accountbook.common.model.codes.ErrorCode.*;
 public class ServletExceptionHandler {
 
     @ExceptionHandler(Exception.class)
-    public ApiResponse handleException(Exception e, HttpServletResponse response) {
+    public ApiResponse<?> handleException(Exception e, HttpServletResponse response) {
         response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
         return new ApiResponse(ERR_SYS_000.getValue());
     }
 
     @ExceptionHandler(GlobalException.class)
-    public ApiResponse handleGlobalException(GlobalException e, HttpServletResponse response) {
+    public ApiResponse<?> handleGlobalException(GlobalException e, HttpServletResponse response) {
         response.setStatus(e.getErrorCode().getHttpStatus());
         return new ApiResponse(e.getErrorCode().getValue());
     }
 
     @ExceptionHandler(NoHandlerFoundException.class)
-    public ApiResponse handleNoHandlerFoundException(NoHandlerFoundException e, HttpServletResponse response) {
+    public ApiResponse<?> handleNoHandlerFoundException(NoHandlerFoundException e, HttpServletResponse response) {
         response.setStatus(HttpStatus.NOT_FOUND.value());
-        return new ApiResponse(ERR_SYS_001.getValue());
+        return new ApiResponse(ERR_SYS_002.getValue());
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ApiResponse<?> handleNoResourceFoundException(NoResourceFoundException e, HttpServletResponse response) {
+        response.setStatus(HttpStatus.NOT_FOUND.value());
+        return new ApiResponse(ERR_SYS_003.getValue());
     }
 }

@@ -16,7 +16,9 @@ public enum ErrorCode {
      */
     ERR_SYS_000("시스템 오류입니다. 관리자에게 문의해주세요.", SC_INTERNAL_SERVER_ERROR),
     ERR_SYS_001("API를 찾을 수 없습니다.", SC_NOT_FOUND),
-    ERR_SYS_002("파라미터의 입력이 올바르지 않습니다.", UNPROCESSABLE_ENTITY),
+    ERR_SYS_002("정적 자원을 찾을 수 없습니다.", SC_NOT_FOUND),
+    ERR_SYS_003("파라미터의 입력이 올바르지 않습니다.", UNPROCESSABLE_ENTITY),
+
 
     /**
      * USER Error
