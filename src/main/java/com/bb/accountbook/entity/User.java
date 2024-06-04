@@ -57,6 +57,7 @@ public class User extends BaseEntity {
         this.email = email;
         this.password = password;
         this.gender = gender;
+        this.status = UserStatus.ACTIVE;
     }
 
     public boolean isActive() {

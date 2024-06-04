@@ -65,8 +65,7 @@ public class UserService {
                 ).toList();
         userRoleRepository.saveAll(newUserRoles);
 
-        // TODO 4. 정상 처리 후 메일 발송ㅍ -> 메세지 큐로 구현
-        joinedUser.changeStatus(UserStatus.ACTIVE);
+        // TODO 4. 정상 처리 후 메일 발송 -> 메세지 큐로 구현
 
         return joinedUser.getId();
     }
