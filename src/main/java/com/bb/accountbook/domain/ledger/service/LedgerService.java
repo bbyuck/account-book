@@ -47,14 +47,14 @@ public class LedgerService {
      * @param ledgerDescription
      * @return
      */
-    public Long insertLedger(Long apiCallerId, LedgerCode ledgerCode, LocalDate ledgerDate, Long ledgerAmount, String ledgerDescription) {
+    public Long insertLedger(String apiCallerEmail, LedgerCode ledgerCode, LocalDate ledgerDate, Long ledgerAmount, String ledgerDescription) {
         if (ledgerAmount <= 0) {
             log.error(ErrorCode.ERR_LED_001.getValue());
             throw new GlobalException(ErrorCode.ERR_LED_001);
         }
 
         Ledger savedLedger = ledgerRepository.save(
-                new Ledger(userService.findUserById(apiCallerId), ledgerCode, ledgerDate, ledgerAmount, ledgerDescription)
+                new Ledger(userService.findUserByEmail(apiCallerEmail), ledgerCode, ledgerDate, ledgerAmount, ledgerDescription)
         );
         return savedLedger.getId();
     }
@@ -95,15 +95,15 @@ public class LedgerService {
      * 커플 월별 가계부 상세 항목 목록 조회
      * yearMonth -> yyyyMM
      *
-     * @param userId
+     * @param email
      * @param yearMonth
      * @return
      */
     @Transactional(readOnly = true)
-    public List<Ledger> findCoupleMonthlyLedger(Long userId, String yearMonth) {
+    public List<Ledger> findCoupleMonthlyLedger(String email, String yearMonth) {
         LocalDate[] monthlyDuration = DateTimeUtil.getMonthlyDuration(yearMonth);
 
-        Couple couple = coupleService.findCoupleByUserId(userId);
+        Couple couple = coupleService.findCoupleByUserEmail(email);
         if (couple.getStatus() != CoupleStatus.ACTIVE) {
             log.error(ErrorCode.ERR_CPL_004.getValue());
             throw new GlobalException(ErrorCode.ERR_CPL_004);
@@ -121,9 +121,9 @@ public class LedgerService {
      * @return
      */
     @Transactional(readOnly = true)
-    public List<Ledger> findPersonalMonthlyLedger(Long userId, String yearMonth) {
+    public List<Ledger> findPersonalMonthlyLedger(String userEmail, String yearMonth) {
         LocalDate[] monthlyDuration = DateTimeUtil.getMonthlyDuration(yearMonth);
-        return ledgerRepository.findPersonalMonthlyLedger(userId, monthlyDuration[0], monthlyDuration[1]);
+        return ledgerRepository.findPersonalMonthlyLedgerByEmail(userEmail, monthlyDuration[0], monthlyDuration[1]);
     }
 
 
@@ -216,8 +216,8 @@ public class LedgerService {
     }
 
     @Transactional(readOnly = true)
-    public AssetDto findPersonalAsset(Long userId) {
-        List<Ledger> savings = ledgerRepository.findPersonalSavings(userId);
+    public AssetDto findPersonalAsset(String userEmail) {
+        List<Ledger> savings = ledgerRepository.findPersonalSavingsByEmail(userEmail);
 
         return new AssetDto(savings.stream()
                 .mapToLong(Ledger::getAmount)
@@ -225,8 +225,8 @@ public class LedgerService {
     }
 
     @Transactional(readOnly = true)
-    public AssetDto findCoupleAsset(Long userId) {
-        Couple couple = coupleService.findCoupleByUserId(userId);
+    public AssetDto findCoupleAsset(String userEmail) {
+        Couple couple = coupleService.findCoupleByUserEmail(userEmail);
         List<Ledger> savings = ledgerRepository.findCoupleSavings(couple.getId());
 
         return new AssetDto(savings.stream()

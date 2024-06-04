@@ -39,6 +39,7 @@ public class JwtFilter extends GenericFilterBean {
                 log.debug("Security Context에 '{}' 인증 정보를 저장했습니다. URI : {}", authentication.getName(), requestURI);
             } catch (GlobalException e) {
                 log.error("{} : {}", e.getErrorCode().getValue(), requestURI);
+                request.setAttribute("errorCode", e.getErrorCode());
             }
         }
 

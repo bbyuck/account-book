@@ -59,26 +59,26 @@ public class TestData {
         User user4 = userService.findUserById(userId4);
         user3.changeStatus(UserStatus.ACTIVE);
 
-        coupleService.connectToOpponent(user3.getId(), "woman4@naver.com", "히욱", "bubu");
+        coupleService.connectToOpponent(user3.getEmail(), "woman4@naver.com", "히욱", "bubu");
     }
 
     public void ledgerServiceTestData() {
         /**
          * 커플 생성
          */
-        Long manId = 3L;
-        Long womanId = 4L;
         Long userCoupleId = coupleService.applyConnectRequest(2L, "아내");
 
-        ledgerService.insertLedger(manId, LedgerCode.I, LocalDate.of(2024, 4, 21), 4000000L, "M월급");
-        ledgerService.insertLedger(manId, LedgerCode.E, LocalDate.of(2024, 4, 1), 100000L, "M소비1");
-        ledgerService.insertLedger(manId, LedgerCode.E, LocalDate.of(2024, 4, 2), 200000L, "M소비2");
-        ledgerService.insertLedger(manId, LedgerCode.S, LocalDate.of(2024, 4, 3), 150000L, "M저축1");
-        ledgerService.insertLedger(manId, LedgerCode.S, LocalDate.of(2024, 4, 4), 220000L, "M저축2");
+        String manEmail = "man3@naver.com";
+        ledgerService.insertLedger(manEmail, LedgerCode.I, LocalDate.of(2024, 4, 21), 4000000L, "M월급");
+        ledgerService.insertLedger(manEmail, LedgerCode.E, LocalDate.of(2024, 4, 1), 100000L, "M소비1");
+        ledgerService.insertLedger(manEmail, LedgerCode.E, LocalDate.of(2024, 4, 2), 200000L, "M소비2");
+        ledgerService.insertLedger(manEmail, LedgerCode.S, LocalDate.of(2024, 4, 3), 150000L, "M저축1");
+        ledgerService.insertLedger(manEmail, LedgerCode.S, LocalDate.of(2024, 4, 4), 220000L, "M저축2");
 
-        ledgerService.insertLedger(womanId, LedgerCode.I, LocalDate.of(2024, 4, 25), 4000000L, "W월급");
-        ledgerService.insertLedger(womanId, LedgerCode.S, LocalDate.of(2024, 4, 5), 150000L, "W저축1");
-        ledgerService.insertLedger(womanId, LedgerCode.S, LocalDate.of(2024, 4, 8), 220000L, "W저축2");
+        String womanEmail = "woman4@naver.com";
+        ledgerService.insertLedger(womanEmail, LedgerCode.I, LocalDate.of(2024, 4, 25), 4000000L, "W월급");
+        ledgerService.insertLedger(womanEmail, LedgerCode.S, LocalDate.of(2024, 4, 5), 150000L, "W저축1");
+        ledgerService.insertLedger(womanEmail, LedgerCode.S, LocalDate.of(2024, 4, 8), 220000L, "W저축2");
 
     }
 }

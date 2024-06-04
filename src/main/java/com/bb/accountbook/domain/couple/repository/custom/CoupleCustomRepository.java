@@ -16,6 +16,8 @@ public interface CoupleCustomRepository {
     List<UserCouple> findUserCouplesByCoupleId(Long coupleId);
     List<UserCouple> findUserCouplesByUserId(Long userId);
     Optional<Couple> findCoupleByUserId(Long userId);
+    Optional<Couple> findCoupleByUserEmail(String userEmail);
+    Optional<UserCouple> findUserCoupleByUserEmailAndCoupleId(String userEmail, Long coupleId);
 
 
 }

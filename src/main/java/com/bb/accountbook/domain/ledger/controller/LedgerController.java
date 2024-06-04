@@ -26,7 +26,7 @@ public class LedgerController {
 
     @PostMapping("/api/v1/ledger")
     public ApiResponse<LedgerInsertResponseDto> insertLedger(@RequestBody @Valid LedgerInsertRequestDto requestDto) {
-        Long savedLedgerId = ledgerService.insertLedger(securityContextProvider.getCurrentUserId(), requestDto.getLedgerCode(), requestDto.getLedgerDate(), requestDto.getLedgerAmount(), requestDto.getLedgerDescription());
+        Long savedLedgerId = ledgerService.insertLedger(securityContextProvider.getCurrentEmail(), requestDto.getLedgerCode(), requestDto.getLedgerDate(), requestDto.getLedgerAmount(), requestDto.getLedgerDescription());
         return new ApiResponse<>(new LedgerInsertResponseDto(savedLedgerId));
     }
 
@@ -49,23 +49,23 @@ public class LedgerController {
 
     @GetMapping("/api/v1/couple/monthly/ledger")
     public ApiResponse<MonthlyLedgerResponseDto> findCoupleMonthlyLedger(@RequestParam("ym") @Valid @YearMonth String yearMonth) {
-        List<Ledger> monthlyLedgers = ledgerService.findCoupleMonthlyLedger(securityContextProvider.getCurrentUserId(), yearMonth);
+        List<Ledger> monthlyLedgers = ledgerService.findCoupleMonthlyLedger(securityContextProvider.getCurrentEmail(), yearMonth);
         return new ApiResponse<>(ledgerService.getMonthlyLedgerResponseDto(monthlyLedgers, yearMonth));
     }
 
     @GetMapping("/api/v1/personal/monthly/ledger")
     public ApiResponse<MonthlyLedgerResponseDto> findPersonalMonthlyLedger(@RequestParam("ym") @Valid @YearMonth String yearMonth) {
-        List<Ledger> monthlyLedgers = ledgerService.findPersonalMonthlyLedger(securityContextProvider.getCurrentUserId(), yearMonth);
+        List<Ledger> monthlyLedgers = ledgerService.findPersonalMonthlyLedger(securityContextProvider.getCurrentEmail(), yearMonth);
         return new ApiResponse<>(ledgerService.getMonthlyLedgerResponseDto(monthlyLedgers, yearMonth));
     }
 
     @GetMapping("/api/v1/personal/asset")
     public ApiResponse<AssetDto> findPersonalAsset() {
-        return new ApiResponse<>(ledgerService.findPersonalAsset(securityContextProvider.getCurrentUserId()));
+        return new ApiResponse<>(ledgerService.findPersonalAsset(securityContextProvider.getCurrentEmail()));
     }
 
     @GetMapping("/api/v1/couple/asset")
     public ApiResponse<AssetDto> findCoupleAsset() {
-        return new ApiResponse<>(ledgerService.findCoupleAsset(securityContextProvider.getCurrentUserId()));
+        return new ApiResponse<>(ledgerService.findCoupleAsset(securityContextProvider.getCurrentEmail()));
     }
 }

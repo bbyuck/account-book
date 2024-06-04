@@ -24,7 +24,7 @@ public class CoupleController {
 
     @PostMapping("/api/v1/couple")
     public ApiResponse<CoupleConnectionResponseDto> coupleConnect(@RequestBody @Valid CoupleConnectionRequestDto requestDto) {
-        Long apiCallersUserCoupleId = coupleService.connectToOpponent(securityContextProvider.getCurrentUserId(), requestDto.getOpponentEmail(), requestDto.getNickname(), requestDto.getCoupleName());
+        Long apiCallersUserCoupleId = coupleService.connectToOpponent(securityContextProvider.getCurrentEmail(), requestDto.getOpponentEmail(), requestDto.getNickname(), requestDto.getCoupleName());
         return new ApiResponse<>(new CoupleConnectionResponseDto(apiCallersUserCoupleId));
     }
 

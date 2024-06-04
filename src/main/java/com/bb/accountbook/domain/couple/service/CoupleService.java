@@ -38,11 +38,11 @@ public class CoupleService {
         });
     }
 
-    public Long joinCouple(Long userId, Long coupleId, String nickname) {
-        User user = userService.findUserById(userId);
+    public Long joinCouple(String userEmail, Long coupleId, String nickname) {
+        User user = userService.findUserByEmail(userEmail);
         Couple couple = findCouple(coupleId);
 
-        UserCouple userCouple = coupleRepository.findUserCoupleByUserIdAndCoupleId(userId, coupleId)
+        UserCouple userCouple = coupleRepository.findUserCoupleByUserEmailAndCoupleId(userEmail, coupleId)
                 .orElseGet(() -> coupleRepository.saveUserCouple(new UserCouple(user, couple, nickname)));
 
         return userCouple.getId();
@@ -80,7 +80,7 @@ public class CoupleService {
         // TODO 상대방에게 알림 전송
 
 
-        joinCouple(opponent.getId(), coupleId, null);
+        joinCouple(opponent.getEmail(), coupleId, null);
     }
 
     /**
@@ -89,17 +89,17 @@ public class CoupleService {
      * 3. 그룹에 참여
      * 4. 상대방 그룹에 초대
      *
-     * @param apiCallerId
+     * @param apiCallerEmail
      * @param opponentEmail
      * @param nickname
      * @return userCoupleId
      */
-    public Long connectToOpponent(Long apiCallerId, String opponentEmail, String nickname, String coupleName) {
-        Couple couple = coupleRepository.findCoupleByUserId(apiCallerId)
+    public Long connectToOpponent(String apiCallerEmail, String opponentEmail, String nickname, String coupleName) {
+        Couple couple = coupleRepository.findCoupleByUserEmail(apiCallerEmail)
                 .orElse(findCouple(createCouple(coupleName)));
 
         // 그룹에 참여
-        UserCouple callersUserCouple = findUserCouple(joinCouple(apiCallerId, couple.getId(), nickname));
+        UserCouple callersUserCouple = findUserCouple(joinCouple(apiCallerEmail, couple.getId(), nickname));
 
         callersUserCouple.changeStatus(ACTIVE);
 
@@ -138,5 +138,13 @@ public class CoupleService {
     public boolean isExistCouple(Long userId) {
         Optional<UserCouple> optional = coupleRepository.findUserCoupleByUserId(userId);
         return optional.isPresent() && optional.get().getStatus() == ACTIVE;
+    }
+
+    @Transactional(readOnly = true)
+    public Couple findCoupleByUserEmail(String userEmail) {
+        return coupleRepository.findCoupleByUserEmail(userEmail).orElseThrow(() -> {
+            log.error(ERR_CPL_001.getValue());
+            return new GlobalException(ERR_CPL_001);
+        });
     }
 }

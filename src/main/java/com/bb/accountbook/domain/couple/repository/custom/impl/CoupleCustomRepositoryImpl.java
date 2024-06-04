@@ -40,6 +40,36 @@ public class CoupleCustomRepositoryImpl implements CoupleCustomRepository {
     }
 
     @Override
+    public Optional<Couple> findCoupleByUserEmail(String userEmail) {
+        String jpql = "select c " +
+                "from Couple c " +
+                "join fetch UserCouple uc " +
+                "on c = uc.couple " +
+                "join fetch User u " +
+                "on u = uc.user " +
+                "where u.email = :userEmail";
+        return em.createQuery(jpql, Couple.class)
+                .setParameter("userEmail", userEmail)
+                .getResultList().stream().findFirst();
+    }
+
+    @Override
+    public Optional<UserCouple> findUserCoupleByUserEmailAndCoupleId(String userEmail, Long coupleId) {
+        String jpql = "select uc " +
+                "from UserCouple uc " +
+                "join fetch User u " +
+                "on uc.user = u " +
+                "join fetch Couple c " +
+                "on uc.couple = c " +
+                "where u.email = :userEmail " +
+                "and c.id = :coupleId";
+        return em.createQuery(jpql, UserCouple.class)
+                .setParameter("userEmail", userEmail)
+                .setParameter("coupleId", coupleId)
+                .getResultList().stream().findFirst();
+    }
+
+    @Override
     public List<UserCouple> findUserCouplesByCoupleId(Long coupleId) {
         String jpql = "select uc " +
                 "from UserCouple uc " +

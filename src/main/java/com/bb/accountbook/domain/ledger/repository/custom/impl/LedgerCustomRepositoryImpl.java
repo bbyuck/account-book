@@ -5,7 +5,6 @@ import com.bb.accountbook.common.model.status.UserCoupleStatus;
 import com.bb.accountbook.common.model.status.UserStatus;
 import com.bb.accountbook.domain.ledger.repository.custom.LedgerCustomRepository;
 import com.bb.accountbook.entity.Ledger;
-import com.bb.accountbook.entity.UserCouple;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -72,7 +71,8 @@ public class LedgerCustomRepositoryImpl implements LedgerCustomRepository {
                 "on uc.couple = c " +
                 "where c.id = :coupleId " +
                 "and l.id = :ledgerId " +
-                "and u.status = :userStatus";
+                "and u.status = :userStatus " +
+                "order by l.date asc";
         return em.createQuery(jpql, Ledger.class)
                 .setParameter("coupleId", coupleId)
                 .setParameter("ledgerId", ledgerId)
@@ -87,10 +87,26 @@ public class LedgerCustomRepositoryImpl implements LedgerCustomRepository {
                 "join fetch User u " +
                 "on l.owner = u " +
                 "where u.id = :userId " +
-                "and l.code = :ledgerCode";
+                "and l.code = :ledgerCode " +
+                "order by l.date asc";
 
         return em.createQuery(jpql, Ledger.class)
                 .setParameter("userId", userId)
+                .setParameter("ledgerCode", LedgerCode.S)
+                .getResultList();
+    }
+
+    @Override
+    public List<Ledger> findPersonalSavingsByEmail(String email) {
+        String jpql = "select l " +
+                "from Ledger l " +
+                "join fetch User u " +
+                "on l.owner = u " +
+                "where u.email = :email " +
+                "and l.code = :ledgerCode " +
+                "order by l.date asc";
+        return em.createQuery(jpql, Ledger.class)
+                .setParameter("email", email)
                 .setParameter("ledgerCode", LedgerCode.S)
                 .getResultList();
     }
@@ -106,11 +122,28 @@ public class LedgerCustomRepositoryImpl implements LedgerCustomRepository {
                 "join fetch Couple c " +
                 "on uc.couple = c " +
                 "where c.id = :coupleId " +
-                "and l.code = :ledgerCode";
+                "and l.code = :ledgerCode " +
+                "order by l.date asc";
 
         return em.createQuery(jpql, Ledger.class)
                 .setParameter("coupleId", coupleId)
                 .setParameter("ledgerCode", LedgerCode.S)
+                .getResultList();
+    }
+
+    @Override
+    public List<Ledger> findPersonalMonthlyLedgerByEmail(String email, LocalDate startDate, LocalDate endDate) {
+        String jpql = "select l " +
+                "from Ledger l " +
+                "join fetch User u " +
+                "on l.owner = u " +
+                "where u.email = :email " +
+                "and l.date between :startDate and :endDate " +
+                "order by l.date asc";
+        return em.createQuery(jpql, Ledger.class)
+                .setParameter("email", email)
+                .setParameter("startDate", startDate)
+                .setParameter("endDate", endDate)
                 .getResultList();
     }
 }
