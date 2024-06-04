@@ -19,24 +19,24 @@ public class ServletExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ApiResponse<?> handleException(Exception e, HttpServletResponse response) {
         response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-        return new ApiResponse(ERR_SYS_000.getValue());
+        return new ApiResponse(ERR_SYS_000);
     }
 
     @ExceptionHandler(GlobalException.class)
     public ApiResponse<?> handleGlobalException(GlobalException e, HttpServletResponse response) {
         response.setStatus(e.getErrorCode().getHttpStatus());
-        return new ApiResponse(e.getErrorCode().getValue());
+        return new ApiResponse(e.getErrorCode());
     }
 
     @ExceptionHandler(NoHandlerFoundException.class)
     public ApiResponse<?> handleNoHandlerFoundException(NoHandlerFoundException e, HttpServletResponse response) {
         response.setStatus(HttpStatus.NOT_FOUND.value());
-        return new ApiResponse(ERR_SYS_002.getValue());
+        return new ApiResponse(ERR_SYS_002);
     }
 
     @ExceptionHandler(NoResourceFoundException.class)
     public ApiResponse<?> handleNoResourceFoundException(NoResourceFoundException e, HttpServletResponse response) {
         response.setStatus(HttpStatus.NOT_FOUND.value());
-        return new ApiResponse(ERR_SYS_003.getValue());
+        return new ApiResponse(ERR_SYS_003);
     }
 }
