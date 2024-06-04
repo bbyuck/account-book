@@ -9,7 +9,6 @@ public class LoginDto {
 
     @Email(message = ValidationMessage.INVALID_EMAIL)
     private String email;
-
-
     private String password;
+    private boolean autoLogin = false;
 }

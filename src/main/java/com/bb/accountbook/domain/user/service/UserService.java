@@ -88,7 +88,7 @@ public class UserService {
     }
 
 
-    public TokenDto authenticate(String email, String password) {
+    public TokenDto authenticate(String email, String password, boolean autoLogin) {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
 
         User user = findUserByEmail(email);
@@ -106,6 +106,7 @@ public class UserService {
         // authentication 객체를 createToken 메소드를 통해서 JWT Token을 생성
         TokenDto token = tokenProvider.createToken(authentication);
         user.updateRefreshToken(token.getRefreshToken());
+        token.setAutoLogin(autoLogin);
 
         return token;
     }

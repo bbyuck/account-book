@@ -34,7 +34,7 @@ public class UserController {
 
     @PostMapping("/api/v1/authenticate")
     public ApiResponse<TokenDto> login(@RequestBody @Valid LoginDto loginDto, HttpServletResponse response) {
-        TokenDto tokenDto = userService.authenticate(loginDto.getEmail(), loginDto.getPassword());
+        TokenDto tokenDto = userService.authenticate(loginDto.getEmail(), loginDto.getPassword(), loginDto.isAutoLogin());
         response.addHeader("Authorization", "Bearer " + tokenDto.getAccessToken());
 
         return new ApiResponse<>(tokenDto);
