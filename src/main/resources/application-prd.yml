@@ -6,7 +6,7 @@ spring:
       on-profile: prd
   datasource:
     driver-class-name: oracle.jdbc.OracleDriver
-    url: jdbc:oracle:thin:@booroutedb_medium?TNS_ADMIN=/app/account-book-api/key/Wallet_BOOROUTEDB
+    url: ENC(5GkOYYQH8zzOLn8ke4IMKdXlLwP/1Cr+W8nxA/uXF4V6bevHIQlkGVPTzfyVnELGntEgh1jrbsuDWWe/tMd2R1DBl45D2hXnPYoAvPj0PaKtZXxBlBI2su28KwyQQ4FlMSssLUKQGJH/7xBXIsWogT2WtXCYLxPrQEM3yZ6WmT0=)
     username: ENC(VoOM+YniWoF6oxcrkjmySGAHRe5TU2Gqg4k9VNjdZnMWaS+Zn5FI6qypfEYfObEB)
     password: ENC(cHv+WoCaY18rpm5wdCHB79J5WpqCSHd2iMmdWC92IY1jCPOooK5zT3NZC8Sary5Z)
   jpa:
@@ -65,3 +65,7 @@ logging:
     org.hibernate:
       type:
         descriptor.sql: error
+
+jasypt:
+  encryptor:
+    bean: jasyptEncryptorAES
