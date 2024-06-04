@@ -12,6 +12,7 @@ import com.bb.accountbook.domain.user.service.UserService;
 import com.bb.accountbook.entity.*;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +20,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+@Profile({"local", "dev"})
 @RequiredArgsConstructor
 @Component
 @Transactional

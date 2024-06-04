@@ -1,0 +1,67 @@
+spring:
+  application:
+    name: account-book
+  config:
+    activate:
+      on-profile: prd
+  datasource:
+    driver-class-name: oracle.jdbc.OracleDriver
+    url: jdbc:oracle:thin:@booroutedb_medium?TNS_ADMIN=/app/account-book-api/key/Wallet_BOOROUTEDB
+    username: ENC(VoOM+YniWoF6oxcrkjmySGAHRe5TU2Gqg4k9VNjdZnMWaS+Zn5FI6qypfEYfObEB)
+    password: ENC(cHv+WoCaY18rpm5wdCHB79J5WpqCSHd2iMmdWC92IY1jCPOooK5zT3NZC8Sary5Z)
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.OracleDialect
+        format_sql: false
+        show_sql: false
+        jdbc:
+          batch_size: 1000
+  security:
+    white-list:
+      - /api/v1/authenticate  # 로그인
+      - /api/v1/reissue/token # 토큰 재발행
+      - /api/v1/signup        # 회원가입
+      - /favicon.ico          # 파비콘
+      - /error                # 에러
+      - /h2-console           # h2-console
+
+cors:
+  allowed:
+    origins:
+      - https://booroute.com
+    headers:
+      - Origin
+      - X-Requested-with
+      - Accept
+      - Authorization
+      - Content-Type
+      - Credential-Token
+      - Access-Token
+      - Refresh-Token
+      - Access-Control-Allow-Headers
+      - Access-Control-Allow-Origin
+      - Access-Control-Request-Method
+      - Access-Control-Request-Headers
+
+
+jwt:
+  secret: secret1234secret1234secret1234secret1234secret1234secret1234secret1234secret1234secret1234secret1234secret1234secret1234
+  access-token-expiration-time: 1800 # 30분
+  refresh-token-expiration-time: 2592000 # 30일
+  iss: hay-account-book
+
+email:
+  official:
+    email: k941026h@naver.com
+    password: 12341234
+
+logging:
+  level:
+    org.springframework: error
+    org.hibernate:
+      type:
+        descriptor.sql: error

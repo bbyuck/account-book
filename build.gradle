@@ -48,6 +48,15 @@ dependencies {
 	testCompileOnly 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
 
+	/* oracle cloud db */
+	implementation 'com.oracle.database.security:oraclepki:23.4.0.24.05'
+	implementation 'com.oracle.database.security:osdt_cert:21.14.0.0'
+	implementation 'com.oracle.database.security:osdt_core:21.14.0.0'
+	implementation 'com.oracle.database.jdbc:ojdbc10:19.23.0.0'
+
+	/* jasypt */
+	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
+
 	clean {
 		delete file('src/main/generated')
 	}
