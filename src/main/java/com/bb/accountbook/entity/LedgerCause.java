@@ -9,6 +9,10 @@ import lombok.NoArgsConstructor;
 @Getter
 @Table(name = "tb_ledger_cause")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SequenceGenerator(
+        name = "tb_ledger_cause_id_generator",
+        sequenceName = "seq_ledger_cause",
+        initialValue = 1, allocationSize = 50)
 public class LedgerCause extends BaseEntity {
 
     @Id @GeneratedValue

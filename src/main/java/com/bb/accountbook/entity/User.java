@@ -14,6 +14,10 @@ import java.util.List;
 @Getter
 @Table(name = "tb_user")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SequenceGenerator(
+        name = "tb_user_id_generator",
+        sequenceName = "seq_user",
+        initialValue = 1, allocationSize = 50)
 public class User extends BaseEntity {
 
     @Id @GeneratedValue

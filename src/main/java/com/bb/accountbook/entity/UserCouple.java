@@ -12,6 +12,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Table(name = "tb_user_couple")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SequenceGenerator(
+        name = "tb_user_couple_id_generator",
+        sequenceName = "seq_user_couple",
+        initialValue = 1, allocationSize = 50)
 public class UserCouple {
 
     @Id @GeneratedValue

@@ -12,6 +12,10 @@ import java.time.LocalDate;
 @Getter
 @Table(name = "tb_ledger")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SequenceGenerator(
+        name = "tb_ledger_id_generator",
+        sequenceName = "seq_ledger",
+        initialValue = 1, allocationSize = 50)
 public class Ledger extends BaseEntity {
 
     @Id @GeneratedValue

@@ -10,6 +10,10 @@ import lombok.NoArgsConstructor;
 @Getter
 @Table(name = "tb_cause")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SequenceGenerator(
+        name = "tb_cause_id_generator",
+        sequenceName = "seq_cause",
+        initialValue = 1, allocationSize = 50)
 public class Cause extends BaseEntity {
 
     @Id @GeneratedValue

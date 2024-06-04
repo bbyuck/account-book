@@ -10,6 +10,10 @@ import lombok.NoArgsConstructor;
 @Getter
 @Table(name = "tb_user_role")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SequenceGenerator(
+        name = "tb_user_role_id_generator",
+        sequenceName = "seq_user_role",
+        initialValue = 1, allocationSize = 50)
 public class UserRole extends BaseEntity {
 
     @Id @GeneratedValue

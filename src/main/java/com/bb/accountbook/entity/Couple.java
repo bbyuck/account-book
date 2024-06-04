@@ -13,6 +13,10 @@ import java.util.List;
 @Getter
 @Table(name = "tb_couple")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SequenceGenerator(
+        name = "tb_couple_id_generator",
+        sequenceName = "seq_couple",
+        initialValue = 1, allocationSize = 50)
 public class Couple {
 
     @Id
