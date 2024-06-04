@@ -37,7 +37,7 @@ class CoupleServiceTest {
 
 
         // when
-        Long userCoupleId = coupleService.connectToOpponent(man.getId(), woman.getEmail(), "남편", "부부");
+        Long userCoupleId = coupleService.connectToOpponent(man.getEmail(), woman.getEmail(), "남편", "부부");
         List<UserCouple> userCouples = coupleRepository.findUserCouplesByUserId(man.getId());
 
         List<UserCouple> waitList = userCouples.stream().filter(userCouple -> userCouple.getStatus() == UserCoupleStatus.WAIT).toList();

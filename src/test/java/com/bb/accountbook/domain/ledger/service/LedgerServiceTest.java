@@ -77,6 +77,7 @@ class LedgerServiceTest {
         // given
         String manEmail = "man3@naver.com";
         String womanEmail = "woman4@naver.com";
+        String anotherManEmail = "k941026h@naver.com";
 
         // when
         List<Ledger> personalMonthlyLedger = ledgerService.findPersonalMonthlyLedger(manEmail, "202404");
@@ -84,7 +85,7 @@ class LedgerServiceTest {
 
 
         // then
-        Assertions.assertThrows(GlobalException.class, () -> ledgerService.findCoupleMonthlyLedger(manEmail,"202404"));
+        Assertions.assertThrows(GlobalException.class, () -> ledgerService.findCoupleMonthlyLedger(anotherManEmail,"202404"));
         assertThat(personalMonthlyLedger.size()).isEqualTo(5);
         assertThat(coupleMonthlyLedger.size()).isEqualTo(8);
         assertThat(coupleMonthlyLedger.get(0).getDate()).isEqualTo(LocalDate.of(2024, 4, 1));
