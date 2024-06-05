@@ -126,6 +126,11 @@ public class LedgerService {
         return ledgerRepository.findPersonalMonthlyLedgerByEmail(userEmail, monthlyDuration[0], monthlyDuration[1]);
     }
 
+    @Transactional(readOnly = true)
+    public List<Ledger> findMonthlyLedger(String userEmail, String yearMonth) {
+        return coupleService.isExistCoupleByUserEmail(userEmail) ? findCoupleMonthlyLedger(userEmail, yearMonth) : findPersonalMonthlyLedger(userEmail, yearMonth);
+    }
+
 
     /**
      * 개인 가계부 상세 항목 조회
@@ -178,7 +183,7 @@ public class LedgerService {
 
                     return new LedgerDto(
                             ledger.getId(),
-                            ledger.getOwner().getUserCouple().getNickname(),
+                            ledger.getOwner().getUserCouple() != null ? ledger.getOwner().getUserCouple().getNickname() : "",
                             ledger.getCode(),
                             ledger.getDate(),
                             ledger.getAmount(),

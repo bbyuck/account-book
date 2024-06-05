@@ -2,6 +2,7 @@ package com.bb.accountbook.domain.ledger.controller;
 
 import com.bb.accountbook.common.model.ApiResponse;
 import com.bb.accountbook.common.validation.YearMonth;
+import com.bb.accountbook.domain.couple.service.CoupleService;
 import com.bb.accountbook.domain.ledger.dto.*;
 import com.bb.accountbook.domain.ledger.service.LedgerService;
 import com.bb.accountbook.entity.Ledger;
@@ -46,6 +47,11 @@ public class LedgerController {
         return new ApiResponse<>(ledgerService.findCoupleLedger(coupleId, ledgerId));
     }
 
+    @GetMapping("/api/v1/monthly/ledger")
+    public ApiResponse<MonthlyLedgerResponseDto> findMonthlyLedger(@RequestParam("ym") @Valid @YearMonth String yearMonth) {
+        List<Ledger> monthlyLedger = ledgerService.findMonthlyLedger(securityContextProvider.getCurrentEmail(), yearMonth);
+        return new ApiResponse<>(ledgerService.getMonthlyLedgerResponseDto(monthlyLedger, yearMonth));
+    }
 
     @GetMapping("/api/v1/couple/monthly/ledger")
     public ApiResponse<MonthlyLedgerResponseDto> findCoupleMonthlyLedger(@RequestParam("ym") @Valid @YearMonth String yearMonth) {

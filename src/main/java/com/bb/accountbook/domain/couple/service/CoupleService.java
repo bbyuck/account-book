@@ -135,8 +135,8 @@ public class CoupleService {
     }
 
     @Transactional(readOnly = true)
-    public boolean isExistCouple(Long userId) {
-        Optional<UserCouple> optional = coupleRepository.findUserCoupleByUserId(userId);
+    public boolean isExistCoupleByUserEmail(String userEmail) {
+        Optional<UserCouple> optional = coupleRepository.findUserCoupleByUserEmail(userEmail);
         return optional.isPresent() && optional.get().getStatus() == ACTIVE;
     }
 
