@@ -253,4 +253,8 @@ public class LedgerService {
                 .mapToLong(Ledger::getAmount)
                 .reduce(Long::sum).orElse(0L));
     }
+
+    public String deleteLedger(String email, Long ledgerId) {
+        return null;
+    }
 }

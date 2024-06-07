@@ -42,6 +42,11 @@ public class LedgerController {
         return new ApiResponse<>(ledgerService.findLedger(securityContextProvider.getCurrentEmail(), ledgerId));
     }
 
+    @DeleteMapping("/api/v1/ledger/{ledgerId}")
+    public ApiResponse<LedgerDeleteResponseDto> deleteLedger(@PathVariable("ledgerId") Long ledgerId) {
+        return new ApiResponse<>(ledgerService.deleteLedger(securityContextProvider.getCurrentEmail(), ledgerId));
+    }
+
     @GetMapping("/api/v1/personal/ledger/{ledgerId}")
     public ApiResponse<LedgerDetailDto> findPersonalLedger(@PathVariable("ledgerId") Long ledgerId) {
         return new ApiResponse<>(ledgerService.findPersonalLedger(securityContextProvider.getCurrentEmail(), ledgerId));
