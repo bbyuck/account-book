@@ -37,9 +37,14 @@ public class LedgerController {
         return new ApiResponse<>(new LedgerUpdateResponseDto(updatedLedgerId));
     }
 
+    @GetMapping("/api/v1/ledger/{ledgerId}")
+    public ApiResponse<LedgerDetailDto> findLedger(@PathVariable("ledgerId") Long ledgerId) {
+        return new ApiResponse<>(ledgerService.findLedger(securityContextProvider.getCurrentEmail(), ledgerId));
+    }
+
     @GetMapping("/api/v1/personal/ledger/{ledgerId}")
     public ApiResponse<LedgerDetailDto> findPersonalLedger(@PathVariable("ledgerId") Long ledgerId) {
-        return new ApiResponse<>(ledgerService.findPersonalLedger(ledgerId));
+        return new ApiResponse<>(ledgerService.findPersonalLedger(securityContextProvider.getCurrentEmail(), ledgerId));
     }
 
     @GetMapping("/api/v1/couple/ledger/{ledgerId}")

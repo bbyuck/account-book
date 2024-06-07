@@ -47,4 +47,5 @@ public class UserCustomRepositoryImpl implements UserCustomRepository {
                 .setParameter("active", UserStatus.ACTIVE)
                 .getResultList().stream().findFirst();
     }
+
 }

@@ -17,4 +17,5 @@ public interface LedgerCustomRepository {
     List<Ledger> findPersonalSavingsByEmail(String email);
     List<Ledger> findCoupleSavings(Long coupleId);
     List<Ledger> findPersonalMonthlyLedgerByEmail(String email, LocalDate startDate, LocalDate endDate);
+    Optional<Ledger> findLedgerByIdAndUserEmail(Long ledgerId, String email);
 }

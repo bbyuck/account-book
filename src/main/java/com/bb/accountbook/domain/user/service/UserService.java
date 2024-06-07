@@ -3,7 +3,6 @@ package com.bb.accountbook.domain.user.service;
 import com.bb.accountbook.common.exception.GlobalException;
 import com.bb.accountbook.common.model.codes.GenderCode;
 import com.bb.accountbook.common.model.codes.RoleCode;
-import com.bb.accountbook.common.model.status.UserStatus;
 import com.bb.accountbook.domain.user.dto.TokenDto;
 import com.bb.accountbook.domain.user.repository.RoleRepository;
 import com.bb.accountbook.domain.user.repository.UserRepository;
@@ -16,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -96,8 +94,7 @@ public class UserService {
         Authentication authentication = null;
         try {
             authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             log.error(ERR_AUTH_001.getValue());
             throw new GlobalException(ERR_AUTH_001);
         }
@@ -132,4 +129,5 @@ public class UserService {
 
         return token;
     }
+
 }

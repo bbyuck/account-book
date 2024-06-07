@@ -146,4 +146,18 @@ public class LedgerCustomRepositoryImpl implements LedgerCustomRepository {
                 .setParameter("endDate", endDate)
                 .getResultList();
     }
+
+    @Override
+    public Optional<Ledger> findLedgerByIdAndUserEmail(Long ledgerId, String email) {
+        String jpql = "select l " +
+                "from Ledger l " +
+                "join fetch User u " +
+                "on l.owner = u " +
+                "where l.id = :ledgerId " +
+                "and u.email = :email";
+        return em.createQuery(jpql, Ledger.class)
+                .setParameter("ledgerId", ledgerId)
+                .setParameter("email", email)
+                .getResultList().stream().findFirst();
+    }
 }

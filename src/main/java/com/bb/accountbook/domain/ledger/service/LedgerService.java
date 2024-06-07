@@ -103,11 +103,12 @@ public class LedgerService {
     public List<Ledger> findCoupleMonthlyLedger(String email, String yearMonth) {
         LocalDate[] monthlyDuration = DateTimeUtil.getMonthlyDuration(yearMonth);
 
-        Couple couple = coupleService.findCoupleByUserEmail(email);
-        if (couple.getStatus() != CoupleStatus.ACTIVE) {
-            log.error(ErrorCode.ERR_CPL_004.getValue());
-            throw new GlobalException(ErrorCode.ERR_CPL_004);
+        if (coupleService.isExistCouple(email)) {
+            log.error(ErrorCode.ERR_CPL_003.getValue());
+            throw new GlobalException(ErrorCode.ERR_CPL_003);
         }
+
+        Couple couple = coupleService.findCoupleByUserEmail(email);
 
         return ledgerRepository.findCoupleMonthlyLedger(couple.getId(), monthlyDuration[0], monthlyDuration[1]);
     }
@@ -128,9 +129,21 @@ public class LedgerService {
 
     @Transactional(readOnly = true)
     public List<Ledger> findMonthlyLedger(String userEmail, String yearMonth) {
-        return coupleService.isExistCoupleByUserEmail(userEmail) ? findCoupleMonthlyLedger(userEmail, yearMonth) : findPersonalMonthlyLedger(userEmail, yearMonth);
+        return coupleService.isExistCouple(userEmail) ? findCoupleMonthlyLedger(userEmail, yearMonth) : findPersonalMonthlyLedger(userEmail, yearMonth);
     }
 
+
+    /**
+     * 가계부 상세 항목 조회
+     *
+     * @param ledgerId
+     * @return
+     */
+    public LedgerDetailDto findLedger(String email, Long ledgerId) {
+        return coupleService.isCouple(email)
+                ? findCoupleLedger(coupleService.findCoupleByUserEmail(email).getId(), ledgerId)
+                : findPersonalLedger(email, ledgerId);
+    }
 
     /**
      * 개인 가계부 상세 항목 조회
@@ -139,8 +152,11 @@ public class LedgerService {
      * @return
      */
     @Transactional(readOnly = true)
-    public LedgerPersonalDetailDto findPersonalLedger(Long ledgerId) {
-        Ledger ledger = findLedgerById(ledgerId);
+    public LedgerPersonalDetailDto findPersonalLedger(String email, Long ledgerId) {
+        Ledger ledger = ledgerRepository.findLedgerByIdAndUserEmail(ledgerId, email).orElseThrow(() -> {
+            log.error(ERR_LED_000.getValue());
+            return new GlobalException(ERR_LED_000);
+        });
         return new LedgerPersonalDetailDto(ledger.getId(), ledger.getCode(), ledger.getDate(), ledger.getAmount(), ledger.getDescription());
     }
 
@@ -201,8 +217,7 @@ public class LedgerService {
                             dailyLedgerDto.getLedgers().forEach(ledgerDto -> {
                                 if (ledgerDto.getLedgerCode() == LedgerCode.I) {
                                     dailyLedgerDto.addDailyIncome(ledgerDto.getAmount());
-                                }
-                                else if (ledgerDto.getLedgerCode() == LedgerCode.E || ledgerDto.getLedgerCode() == LedgerCode.S) {
+                                } else if (ledgerDto.getLedgerCode() == LedgerCode.E || ledgerDto.getLedgerCode() == LedgerCode.S) {
                                     dailyLedgerDto.addDailyExpenditure(ledgerDto.getAmount());
                                 }
                             });

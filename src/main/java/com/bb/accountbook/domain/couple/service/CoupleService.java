@@ -135,7 +135,7 @@ public class CoupleService {
     }
 
     @Transactional(readOnly = true)
-    public boolean isExistCoupleByUserEmail(String userEmail) {
+    public boolean isExistCouple(String userEmail) {
         Optional<UserCouple> optional = coupleRepository.findUserCoupleByUserEmail(userEmail);
         return optional.isPresent() && optional.get().getStatus() == ACTIVE;
     }
@@ -146,5 +146,9 @@ public class CoupleService {
             log.error(ERR_CPL_001.getValue());
             return new GlobalException(ERR_CPL_001);
         });
+    }
+
+    public boolean isCouple(String userEmail) {
+        return coupleRepository.findCoupleByUserEmail(userEmail).isPresent();
     }
 }
