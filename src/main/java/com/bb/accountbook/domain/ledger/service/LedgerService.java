@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
-import static com.bb.accountbook.common.model.codes.ErrorCode.ERR_LED_000;
+import static com.bb.accountbook.common.model.codes.ErrorCode.*;
 import static java.util.stream.Collectors.groupingBy;
 
 @Slf4j
@@ -103,9 +103,9 @@ public class LedgerService {
     public List<Ledger> findCoupleMonthlyLedger(String email, String yearMonth) {
         LocalDate[] monthlyDuration = DateTimeUtil.getMonthlyDuration(yearMonth);
 
-        if (coupleService.isExistCouple(email)) {
-            log.error(ErrorCode.ERR_CPL_003.getValue());
-            throw new GlobalException(ErrorCode.ERR_CPL_003);
+        if (!coupleService.isExistCouple(email)) {
+            log.debug("{}.{}({}, {}): {}", this.getClass().getName(), "findCoupleMonthlyLedger", email, yearMonth, ERR_CPL_003.getValue());
+            throw new GlobalException(ERR_CPL_003);
         }
 
         Couple couple = coupleService.findCoupleByUserEmail(email);
@@ -154,7 +154,7 @@ public class LedgerService {
     @Transactional(readOnly = true)
     public LedgerPersonalDetailDto findPersonalLedger(String email, Long ledgerId) {
         Ledger ledger = ledgerRepository.findLedgerByIdAndUserEmail(ledgerId, email).orElseThrow(() -> {
-            log.error(ERR_LED_000.getValue());
+            log.debug("{}.{}({}, {}): {}", this.getClass().getName(), "findPersonalLedger", email, ledgerId, ERR_LED_000.getValue());
             return new GlobalException(ERR_LED_000);
         });
         return new LedgerPersonalDetailDto(ledger.getId(), ledger.getCode(), ledger.getDate(), ledger.getAmount(), ledger.getDescription());
@@ -170,8 +170,7 @@ public class LedgerService {
     @Transactional(readOnly = true)
     public LedgerCoupleDetailDto findCoupleLedger(Long coupleId, Long ledgerId) {
         Ledger ledger = ledgerRepository.findLedgerWithUserCouple(coupleId, ledgerId).orElseThrow(() -> {
-            log.error(ERR_LED_000.getValue());
-            log.error("{}, {}", coupleId, ledgerId);
+            log.debug("{}.{}({}, {}): {}", this.getClass().getName(), "findCoupleLedger", coupleId, ledgerId, ERR_LED_000.getValue());
             return new GlobalException(ERR_LED_000);
         });
 

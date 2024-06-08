@@ -20,7 +20,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-@Profile({"local", "dev"})
+@Profile({"local", "dev", "default"})
 @RequiredArgsConstructor
 @Component
 @Transactional

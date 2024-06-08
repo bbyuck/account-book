@@ -33,7 +33,7 @@ public class CoupleService {
     @Transactional
     public UserCouple findUserCouple(Long userCoupleId) {
         return coupleRepository.findUserCoupleById(userCoupleId).orElseThrow(() -> {
-            log.error(ERR_CPL_003.getValue());
+            log.debug("{}.{}({}): {}", this.getClass().getName(), "findUserCouple", userCoupleId, ERR_CPL_003.getValue());
             return new GlobalException(ERR_CPL_003);
         });
     }
@@ -56,7 +56,7 @@ public class CoupleService {
     @Transactional(readOnly = true)
     public Couple findCouple(Long coupleId) {
         return coupleRepository.findById(coupleId).orElseThrow(() -> {
-            log.error(ERR_CPL_001.getValue());
+            log.debug("{}.{}({}): {}", this.getClass().getName(), "findCouple", coupleId, ERR_CPL_001.getValue());
             return new GlobalException(ERR_CPL_001);
         });
     }
@@ -67,7 +67,7 @@ public class CoupleService {
         Set<User> usersInCouple = userCouples.stream().map(UserCouple::getUser).collect(Collectors.toSet());
 
         if (usersInCouple.size() != 1) {
-            log.error(ERR_CPL_000.getValue());
+            log.debug("{}.{}({}, {}): {}", this.getClass().getName(), "inviteToCouple", opponentEmail, coupleId, ERR_SYS_000.getValue());
             throw new GlobalException(ERR_SYS_000);
         }
 
@@ -129,7 +129,7 @@ public class CoupleService {
     @Transactional(readOnly = true)
     public Couple findCoupleByUserId(Long userId) {
         return coupleRepository.findCoupleByUserId(userId).orElseThrow(() -> {
-            log.error(ERR_CPL_001.getValue());
+            log.debug("{}.{}({}): {}", this.getClass().getName(), "findCoupleByUserId", userId, ERR_CPL_001.getValue());
             return new GlobalException(ERR_CPL_001);
         });
     }
@@ -143,7 +143,7 @@ public class CoupleService {
     @Transactional(readOnly = true)
     public Couple findCoupleByUserEmail(String userEmail) {
         return coupleRepository.findCoupleByUserEmail(userEmail).orElseThrow(() -> {
-            log.error(ERR_CPL_001.getValue());
+            log.debug("{}.{}({}): {}", this.getClass().getName(), "findCoupleByUserEmail", userEmail, ERR_CPL_001.getValue());
             return new GlobalException(ERR_CPL_001);
         });
     }

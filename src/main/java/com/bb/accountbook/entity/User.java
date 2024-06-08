@@ -53,6 +53,9 @@ public class User extends BaseEntity {
     @OneToOne(mappedBy = "user")
     private UserCouple userCouple;
 
+    @OneToMany(mappedBy = "user")
+    private List<Custom> customs = new ArrayList<>();
+
     public User(String email, String password, GenderCode gender) {
         this.email = email;
         this.password = password;

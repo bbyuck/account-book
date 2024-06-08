@@ -44,7 +44,7 @@ public class UserService {
     public Long signup(String email, String password, GenderCode gender) {
         // 1. 중복 체크
         userRepository.findByEmail(email).ifPresent((user) -> {
-            log.debug("{} ====== {}", ERR_USR_001.getValue(), user.getEmail());
+            log.debug("{}.{}({}): {}", this.getClass().getName(), "signup", email, ERR_USR_001.getValue());
             throw new GlobalException(ERR_USR_001);
         });
 
@@ -57,7 +57,7 @@ public class UserService {
                 .map(roleCode ->
                         new UserRole(joinedUser, roleRepository.findByCode(roleCode)
                                 .orElseThrow(() -> {
-                                    log.error("Role Entity를 찾을 수 없습니다. ====== {}", roleCode.name());
+                                    log.debug("{}.{}({}): {}", this.getClass().getName(), "signup", email, "Role Entity를 찾을 수 없습니다.");
                                     return new GlobalException(ERR_SYS_000);
                                 }))
                 ).toList();
@@ -71,7 +71,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public User findUserById(Long userId) {
         return userRepository.findWithRolesById(userId).orElseThrow(() -> {
-            log.error(ERR_USR_000.getValue());
+            log.debug("{}.{}({}): {}", this.getClass().getName(), "findUserById", userId, ERR_USR_000.getValue());
             return new GlobalException(ERR_USR_000);
         });
     }
@@ -79,7 +79,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public User findUserByEmail(String email) {
         return userRepository.findWithRolesByEmail(email).orElseThrow(() -> {
-            log.error(ERR_USR_000.getValue());
+            log.debug("{}.{}({}): {}", this.getClass().getName(), "findUserByEmail", email, ERR_USR_000.getValue());
             return new GlobalException(ERR_USR_000);
         });
     }
@@ -114,12 +114,13 @@ public class UserService {
 
         org.springframework.security.core.userdetails.User principal = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
         User apiCaller = userRepository.findByEmail(principal.getUsername()).orElseThrow(() -> {
-            log.error(ERR_USR_000.getValue());
+            log.debug("{}.{}({}): {}", this.getClass().getName(), "reissueToken", refreshToken, ERR_USR_000.getValue());
             // 유저를 찾을 수 없음
             return new GlobalException(ERR_USR_000);
         });
 
         if (!apiCaller.getRefreshToken().equals(refreshToken)) {
+            log.debug("{}.{}({}): {}", this.getClass().getName(), "reissueToken", refreshToken, ERR_AUTH_003.getValue());
             // 인증에 실패
             throw new GlobalException(ERR_AUTH_003);
         }
