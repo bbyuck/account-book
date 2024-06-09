@@ -41,4 +41,9 @@ public class CustomController {
                         .collect(Collectors.toList())
         );
     }
+
+    @GetMapping("/api/v1/custom/color")
+    public ApiResponse<String> findCustomColor() {
+        return new ApiResponse<>(customService.getCustomColor(securityContextProvider.getCurrentEmail()));
+    }
 }

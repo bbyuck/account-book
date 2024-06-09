@@ -11,7 +11,7 @@ spring:
     password: ENC(cHv+WoCaY18rpm5wdCHB79J5WpqCSHd2iMmdWC92IY1jCPOooK5zT3NZC8Sary5Z)
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     show-sql: true
     properties:
       hibernate:
@@ -61,7 +61,7 @@ email:
 
 logging:
   level:
-    com.bb.accountbook: debug
+    com.bb.accountbook: error
     org.springframework: error
     org.hibernate:
       type:
