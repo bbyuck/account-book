@@ -44,7 +44,7 @@ public class LedgerController {
 
     @DeleteMapping("/api/v1/ledger/{ledgerId}")
     public ApiResponse<LedgerDeleteResponseDto> deleteLedger(@PathVariable("ledgerId") Long ledgerId) {
-        return new ApiResponse<>(ledgerService.deleteLedger(securityContextProvider.getCurrentEmail(), ledgerId));
+        return new ApiResponse<>(new LedgerDeleteResponseDto(ledgerService.deleteLedger(securityContextProvider.getCurrentEmail(), ledgerId)));
     }
 
     @GetMapping("/api/v1/personal/ledger/{ledgerId}")

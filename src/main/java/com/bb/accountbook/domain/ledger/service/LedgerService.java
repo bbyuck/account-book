@@ -253,7 +253,24 @@ public class LedgerService {
                 .reduce(Long::sum).orElse(0L));
     }
 
-    public String deleteLedger(String email, Long ledgerId) {
-        return null;
+    public boolean deleteLedger(String email, Long ledgerId) {
+        Ledger ledger;
+        if (coupleService.isCouple(email)) {
+            Long coupleId = coupleService.findCoupleByUserEmail(email).getId();
+             ledger = ledgerRepository.findLedgerWithUserCouple(coupleId, ledgerId).orElseThrow(() -> {
+                log.debug("{}.{}({}, {}): {}", this.getClass().getName(), "findCoupleLedger", coupleId, ledgerId, ERR_LED_000.getValue());
+                return new GlobalException(ERR_LED_000);
+            });
+        }
+        else {
+            ledger = ledgerRepository.findLedgerByIdAndUserEmail(ledgerId, email).orElseThrow(() -> {
+                log.debug("{}.{}({}, {}): {}", this.getClass().getName(), "findPersonalLedger", email, ledgerId, ERR_LED_000.getValue());
+                return new GlobalException(ERR_LED_000);
+            });
+        }
+
+        ledgerRepository.delete(ledger);
+
+        return true;
     }
 }

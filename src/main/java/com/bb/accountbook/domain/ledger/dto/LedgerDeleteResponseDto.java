@@ -6,5 +6,5 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class LedgerDeleteResponseDto {
-    private String message;
+    private boolean success;
 }

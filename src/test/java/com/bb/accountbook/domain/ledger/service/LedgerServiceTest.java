@@ -85,7 +85,7 @@ class LedgerServiceTest {
 
 
         // then
-        Assertions.assertThrows(GlobalException.class, () -> ledgerService.findCoupleMonthlyLedger(anotherManEmail,"202404"));
+        Assertions.assertThrows(GlobalException.class, () -> ledgerService.findCoupleMonthlyLedger(anotherManEmail, "202404"));
         assertThat(personalMonthlyLedger.size()).isEqualTo(5);
         assertThat(coupleMonthlyLedger.size()).isEqualTo(8);
         assertThat(coupleMonthlyLedger.get(0).getDate()).isEqualTo(LocalDate.of(2024, 4, 1));
@@ -126,5 +126,20 @@ class LedgerServiceTest {
 
         // then
         assertThat(coupleAsset.getAmount()).isEqualTo(740000L);
+    }
+
+    @Test
+    @DisplayName("가계부 삭제")
+    public void deleteLedger() throws Exception {
+        // given
+        String email = "k941026h@naver.com";
+        Long ledgerId = ledgerService.insertLedger(email, LedgerCode.I, LocalDate.now(), 20000L, "");
+
+        // when
+        boolean deleted = ledgerService.deleteLedger(email, ledgerId);
+
+        // then
+        assertThat(deleted).isTrue();
+        Assertions.assertThrows(GlobalException.class, () -> ledgerService.deleteLedger(email, 12L));
     }
 }
