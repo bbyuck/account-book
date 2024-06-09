@@ -1,6 +1,7 @@
 package com.bb.accountbook.domain.custom.controller;
 
 import com.bb.accountbook.common.model.ApiResponse;
+import com.bb.accountbook.domain.custom.dto.CustomColorDto;
 import com.bb.accountbook.domain.custom.dto.CustomCreateRequestDto;
 import com.bb.accountbook.domain.custom.dto.CustomCreateResponseDto;
 import com.bb.accountbook.domain.custom.dto.CustomDto;
@@ -43,7 +44,7 @@ public class CustomController {
     }
 
     @GetMapping("/api/v1/custom/color")
-    public ApiResponse<String> findCustomColor() {
-        return new ApiResponse<>(customService.getCustomColor(securityContextProvider.getCurrentEmail()));
+    public ApiResponse<CustomColorDto> findCustomColor() {
+        return new ApiResponse<>(new CustomColorDto(customService.getCustomColor(securityContextProvider.getCurrentEmail())));
     }
 }
