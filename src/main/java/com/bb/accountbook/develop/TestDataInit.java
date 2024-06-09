@@ -16,6 +16,7 @@ public class TestDataInit {
     public void init() {
         testData.init();
         testData.ledgerServiceTestData();
+        testData.customTestData();
     }
     
 }

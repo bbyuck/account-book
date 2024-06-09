@@ -1,11 +1,13 @@
 package com.bb.accountbook.develop;
 
+import com.bb.accountbook.common.model.codes.CustomCode;
 import com.bb.accountbook.common.model.codes.GenderCode;
 import com.bb.accountbook.common.model.codes.LedgerCode;
 import com.bb.accountbook.common.model.codes.RoleCode;
 import com.bb.accountbook.common.model.status.UserStatus;
 import com.bb.accountbook.domain.couple.repository.CoupleRepository;
 import com.bb.accountbook.domain.couple.service.CoupleService;
+import com.bb.accountbook.domain.custom.service.CustomService;
 import com.bb.accountbook.domain.ledger.service.LedgerService;
 import com.bb.accountbook.domain.user.repository.RoleRepository;
 import com.bb.accountbook.domain.user.service.UserService;
@@ -32,6 +34,7 @@ public class TestData {
     private final LedgerService ledgerService;
     private final RoleRepository roleRepository;
     private final CoupleRepository coupleRepository;
+    private final CustomService customService;
 
     public void init() {
         roleRepository.saveAllAndFlush(Arrays.stream(RoleCode.values()).map(Role::new).collect(Collectors.toList()));
@@ -82,5 +85,12 @@ public class TestData {
         ledgerService.insertLedger(womanEmail, LedgerCode.S, LocalDate.of(2024, 4, 5), 150000L, "W저축1");
         ledgerService.insertLedger(womanEmail, LedgerCode.S, LocalDate.of(2024, 4, 8), 220000L, "W저축2");
 
+    }
+
+    public void customTestData() {
+        String email = "k941026h@naver.com";
+        CustomCode code = CustomCode.COLOR;
+        String value = "3399ff";
+        customService.saveCustom(email, code, value);
     }
 }

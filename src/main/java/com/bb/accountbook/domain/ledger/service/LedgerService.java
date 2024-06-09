@@ -1,11 +1,13 @@
 package com.bb.accountbook.domain.ledger.service;
 
 import com.bb.accountbook.common.exception.GlobalException;
+import com.bb.accountbook.common.model.codes.CustomCode;
 import com.bb.accountbook.common.model.codes.ErrorCode;
 import com.bb.accountbook.common.model.codes.LedgerCode;
 import com.bb.accountbook.common.model.status.CoupleStatus;
 import com.bb.accountbook.common.util.DateTimeUtil;
 import com.bb.accountbook.domain.couple.service.CoupleService;
+import com.bb.accountbook.domain.custom.service.CustomService;
 import com.bb.accountbook.domain.ledger.dto.*;
 import com.bb.accountbook.domain.ledger.repository.LedgerRepository;
 import com.bb.accountbook.domain.user.service.UserService;
@@ -36,6 +38,8 @@ public class LedgerService {
     private final UserService userService;
 
     private final CoupleService coupleService;
+
+    private final CustomService customService;
 
     /**
      * 가계부 상세 항목입력
@@ -202,7 +206,8 @@ public class LedgerService {
                             ledger.getCode(),
                             ledger.getDate(),
                             ledger.getAmount(),
-                            ledger.getDescription()
+                            ledger.getDescription(),
+                            customService.getCustomColor(ledger.getOwner().getEmail())
                     );
                 })
                 .collect(groupingBy(LedgerDto::getDay))

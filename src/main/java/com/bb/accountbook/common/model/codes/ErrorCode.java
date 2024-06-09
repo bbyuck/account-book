@@ -29,8 +29,8 @@ public enum ErrorCode {
     /**
      * Couple Error
      */
-    ERR_CPL_000("선택한 커플 Entity에 연결 된 유저수가 정확하지 않습니다.", UNPROCESSABLE_ENTITY),
-    ERR_CPL_001("커플 Entity를 찾을 수 없습니다.", SC_NOT_FOUND),
+    ERR_CPL_000("선택한 커플에 연결 된 유저수가 정확하지 않습니다.", UNPROCESSABLE_ENTITY),
+    ERR_CPL_001("커플 정보를 찾을 수 없습니다.", SC_NOT_FOUND),
     ERR_CPL_002("이미 커플로 연결되어 있습니다.", SC_CONFLICT),
     ERR_CPL_003("커플 매핑 정보를 찾을 수 없습니다.", SC_NOT_FOUND),
     ERR_CPL_004("커플 상태가 활성 상태가 아닙니다.", SC_CONFLICT),
@@ -52,6 +52,11 @@ public enum ErrorCode {
     ERR_AUTH_005("만료된 JWT 토큰입니다.", SC_UNAUTHORIZED),
     ERR_AUTH_006("지원되지 않는 JWT 토큰입니다.", SC_UNAUTHORIZED),
     ERR_AUTH_007("잘못된 JWT 토큰 입력입니다.", SC_UNAUTHORIZED),
+
+    /**
+     * Customization
+     */
+    ERR_CUS_000("커스텀 정보를 찾을 수 없습니다.", SC_NOT_FOUND),
 
     ;
 

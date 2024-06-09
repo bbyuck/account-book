@@ -41,6 +41,8 @@ public class LedgerCustomRepositoryImpl implements LedgerCustomRepository {
                 "from Ledger l " +
                 "join fetch User u " +
                 "on l.owner = u " +
+                "join fetch Custom cu " +
+                "on cu.user = u " +
                 "join fetch UserCouple uc " +
                 "on uc.user = u " +
                 "join fetch Couple c " +
@@ -137,6 +139,8 @@ public class LedgerCustomRepositoryImpl implements LedgerCustomRepository {
                 "from Ledger l " +
                 "join fetch User u " +
                 "on l.owner = u " +
+                "join fetch Custom c " +
+                "on c.user = u " +
                 "where u.email = :email " +
                 "and l.date between :startDate and :endDate " +
                 "order by l.date asc";

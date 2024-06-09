@@ -14,8 +14,9 @@ public class LedgerDto {
     private int day;
     private Long amount;
     private String description;
+    private String color;
 
-    public LedgerDto(Long ledgerId, String nickname, LedgerCode code, LocalDate date, Long amount, String description) {
+    public LedgerDto(Long ledgerId, String nickname, LedgerCode code, LocalDate date, Long amount, String description, String color) {
         this.ledgerId = ledgerId;
         this.ownerNickname = nickname;
         this.ledgerCode = code;
@@ -23,5 +24,6 @@ public class LedgerDto {
         this.day = date.getDayOfMonth();
         this.amount = amount;
         this.description = description;
+        this.color = color;
     }
 }
