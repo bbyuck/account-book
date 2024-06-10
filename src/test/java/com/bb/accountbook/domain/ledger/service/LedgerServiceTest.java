@@ -77,7 +77,7 @@ class LedgerServiceTest {
         // given
         String manEmail = "man3@naver.com";
         String womanEmail = "woman4@naver.com";
-        String anotherManEmail = "k941026h@naver.com";
+        String anotherManEmail = "abc123@naver.com";
 
         // when
         List<Ledger> personalMonthlyLedger = ledgerService.findPersonalMonthlyLedger(manEmail, "202404");

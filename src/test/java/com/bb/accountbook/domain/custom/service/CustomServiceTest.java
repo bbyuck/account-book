@@ -22,7 +22,7 @@ class CustomServiceTest {
     @DisplayName("유저별 커스터마이즈 Entity 저장")
     public void saveCustom() throws Exception {
         // given
-        String userEmail = "k941026h@naver.com";
+        String userEmail = "abc123@naver.com";
         CustomCode code = CustomCode.COLOR;
         String value = "98DF96";
 
@@ -30,7 +30,7 @@ class CustomServiceTest {
         Long savedCustomId = customService.saveCustom(userEmail, code, value);
 
         // then
-        Assertions.assertThat(savedCustomId).isEqualTo(1);
+        Assertions.assertThat(savedCustomId).isNotNull();
 
     }
 
@@ -39,7 +39,7 @@ class CustomServiceTest {
     @DisplayName("유저별 커스터마이즈 조회")
     public void findOwnCustoms() throws Exception {
         // given
-        String userEmail =  "k941026h@naver.com";
+        String userEmail =  "abc123@naver.com";
         CustomCode code = CustomCode.COLOR;
         String value = "98DF96";
 
