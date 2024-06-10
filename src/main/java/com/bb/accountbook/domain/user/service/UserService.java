@@ -4,9 +4,11 @@ import com.bb.accountbook.common.exception.GlobalException;
 import com.bb.accountbook.common.model.codes.GenderCode;
 import com.bb.accountbook.common.model.codes.RoleCode;
 import com.bb.accountbook.domain.user.dto.TokenDto;
+import com.bb.accountbook.domain.user.repository.AuthRepository;
 import com.bb.accountbook.domain.user.repository.RoleRepository;
 import com.bb.accountbook.domain.user.repository.UserRepository;
 import com.bb.accountbook.domain.user.repository.UserRoleRepository;
+import com.bb.accountbook.entity.Auth;
 import com.bb.accountbook.entity.User;
 import com.bb.accountbook.entity.UserRole;
 import com.bb.accountbook.security.TokenProvider;
@@ -38,7 +40,10 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     private final TokenProvider tokenProvider;
+
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
+
+    private final AuthRepository authRepository;
 
 
     public Long signup(String email, String password, GenderCode gender) {
@@ -84,6 +89,10 @@ public class UserService {
         });
     }
 
+    public Long saveAuthInfo(User user, TokenDto token) {
+        Auth auth = authRepository.save(new Auth(user, token.getRefreshToken(), token.isAutoLogin()));
+        return auth.getId();
+    }
 
     public TokenDto authenticate(String email, String password, boolean autoLogin) {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
@@ -101,8 +110,12 @@ public class UserService {
 
         // authentication 객체를 createToken 메소드를 통해서 JWT Token을 생성
         TokenDto token = tokenProvider.createToken(authentication);
-        user.updateRefreshToken(token.getRefreshToken());
         token.setAutoLogin(autoLogin);
+
+        // token info save if not exist / update if exist
+        authRepository.findByUserId(user.getId())
+                .ifPresentOrElse(auth -> auth.update(token.getRefreshToken()
+                        , token.isAutoLogin()), () -> saveAuthInfo(user, token));
 
         return token;
     }
@@ -111,7 +124,6 @@ public class UserService {
         tokenProvider.validate(refreshToken);
 
         Authentication authentication = tokenProvider.getAuthentication(refreshToken);
-
         org.springframework.security.core.userdetails.User principal = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
         User apiCaller = userRepository.findByEmail(principal.getUsername()).orElseThrow(() -> {
             log.debug("{}.{}({}): {}", this.getClass().getName(), "reissueToken", refreshToken, ERR_USR_000.getValue());
@@ -119,14 +131,15 @@ public class UserService {
             return new GlobalException(ERR_USR_000);
         });
 
-        if (!apiCaller.getRefreshToken().equals(refreshToken)) {
+        Auth auth = apiCaller.getAuth();
+        if (auth == null || !auth.getRefreshToken().equals(refreshToken)) {
             log.debug("{}.{}({}): {}", this.getClass().getName(), "reissueToken", refreshToken, ERR_AUTH_003.getValue());
             // 인증에 실패
             throw new GlobalException(ERR_AUTH_003);
         }
 
         TokenDto token = tokenProvider.createToken(authentication);
-        apiCaller.updateRefreshToken(token.getRefreshToken());
+        auth.updateRefreshToken(token.getRefreshToken());
 
         return token;
     }

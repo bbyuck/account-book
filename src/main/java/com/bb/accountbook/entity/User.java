@@ -40,8 +40,8 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private UserStatus status;
 
-    @Column(name = "refresh_token")
-    private String refreshToken;
+    @Column(name = "underlying_asset")
+    private Long underlyingAsset = 0L;
 
     @OneToMany(mappedBy = "owner")
     private List<Ledger> ledgers = new ArrayList<>();
@@ -54,6 +54,9 @@ public class User extends BaseEntity {
 
     @OneToOne(mappedBy = "user")
     private UserCouple userCouple;
+
+    @OneToOne(mappedBy = "user", fetch = FetchType.EAGER)
+    private Auth auth;
 
     @OneToMany(mappedBy = "user")
     private List<Custom> customs = new ArrayList<>();
@@ -73,8 +76,8 @@ public class User extends BaseEntity {
         this.status = status;
     }
 
-    public void updateRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
+    public void changeUnderlyingAsset(Long amount) {
+        this.underlyingAsset = amount;
     }
 
 }

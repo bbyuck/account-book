@@ -12,13 +12,13 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 public abstract class BaseEntity {
 
-    @Column(name = "createdBy", updatable = false)
+    @Column(name = "createdBy", updatable = false, length = 40)
     private String createdBy;
 
     @Column(name = "created_date", updatable = false)
     private LocalDateTime createdDate;
 
-    @Column(name = "updatedBy")
+    @Column(name = "updatedBy", length = 40)
     private String updatedBy;
 
     @Column(name = "updatedDate")
@@ -35,4 +35,6 @@ public abstract class BaseEntity {
     public void preUpdate() {
         updatedDate = LocalDateTime.now();
     }
+
+
 }

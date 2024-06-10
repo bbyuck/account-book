@@ -20,7 +20,7 @@ public class Custom extends BaseEntity {
     @Column(name = "custom_id")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 

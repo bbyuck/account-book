@@ -54,7 +54,8 @@ cors:
 
 jwt:
   secret: secret1234secret1234secret1234secret1234secret1234secret1234secret1234secret1234secret1234secret1234secret1234secret1234
-  access-token-expiration-time: 1800 # 30분
+#  access-token-expiration-time: 1800 # 30분
+  access-token-expiration-time: 15 # 15초
   refresh-token-expiration-time: 1209600 # 14일
   iss: hay-account-book
 
