@@ -45,4 +45,8 @@ public class Auth extends BaseEntity {
         this.autoLogin = autoLogin;
     }
 
+    public void reset() {
+        this.refreshToken = null;
+        this.autoLogin = false;
+    }
 }

@@ -114,8 +114,9 @@ public class UserService {
 
         // token info save if not exist / update if exist
         authRepository.findByUserId(user.getId())
-                .ifPresentOrElse(auth -> auth.update(token.getRefreshToken()
-                        , token.isAutoLogin()), () -> saveAuthInfo(user, token));
+                .ifPresentOrElse(
+                        auth -> auth.update(token.getRefreshToken(), token.isAutoLogin())
+                        , () -> saveAuthInfo(user, token));
 
         return token;
     }
@@ -144,4 +145,14 @@ public class UserService {
         return token;
     }
 
+    public boolean logout(String email) {
+        authRepository
+                .findByUserEmail(email)
+                .orElseThrow(() -> {
+                    log.debug("{}.{}({}): {}", this.getClass().getName(), "logout", email, ERR_AUTH_007.getValue());
+                    return new GlobalException(ERR_AUTH_007);
+                })
+                .reset();
+        return true;
+    }
 }

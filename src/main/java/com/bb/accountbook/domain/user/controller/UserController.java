@@ -1,11 +1,9 @@
 package com.bb.accountbook.domain.user.controller;
 
 import com.bb.accountbook.common.model.ApiResponse;
-import com.bb.accountbook.domain.user.dto.LoginDto;
-import com.bb.accountbook.domain.user.dto.TokenDto;
-import com.bb.accountbook.domain.user.dto.UserSignUpRequestDto;
-import com.bb.accountbook.domain.user.dto.UserSignUpResponseDto;
+import com.bb.accountbook.domain.user.dto.*;
 import com.bb.accountbook.domain.user.service.UserService;
+import com.bb.accountbook.security.SecurityContextProvider;
 import com.bb.accountbook.security.TokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,6 +24,7 @@ public class UserController {
 
     private final TokenProvider tokenProvider;
 
+    private final SecurityContextProvider securityContextProvider;
 
     @PostMapping("/api/v1/signup")
     public ApiResponse<UserSignUpResponseDto> signup(@RequestBody @Valid UserSignUpRequestDto userSignUpRequestDto) {
@@ -45,5 +44,10 @@ public class UserController {
     public ApiResponse<TokenDto> reissueToken(HttpServletRequest request) {
         String refreshToken = tokenProvider.resolveRefreshToken(request);
         return new ApiResponse<>(userService.reissueToken(refreshToken));
+    }
+
+    @PostMapping("/api/v1/logout")
+    public ApiResponse<LogoutResponseDto> logout() {
+        return new ApiResponse<>(new LogoutResponseDto(userService.logout(securityContextProvider.getCurrentEmail())));
     }
 }

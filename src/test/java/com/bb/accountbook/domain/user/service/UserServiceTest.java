@@ -60,5 +60,4 @@ class UserServiceTest {
 
         // then
     }
-
 }
