@@ -6,7 +6,6 @@ import com.bb.accountbook.domain.custom.dto.CustomCreateRequestDto;
 import com.bb.accountbook.domain.custom.dto.CustomCreateResponseDto;
 import com.bb.accountbook.domain.custom.dto.CustomDto;
 import com.bb.accountbook.domain.custom.service.CustomService;
-import com.bb.accountbook.entity.Custom;
 import com.bb.accountbook.security.SecurityContextProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

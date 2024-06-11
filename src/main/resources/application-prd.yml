@@ -61,7 +61,7 @@ email:
 
 logging:
   level:
-    com.bb.accountbook: error
+    com.bb.accountbook: debug
     org.springframework: error
     org.hibernate:
       type:
