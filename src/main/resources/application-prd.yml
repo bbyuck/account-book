@@ -62,7 +62,7 @@ email:
 logging:
   level:
     com.bb.accountbook: debug
-    org.springframework: error
+    org.springframework: debug
     org.hibernate:
       type:
         descriptor.sql: error
