@@ -26,7 +26,7 @@ public class LedgerCustomRepositoryImpl implements LedgerCustomRepository {
                 "join fetch User u " +
                 "on l.owner = u " +
                 "where u.id = :userId " +
-                "and l.date between :startDate and :endDate " +
+                "and l.date >= :startDate and l.date <= :endDate " +
                 "order by l.date asc";
         return em.createQuery(jpql, Ledger.class)
                 .setParameter("userId", userId)
@@ -47,7 +47,7 @@ public class LedgerCustomRepositoryImpl implements LedgerCustomRepository {
                 "on uc.couple = c " +
                 "where c.id = :coupleId " +
                 "and uc.status = :userCoupleStatus " +
-                "and l.date between :startDate and :endDate " +
+                "and l.date >= :startDate and l.date <= :endDate " +
                 "and u.status = :userStatus " +
                 "order by l.date asc";
         return em.createQuery(jpql, Ledger.class)
@@ -138,7 +138,7 @@ public class LedgerCustomRepositoryImpl implements LedgerCustomRepository {
                 "join fetch User u " +
                 "on l.owner = u " +
                 "where u.email = :email " +
-                "and l.date between :startDate and :endDate " +
+                "and l.date >= :startDate and l.date <= :endDate " +
                 "order by l.date asc";
         return em.createQuery(jpql, Ledger.class)
                 .setParameter("email", email)

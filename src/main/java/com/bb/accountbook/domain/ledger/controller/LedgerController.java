@@ -63,13 +63,13 @@ public class LedgerController {
         return new ApiResponse<>(ledgerService.getMonthlyLedgerResponseDto(monthlyLedger, yearMonth));
     }
 
-    @GetMapping("/api/v1/couple/monthly/ledger")
+    @GetMapping("/api/v1/monthly/couple//ledger")
     public ApiResponse<MonthlyLedgerResponseDto> findCoupleMonthlyLedger(@RequestParam("ym") @Valid @YearMonth String yearMonth) {
         List<Ledger> monthlyLedgers = ledgerService.findCoupleMonthlyLedger(securityContextProvider.getCurrentEmail(), yearMonth);
         return new ApiResponse<>(ledgerService.getMonthlyLedgerResponseDto(monthlyLedgers, yearMonth));
     }
 
-    @GetMapping("/api/v1/personal/monthly/ledger")
+    @GetMapping("/api/v1/monthly/personal//ledger")
     public ApiResponse<MonthlyLedgerResponseDto> findPersonalMonthlyLedger(@RequestParam("ym") @Valid @YearMonth String yearMonth) {
         List<Ledger> monthlyLedgers = ledgerService.findPersonalMonthlyLedger(securityContextProvider.getCurrentEmail(), yearMonth);
         return new ApiResponse<>(ledgerService.getMonthlyLedgerResponseDto(monthlyLedgers, yearMonth));
