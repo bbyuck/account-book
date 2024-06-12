@@ -1,10 +1,8 @@
 package com.bb.accountbook.domain.ledger.service;
 
 import com.bb.accountbook.common.exception.GlobalException;
-import com.bb.accountbook.common.model.codes.CustomCode;
 import com.bb.accountbook.common.model.codes.ErrorCode;
 import com.bb.accountbook.common.model.codes.LedgerCode;
-import com.bb.accountbook.common.model.status.CoupleStatus;
 import com.bb.accountbook.common.util.DateTimeUtil;
 import com.bb.accountbook.domain.couple.service.CoupleService;
 import com.bb.accountbook.domain.custom.service.CustomService;
@@ -19,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
@@ -114,21 +113,21 @@ public class LedgerService {
 
         Couple couple = coupleService.findCoupleByUserEmail(email);
 
-        return ledgerRepository.findCoupleMonthlyLedger(couple.getId(), monthlyDuration[0], monthlyDuration[1]);
+        return ledgerRepository.findCouplePeriodLedger(couple.getId(), monthlyDuration[0], monthlyDuration[1]);
     }
 
     /**
      * 개인 월별 가계부 상세 항목 목록 조회
      * yearMonth -> yyyyMM
      *
-     * @param userId
+     * @param userEmail
      * @param yearMonth
      * @return
      */
     @Transactional(readOnly = true)
     public List<Ledger> findPersonalMonthlyLedger(String userEmail, String yearMonth) {
         LocalDate[] monthlyDuration = DateTimeUtil.getMonthlyDuration(yearMonth);
-        return ledgerRepository.findPersonalMonthlyLedgerByEmail(userEmail, monthlyDuration[0], monthlyDuration[1]);
+        return ledgerRepository.findPersonalPeriodLedgerByEmail(userEmail, monthlyDuration[0], monthlyDuration[1]);
     }
 
     @Transactional(readOnly = true)
@@ -148,6 +147,7 @@ public class LedgerService {
                 ? findCoupleLedger(coupleService.findCoupleByUserEmail(email).getId(), ledgerId)
                 : findPersonalLedger(email, ledgerId);
     }
+
 
     /**
      * 개인 가계부 상세 항목 조회

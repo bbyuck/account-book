@@ -10,15 +10,11 @@ import java.util.Optional;
 @Repository
 public interface LedgerCustomRepository {
     /**
-     *
+     * 기간별 조회
      */
-
-    /**
-     * 월별 조회
-     */
-    List<Ledger> findPersonalMonthlyLedger(Long userId, LocalDate startDate, LocalDate endDate);
-    List<Ledger> findCoupleMonthlyLedger(Long coupleId, LocalDate startDate, LocalDate endDate);
-    List<Ledger> findPersonalMonthlyLedgerByEmail(String email, LocalDate startDate, LocalDate endDate);
+    List<Ledger> findPersonalPeriodLedger(Long userId, LocalDate startDate, LocalDate endDate);
+    List<Ledger> findCouplePeriodLedger(Long coupleId, LocalDate startDate, LocalDate endDate);
+    List<Ledger> findPersonalPeriodLedgerByEmail(String email, LocalDate startDate, LocalDate endDate);
 
     /**
      * 단건 조회

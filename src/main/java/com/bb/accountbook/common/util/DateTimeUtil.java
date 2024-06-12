@@ -20,6 +20,18 @@ public class DateTimeUtil {
         return answer;
     }
 
+    public static LocalDate[] getThreeMonthUnitDuration(String yearMonth) {
+        LocalDate[] answer = new LocalDate[2];
+
+        int year = Integer.parseInt(yearMonth.substring(0, 4));
+        int month = Integer.parseInt(yearMonth.substring(4, 6));
+
+        answer[0] = getMonthlyStartDate(month == 1 ? year - 1 : year, month == 1 ? 12 : month);
+        answer[1] = getMonthlyEndDate(month == 12 ? year + 1 : year, month == 12 ? 1 : month);
+
+        return answer;
+    }
+
     private static LocalDate getMonthlyStartDate(int year, int month) {
         return LocalDate.of(year, month, 1);
     }

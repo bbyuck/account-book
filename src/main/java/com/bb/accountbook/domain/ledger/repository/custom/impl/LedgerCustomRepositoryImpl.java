@@ -20,7 +20,7 @@ public class LedgerCustomRepositoryImpl implements LedgerCustomRepository {
     private final EntityManager em;
 
     @Override
-    public List<Ledger> findPersonalMonthlyLedger(Long userId, LocalDate startDate, LocalDate endDate) {
+    public List<Ledger> findPersonalPeriodLedger(Long userId, LocalDate startDate, LocalDate endDate) {
         String jpql = "select l " +
                 "from Ledger l " +
                 "join fetch User u " +
@@ -36,7 +36,7 @@ public class LedgerCustomRepositoryImpl implements LedgerCustomRepository {
     }
 
     @Override
-    public List<Ledger> findCoupleMonthlyLedger(Long coupleId, LocalDate startDate, LocalDate endDate) {
+    public List<Ledger> findCouplePeriodLedger(Long coupleId, LocalDate startDate, LocalDate endDate) {
         String jpql = "select l " +
                 "from Ledger l " +
                 "join fetch User u " +
@@ -132,7 +132,7 @@ public class LedgerCustomRepositoryImpl implements LedgerCustomRepository {
     }
 
     @Override
-    public List<Ledger> findPersonalMonthlyLedgerByEmail(String email, LocalDate startDate, LocalDate endDate) {
+    public List<Ledger> findPersonalPeriodLedgerByEmail(String email, LocalDate startDate, LocalDate endDate) {
         String jpql = "select l " +
                 "from Ledger l " +
                 "join fetch User u " +
