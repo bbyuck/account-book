@@ -17,6 +17,14 @@ public interface LedgerCustomRepository {
     List<Ledger> findPersonalPeriodLedgerByEmail(String email, LocalDate startDate, LocalDate endDate);
 
     /**
+     * 다건 조회
+     */
+
+    List<Ledger> findPersonalLedgers(String email);
+    List<Ledger> findCoupleLedgers(Long coupleId);
+
+
+    /**
      * 단건 조회
      */
     Optional<Ledger> findLedgerWithUserCouple(Long coupleId, Long ledgerId);
@@ -28,4 +36,5 @@ public interface LedgerCustomRepository {
     List<Ledger> findPersonalSavings(Long userId);
     List<Ledger> findPersonalSavingsByEmail(String email);
     List<Ledger> findCoupleSavings(Long coupleId);
+
 }

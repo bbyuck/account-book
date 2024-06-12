@@ -132,6 +132,38 @@ public class LedgerCustomRepositoryImpl implements LedgerCustomRepository {
     }
 
     @Override
+    public List<Ledger> findPersonalLedgers(String email) {
+        String jpql = "select l " +
+                "from Ledger l " +
+                "join fetch User u " +
+                "on l.owner = u " +
+                "where u.email = :email " +
+                "and u.status = :userStatus " +
+                "order by l.date asc";
+
+        return em.createQuery(jpql, Ledger.class)
+                .setParameter("userStatus", UserStatus.ACTIVE)
+                .setParameter("email", email)
+                .getResultList();
+    }
+
+    @Override
+    public List<Ledger> findCoupleLedgers(Long coupleId) {
+        String jpql = "select l " +
+                "from Ledger l " +
+                "join fetch User u " +
+                "on l.owner = u " +
+                "join fetch UserCouple uc " +
+                "on uc.user = u " +
+                "join fetch Couple c " +
+                "on uc.couple = c " +
+                "where c.id = :coupleId";
+        return em.createQuery(jpql, Ledger.class)
+                .setParameter("coupleId", coupleId)
+                .getResultList();
+    }
+
+    @Override
     public List<Ledger> findPersonalPeriodLedgerByEmail(String email, LocalDate startDate, LocalDate endDate) {
         String jpql = "select l " +
                 "from Ledger l " +

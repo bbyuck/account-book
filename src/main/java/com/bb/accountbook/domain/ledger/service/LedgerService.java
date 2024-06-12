@@ -135,6 +135,28 @@ public class LedgerService {
         return coupleService.isExistCouple(userEmail) ? findCoupleMonthlyLedger(userEmail, yearMonth) : findPersonalMonthlyLedger(userEmail, yearMonth);
     }
 
+    @Transactional(readOnly = true)
+    public List<Ledger> findLedgers(String userEmail) {
+        return coupleService.isExistCouple(userEmail) ? findCoupleLedgers(userEmail) : findPersonalLedgers(userEmail);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Ledger> findPersonalLedgers(String email) {
+        return ledgerRepository.findPersonalLedgers(email);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Ledger> findCoupleLedgers(String email) {
+        if (!coupleService.isExistCouple(email)) {
+            log.debug("{}.{}({}): {}", this.getClass().getName(), "findPersonalLedgers", email, ERR_CPL_003.getValue());
+            throw new GlobalException(ERR_CPL_003);
+        }
+
+        Couple couple = coupleService.findCoupleByUserEmail(email);
+
+        return ledgerRepository.findCoupleLedgers(couple.getId());
+    }
+
 
     /**
      * 가계부 상세 항목 조회

@@ -142,4 +142,24 @@ class LedgerServiceTest {
         assertThat(deleted).isTrue();
         Assertions.assertThrows(GlobalException.class, () -> ledgerService.deleteLedger(email, 12L));
     }
+
+
+    @Test
+    @DisplayName("커플 가계부 전체 조회")
+    public void monthlyAll() throws Exception {
+        // given
+        String manEmail = "man3@naver.com";
+        String womanEmail = "woman4@naver.com";
+        String anotherManEmail = "abc123@naver.com";
+
+        // when
+        List<Ledger> manLedgers = ledgerService.findLedgers(manEmail);
+        List<Ledger> womanLedgers = ledgerService.findLedgers(womanEmail);
+//        List<Ledger> personalMonthlyLedger = ledgerService.findPersonalMonthlyLedger(manEmail, "202404");
+//        List<Ledger> coupleMonthlyLedger = ledgerService.findCoupleMonthlyLedger(womanEmail, "202404");
+
+
+        // then
+        assertThat(manLedgers.size()).isEqualTo(womanLedgers.size());
+    }
 }
