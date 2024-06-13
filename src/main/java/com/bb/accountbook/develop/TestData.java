@@ -1,7 +1,6 @@
 package com.bb.accountbook.develop;
 
 import com.bb.accountbook.common.model.codes.CustomCode;
-import com.bb.accountbook.common.model.codes.GenderCode;
 import com.bb.accountbook.common.model.codes.LedgerCode;
 import com.bb.accountbook.common.model.codes.RoleCode;
 import com.bb.accountbook.common.model.status.UserStatus;
@@ -11,7 +10,8 @@ import com.bb.accountbook.domain.custom.service.CustomService;
 import com.bb.accountbook.domain.ledger.service.LedgerService;
 import com.bb.accountbook.domain.user.repository.RoleRepository;
 import com.bb.accountbook.domain.user.service.UserService;
-import com.bb.accountbook.entity.*;
+import com.bb.accountbook.entity.Role;
+import com.bb.accountbook.entity.User;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
@@ -41,21 +41,21 @@ public class TestData {
 
         String email1 = "k941026h@naver.com";
         String password1 = "pass1";
-        Long userId1 = userService.signup(email1, password1, GenderCode.M);
+        Long userId1 = userService.signup(email1, password1);
         User userById = userService.findUserById(userId1);
 
 
         String email2 = "abc123@naver.com";
         String password2 = "pass2";
-        Long userId2 = userService.signup(email2, password2, GenderCode.W);
+        Long userId2 = userService.signup(email2, password2);
 
         String email3 = "man3@naver.com";
         String password3 = "pass1";
-        Long userId3 = userService.signup(email3, password3, GenderCode.M);
+        Long userId3 = userService.signup(email3, password3);
 
         String email4 = "woman4@naver.com";
         String password4 = "pass2";
-        Long userId4 = userService.signup(email4, password4, GenderCode.W);
+        Long userId4 = userService.signup(email4, password4);
 
 
         User user3 = userService.findUserById(userId3);

@@ -2,7 +2,6 @@ package com.bb.accountbook.domain.user.service;
 
 import com.bb.accountbook.common.exception.GlobalException;
 import com.bb.accountbook.common.model.codes.ErrorCode;
-import com.bb.accountbook.common.model.codes.GenderCode;
 import com.bb.accountbook.domain.user.repository.RoleRepository;
 import com.bb.accountbook.entity.User;
 import org.junit.jupiter.api.DisplayName;
@@ -35,16 +34,14 @@ class UserServiceTest {
         // given
         String email = "joinTest1@naver.com";
         String password = "pass1";
-        GenderCode gender = GenderCode.M;
 
         // when
-        Long joinedUserId = userService.signup(email, password, gender);
+        Long joinedUserId = userService.signup(email, password);
         User joinedUser = userService.findUserById(joinedUserId);
 
         // then
         assertThat(joinedUser.getEmail()).isEqualTo(email);
         assertThat(passwordEncoder.matches(password, joinedUser.getPassword())).isTrue();
-        assertThat(joinedUser.getGender()).isEqualTo(gender);
     }
 
     @Test
@@ -53,10 +50,9 @@ class UserServiceTest {
         // given
         String email = "k941026h@naver.com";
         String password = "pass1";
-        GenderCode gender = GenderCode.M;
 
         // when
-        assertThrows(GlobalException.class, () -> userService.signup(email, password, gender), ErrorCode.ERR_USR_001.getValue());
+        assertThrows(GlobalException.class, () -> userService.signup(email, password), ErrorCode.ERR_USR_001.getValue());
 
         // then
     }

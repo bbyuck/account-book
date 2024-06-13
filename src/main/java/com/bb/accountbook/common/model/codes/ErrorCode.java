@@ -66,7 +66,9 @@ public enum ErrorCode {
     ERR_VALID_000("잘못된 메일 입력입니다.", SC_BAD_REQUEST),
     ERR_VALID_001("이메일을 입력해주세요.", SC_BAD_REQUEST),
     ERR_VALID_002("패스워드를 입력해주세요.", SC_BAD_REQUEST),
-    ERR_VALID_003("잘못된 패스워드 양식입니다.", SC_BAD_REQUEST)
+    ERR_VALID_003("잘못된 패스워드 양식입니다.", SC_BAD_REQUEST),
+    ERR_VALID_004("패스워드가 다릅니다.", SC_BAD_REQUEST),
+    ERR_VALID_005("패스워드 확인을 입력해주세요.", SC_BAD_REQUEST),
     ;
 
     private final String value;
@@ -77,7 +79,9 @@ public enum ErrorCode {
                 ERR_VALID_000.name(), ERR_VALID_000,
                 ERR_VALID_001.name(), ERR_VALID_001,
                 ERR_VALID_002.name(), ERR_VALID_002,
-                ERR_VALID_003.name(), ERR_VALID_003
+                ERR_VALID_003.name(), ERR_VALID_003,
+                ERR_VALID_004.name(), ERR_VALID_004,
+                ERR_VALID_005.name(), ERR_VALID_005
         );
     }
 }

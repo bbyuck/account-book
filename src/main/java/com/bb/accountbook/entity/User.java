@@ -1,6 +1,5 @@
 package com.bb.accountbook.entity;
 
-import com.bb.accountbook.common.model.codes.GenderCode;
 import com.bb.accountbook.common.model.status.UserStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -8,9 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -31,10 +28,6 @@ public class User extends BaseEntity {
 
     @Column(name = "user_password")
     private String password;
-
-    @Column(name = "user_gender")
-    @Enumerated(EnumType.STRING)
-    private GenderCode gender;
 
     @Column(name = "user_status")
     @Enumerated(EnumType.STRING)
@@ -61,10 +54,9 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user")
     private List<Custom> customs = new ArrayList<>();
 
-    public User(String email, String password, GenderCode gender) {
+    public User(String email, String password) {
         this.email = email;
         this.password = password;
-        this.gender = gender;
         this.status = UserStatus.ACTIVE;
     }
 

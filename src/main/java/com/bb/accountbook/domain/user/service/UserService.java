@@ -1,7 +1,6 @@
 package com.bb.accountbook.domain.user.service;
 
 import com.bb.accountbook.common.exception.GlobalException;
-import com.bb.accountbook.common.model.codes.GenderCode;
 import com.bb.accountbook.common.model.codes.RoleCode;
 import com.bb.accountbook.domain.user.dto.TokenDto;
 import com.bb.accountbook.domain.user.repository.AuthRepository;
@@ -46,7 +45,7 @@ public class UserService {
     private final AuthRepository authRepository;
 
 
-    public Long signup(String email, String password, GenderCode gender) {
+    public Long signup(String email, String password) {
         // 1. 중복 체크
         userRepository.findByEmail(email).ifPresent((user) -> {
             log.debug("{}.{}({}): {}", this.getClass().getName(), "signup", email, ERR_USR_001.getValue());
@@ -54,7 +53,7 @@ public class UserService {
         });
 
         // 2. User Entity 생성 && insert
-        User joinedUser = userRepository.save(new User(email, passwordEncoder.encode(password), gender));
+        User joinedUser = userRepository.save(new User(email, passwordEncoder.encode(password)));
 
         // 3. default Role Entity 생성 및 UserRole Entity mapping
         List<UserRole> newUserRoles = RoleCode.DEFAULT

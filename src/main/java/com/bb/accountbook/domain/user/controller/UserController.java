@@ -28,7 +28,7 @@ public class UserController {
 
     @PostMapping("/api/v1/signup")
     public ApiResponse<UserSignUpResponseDto> signup(@RequestBody @Valid UserSignUpRequestDto userSignUpRequestDto) {
-        Long joinedUserId = userService.signup(userSignUpRequestDto.getEmail(), userSignUpRequestDto.getPassword(), userSignUpRequestDto.getGender());
+        Long joinedUserId = userService.signup(userSignUpRequestDto.getEmail(), userSignUpRequestDto.getPassword());
         return new ApiResponse<>(new UserSignUpResponseDto(joinedUserId));
     }
 
