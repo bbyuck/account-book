@@ -30,6 +30,11 @@ public class ApiResponse<T> {
         this.code = errorCode.name();
     }
 
+    public ApiResponse(ErrorCode errorCode, String message) {
+        this.code = errorCode.name();
+        this.message = message;
+    }
+
     public ApiResponse(T data, String message) {
         this.data = data;
         this.message = message;

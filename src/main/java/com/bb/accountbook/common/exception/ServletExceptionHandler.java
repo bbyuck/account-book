@@ -4,6 +4,8 @@ import com.bb.accountbook.common.model.ApiResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
@@ -26,6 +28,12 @@ public class ServletExceptionHandler {
     public ApiResponse<?> handleGlobalException(GlobalException e, HttpServletResponse response) {
         response.setStatus(e.getErrorCode().getHttpStatus());
         return new ApiResponse(e.getErrorCode());
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ApiResponse<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException e, HttpServletResponse response) {
+        response.setStatus(HttpStatus.BAD_REQUEST.value());
+        return new ApiResponse<>(ERR_SYS_003,  e.getBindingResult().getFieldError().getDefaultMessage());
     }
 
     @ExceptionHandler(NoHandlerFoundException.class)
