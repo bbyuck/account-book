@@ -23,7 +23,7 @@ import static com.bb.accountbook.common.model.codes.ErrorCode.*;
 public class CustomService {
     private final CustomRepository customRepository;
     private final UserService userService;
-    private final String DEFAULT_COLOR = "66ff99";
+    private final String DEFAULT_COLOR = "d1fbff";
 
     public Long saveCustom(String email, CustomCode customCode, String customValue) {
         User user = userService.findUserByEmail(email);

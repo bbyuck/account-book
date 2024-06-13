@@ -25,7 +25,7 @@ public class Custom extends BaseEntity {
     private User user;
 
     @Column(name = "custom_code")
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private CustomCode code;
 
     @Column(name = "custom_value")
