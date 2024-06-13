@@ -1,6 +1,5 @@
-package com.bb.accountbook.common.validation.constraints;
+package com.bb.accountbook.common.validation;
 
-import com.bb.accountbook.common.validation.YearMonthValidator;
 import jakarta.validation.Constraint;
 
 import java.lang.annotation.ElementType;

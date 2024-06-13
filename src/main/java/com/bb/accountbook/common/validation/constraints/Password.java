@@ -1,5 +1,6 @@
-package com.bb.accountbook.common.validation;
+package com.bb.accountbook.common.validation.constraints;
 
+import com.bb.accountbook.common.validation.PasswordValidator;
 import jakarta.validation.Constraint;
 
 import java.lang.annotation.ElementType;
