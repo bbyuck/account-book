@@ -32,6 +32,7 @@ public class ApiResponse<T> {
 
     public ApiResponse(ErrorCode errorCode, String message) {
         this.code = errorCode.name();
+        this.error = true;
         this.message = message;
     }
 
