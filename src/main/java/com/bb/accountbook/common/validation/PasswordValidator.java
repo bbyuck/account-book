@@ -1,5 +1,6 @@
 package com.bb.accountbook.common.validation;
 
+import com.bb.accountbook.common.validation.constraints.Password;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 

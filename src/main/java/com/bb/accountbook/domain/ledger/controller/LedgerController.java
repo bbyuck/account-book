@@ -1,8 +1,7 @@
 package com.bb.accountbook.domain.ledger.controller;
 
 import com.bb.accountbook.common.model.ApiResponse;
-import com.bb.accountbook.common.validation.YearMonth;
-import com.bb.accountbook.domain.couple.service.CoupleService;
+import com.bb.accountbook.common.validation.constraints.YearMonth;
 import com.bb.accountbook.domain.ledger.dto.*;
 import com.bb.accountbook.domain.ledger.service.LedgerService;
 import com.bb.accountbook.entity.Ledger;
@@ -13,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Slf4j
