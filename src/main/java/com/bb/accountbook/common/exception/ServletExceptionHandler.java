@@ -1,6 +1,7 @@
 package com.bb.accountbook.common.exception;
 
 import com.bb.accountbook.common.model.ApiResponse;
+import com.bb.accountbook.common.model.codes.ErrorCode;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -33,7 +34,16 @@ public class ServletExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ApiResponse<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException e, HttpServletResponse response) {
         response.setStatus(HttpStatus.BAD_REQUEST.value());
-        return new ApiResponse<>(ERR_SYS_003,  e.getBindingResult().getFieldError().getDefaultMessage());
+
+        boolean isPropertyExist = ValidationMessage.map.containsKey(e.getBindingResult().getFieldError().getDefaultMessage());
+        String message = isPropertyExist
+                ? ValidationMessage.map.get(e.getBindingResult().getFieldError().getDefaultMessage()).getValue()
+                : e.getBindingResult().getFieldError().getDefaultMessage();
+        ErrorCode errorCode = isPropertyExist
+                ? ValidationMessage.map.get(e.getBindingResult().getFieldError().getDefaultMessage())
+                : ERR_SYS_003;
+
+        return new ApiResponse<>(errorCode, message);
     }
 
     @ExceptionHandler(NoHandlerFoundException.class)

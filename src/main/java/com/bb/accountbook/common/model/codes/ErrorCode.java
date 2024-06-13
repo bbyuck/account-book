@@ -3,6 +3,8 @@ package com.bb.accountbook.common.model.codes;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Map;
+
 import static com.bb.accountbook.common.constant.AdditionalHttpStatus.UNPROCESSABLE_ENTITY;
 import static jakarta.servlet.http.HttpServletResponse.*;
 
@@ -58,9 +60,24 @@ public enum ErrorCode {
      */
     ERR_CUS_000("커스텀 정보를 찾을 수 없습니다.", SC_NOT_FOUND),
 
+    /**
+     * Validation
+     */
+    ERR_VALID_000("잘못된 메일 입력입니다.", SC_BAD_REQUEST),
+    ERR_VALID_001("이메일을 입력해주세요.", SC_BAD_REQUEST),
+    ERR_VALID_002("패스워드를 입력해주세요.", SC_BAD_REQUEST),
+    ERR_VALID_003("잘못된 패스워드 양식입니다.", SC_BAD_REQUEST)
     ;
 
     private final String value;
     private final int httpStatus;
 
+    public static class ValidationMessage {
+        public static final Map<String, ErrorCode> map = Map.of(
+                ERR_VALID_000.name(), ERR_VALID_000,
+                ERR_VALID_001.name(), ERR_VALID_001,
+                ERR_VALID_002.name(), ERR_VALID_002,
+                ERR_VALID_003.name(), ERR_VALID_003
+        );
+    }
 }

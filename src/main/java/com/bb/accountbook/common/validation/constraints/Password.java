@@ -1,5 +1,6 @@
 package com.bb.accountbook.common.validation.constraints;
 
+import com.bb.accountbook.common.model.codes.ErrorCode;
 import com.bb.accountbook.common.validation.PasswordValidator;
 import jakarta.validation.Constraint;
 
@@ -12,6 +13,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = PasswordValidator.class)
 public @interface Password {
+
     String message() default "잘못된 패스워드 양식입니다.";
     Class[] groups() default {};
     Class[] payload() default {};
