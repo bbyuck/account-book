@@ -35,6 +35,7 @@ public class ServletExceptionHandler {
     public ApiResponse<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException e, HttpServletResponse response) {
         response.setStatus(HttpStatus.BAD_REQUEST.value());
 
+
         boolean isPropertyExist = ValidationMessage.map.containsKey(e.getBindingResult().getFieldError().getDefaultMessage());
         String message = isPropertyExist
                 ? ValidationMessage.map.get(e.getBindingResult().getFieldError().getDefaultMessage()).getValue()

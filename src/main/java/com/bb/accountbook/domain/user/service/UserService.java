@@ -45,7 +45,13 @@ public class UserService {
     private final AuthRepository authRepository;
 
 
-    public Long signup(String email, String password) {
+    public Long signup(String email, String password, String passwordConfirm) {
+        // 0. password confirm validation
+        if (!password.equals(passwordConfirm)) {
+            log.debug("{}.{}({}): {}", this.getClass().getName(), "signup", email, ERR_VALID_004.getValue());
+            throw new GlobalException(ERR_VALID_004);
+        }
+
         // 1. 중복 체크
         userRepository.findByEmail(email).ifPresent((user) -> {
             log.debug("{}.{}({}): {}", this.getClass().getName(), "signup", email, ERR_USR_001.getValue());

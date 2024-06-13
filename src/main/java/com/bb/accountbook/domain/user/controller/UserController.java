@@ -28,8 +28,8 @@ public class UserController {
 
     @PostMapping("/api/v1/signup")
     public ApiResponse<UserSignUpResponseDto> signup(@RequestBody @Valid UserSignUpRequestDto userSignUpRequestDto) {
-        Long joinedUserId = userService.signup(userSignUpRequestDto.getEmail(), userSignUpRequestDto.getPassword());
-        return new ApiResponse<>(new UserSignUpResponseDto(joinedUserId));
+        Long joinedUserId = userService.signup(userSignUpRequestDto.getEmail(), userSignUpRequestDto.getPassword(), userSignUpRequestDto.getPasswordConfirm());
+        return new ApiResponse<>(new UserSignUpResponseDto(joinedUserId), "가입이 완료되었습니다.");
     }
 
     @PostMapping("/api/v1/authenticate")

@@ -29,19 +29,32 @@ class UserServiceTest {
 
 
     @Test
-    @DisplayName("회원가입")
+    @DisplayName("회원가입 - 성공")
     public void join1() throws Exception {
         // given
         String email = "joinTest1@naver.com";
         String password = "pass1";
+        String rightPasswordConfirm = "pass1";
 
         // when
-        Long joinedUserId = userService.signup(email, password);
+        Long joinedUserId = userService.signup(email, password, rightPasswordConfirm);
         User joinedUser = userService.findUserById(joinedUserId);
 
         // then
         assertThat(joinedUser.getEmail()).isEqualTo(email);
         assertThat(passwordEncoder.matches(password, joinedUser.getPassword())).isTrue();
+    }
+
+    @Test
+    @DisplayName("회원가입 - 잘못된 비밀번호 확인 입력")
+    public void join_wrong_password_confirm() throws Exception {
+        // given
+        String email = "joinTest1@naver.com";
+        String password = "pass1";
+        String wrongPasswordConfirm = "wrong";
+
+        // when
+        assertThrows(GlobalException.class, () -> userService.signup(email, password, wrongPasswordConfirm));
     }
 
     @Test
@@ -52,7 +65,7 @@ class UserServiceTest {
         String password = "pass1";
 
         // when
-        assertThrows(GlobalException.class, () -> userService.signup(email, password), ErrorCode.ERR_USR_001.getValue());
+        assertThrows(GlobalException.class, () -> userService.signup(email, password, password), ErrorCode.ERR_USR_001.getValue());
 
         // then
     }

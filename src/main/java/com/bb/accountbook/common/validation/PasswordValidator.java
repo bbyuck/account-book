@@ -6,7 +6,7 @@ import jakarta.validation.ConstraintValidatorContext;
 
 public class PasswordValidator implements ConstraintValidator<Password, String> {
     private final String UPPER_CASE = "^(?=.*[A-Z]).*$";
-    private final String LOWER_CASE = "^(?=.*[z-z]).*$";
+    private final String LOWER_CASE = "^(?=.*[a-z]).*$";
     private final String DIGIT = "^(?=.*\\d).+$";
     private final String SPECIAL_CHARACTER = "^(?=.*[!@#$%^&*()-+=]).+$";
 
@@ -14,11 +14,13 @@ public class PasswordValidator implements ConstraintValidator<Password, String> 
 
     private final int MINIMUM_LENGTH = 8;
 
+    private final int MAXIMUM_LENGTH = 16;
+
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
         int cnt = 0;
 
-        if (value.length() < MINIMUM_LENGTH) {
+        if (value.length() < MINIMUM_LENGTH || value.length() > MAXIMUM_LENGTH) {
             return false;
         }
 

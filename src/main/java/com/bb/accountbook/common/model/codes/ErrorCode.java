@@ -66,7 +66,7 @@ public enum ErrorCode {
     ERR_VALID_000("잘못된 메일 입력입니다.", SC_BAD_REQUEST),
     ERR_VALID_001("이메일을 입력해주세요.", SC_BAD_REQUEST),
     ERR_VALID_002("패스워드를 입력해주세요.", SC_BAD_REQUEST),
-    ERR_VALID_003("잘못된 패스워드 양식입니다.", SC_BAD_REQUEST),
+    ERR_VALID_003("잘못된 패스워드 입력입니다.\n 영문 / 숫자 / 특수문자를 각각 1자 이상 포함하여 8~16자로 입력해주세요.", SC_BAD_REQUEST),
     ERR_VALID_004("패스워드가 다릅니다.", SC_BAD_REQUEST),
     ERR_VALID_005("패스워드 확인을 입력해주세요.", SC_BAD_REQUEST),
     ;

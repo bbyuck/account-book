@@ -41,21 +41,21 @@ public class TestData {
 
         String email1 = "k941026h@naver.com";
         String password1 = "pass1";
-        Long userId1 = userService.signup(email1, password1);
+        Long userId1 = userService.signup(email1, password1, password1);
         User userById = userService.findUserById(userId1);
 
 
         String email2 = "abc123@naver.com";
         String password2 = "pass2";
-        Long userId2 = userService.signup(email2, password2);
+        Long userId2 = userService.signup(email2, password2, password2);
 
         String email3 = "man3@naver.com";
         String password3 = "pass1";
-        Long userId3 = userService.signup(email3, password3);
+        Long userId3 = userService.signup(email3, password3, password3);
 
         String email4 = "woman4@naver.com";
         String password4 = "pass2";
-        Long userId4 = userService.signup(email4, password4);
+        Long userId4 = userService.signup(email4, password4, password4);
 
 
         User user3 = userService.findUserById(userId3);
