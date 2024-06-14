@@ -13,8 +13,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StreamUtils;
 
-import java.util.ArrayList;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Slf4j
@@ -56,8 +59,9 @@ public class MailService {
          * 2. mail 정보 set
          */
         String subject = "본인 인증 메일입니다.";
-        String content = "<h1>" + mailId + "</h1>";
+        String content = createIdentityVerificationEmailContent(mailId);
         List<String> receivers = List.of(receiver.getEmail());
+
 
         /**
          * 3. AWS SES 메일 발송
@@ -66,5 +70,29 @@ public class MailService {
 
         return true;
     }
+
+    private String createIdentityVerificationEmailContent(Long mailId) {
+        // HTML 파일의 경로를 지정.
+        String filePath = "static/email/verify_email_form.html";
+
+        // Spring의 ResourceLoader를 사용하여 리소스 read.
+        ClassLoader classLoader = getClass().getClassLoader();
+        try (InputStream inputStream = classLoader.getResourceAsStream(filePath)) {
+            if (inputStream == null) {
+                throw new IOException("File not found: " + filePath);
+            }
+
+            // HTML 파일 내용을 String으로 변환합니다.
+            String htmlContent = StreamUtils.copyToString(inputStream, StandardCharsets.UTF_8);
+
+            // ${verificationUrl} 플레이스홀더를 실제 URL로 대체합니다.
+            return htmlContent.replace("${verificationUrl}", "https://api.booroute.com/api/v1/verify?target=" + mailId);
+        }
+        catch(IOException e) {
+            log.debug(e.getMessage(), e);
+            throw new GlobalException(ErrorCode.ERR_MAIL_001);
+        }
+    }
+
 
 }

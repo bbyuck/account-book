@@ -15,6 +15,7 @@ public class TestDataInit {
     @PostConstruct
     public void init() {
         testData.init();
+        testData.initUsers();
         testData.ledgerServiceTestData();
         testData.customTestData();
     }

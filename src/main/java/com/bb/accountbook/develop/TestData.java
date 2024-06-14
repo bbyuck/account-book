@@ -38,7 +38,9 @@ public class TestData {
 
     public void init() {
         roleRepository.saveAllAndFlush(Arrays.stream(RoleCode.values()).map(Role::new).collect(Collectors.toList()));
+    }
 
+    public void initUsers() {
         String email1 = "k941026h@naver.com";
         String password1 = "pass1";
         Long userId1 = userService.signup(email1, password1, password1);

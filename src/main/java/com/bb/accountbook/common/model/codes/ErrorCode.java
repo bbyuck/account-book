@@ -74,6 +74,8 @@ public enum ErrorCode {
      * Mail (AWS SES)
      */
     ERR_MAIL_000("메일 발송에 실패했습니다.", SC_INTERNAL_SERVER_ERROR),
+    ERR_MAIL_001("메일 Form을 읽어오지 못했습니다.", SC_INTERNAL_SERVER_ERROR),
+
     ;
 
     private final String value;

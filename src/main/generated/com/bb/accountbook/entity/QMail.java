@@ -36,7 +36,7 @@ public class QMail extends EntityPathBase<Mail> {
 
     public final EnumPath<com.bb.accountbook.common.model.status.MailStatus> status = createEnum("status", com.bb.accountbook.common.model.status.MailStatus.class);
 
-    public final NumberPath<Long> ttl = createNumber("ttl", Long.class);
+    public final NumberPath<Integer> ttl = createNumber("ttl", Integer.class);
 
     //inherited
     public final StringPath updatedBy = _super.updatedBy;
