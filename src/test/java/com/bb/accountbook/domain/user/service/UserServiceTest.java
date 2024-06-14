@@ -32,7 +32,7 @@ class UserServiceTest {
     @DisplayName("회원가입 - 성공")
     public void join1() throws Exception {
         // given
-        String email = "joinTest1@naver.com";
+        String email = "wmfap1234@naver.com";
         String password = "pass1";
         String rightPasswordConfirm = "pass1";
 

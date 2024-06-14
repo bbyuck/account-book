@@ -2,6 +2,7 @@ package com.bb.accountbook.domain.user.service;
 
 import com.bb.accountbook.common.exception.GlobalException;
 import com.bb.accountbook.common.model.codes.RoleCode;
+import com.bb.accountbook.domain.mail.service.MailService;
 import com.bb.accountbook.domain.user.dto.TokenDto;
 import com.bb.accountbook.domain.user.repository.AuthRepository;
 import com.bb.accountbook.domain.user.repository.RoleRepository;
@@ -44,6 +45,7 @@ public class UserService {
 
     private final AuthRepository authRepository;
 
+    private final MailService mailService;
 
     public Long signup(String email, String password, String passwordConfirm) {
         // 0. password confirm validation
@@ -73,7 +75,8 @@ public class UserService {
                 ).toList();
         userRoleRepository.saveAll(newUserRoles);
 
-        // TODO 4. 정상 처리 후 메일 발송 -> 메세지 큐로 구현
+        // TODO 4. 정상 처리 후 메일 발송
+//        mailService.sendIdentityVerificationEmail(joinedUser, (60 * 15));
 
         return joinedUser.getId();
     }

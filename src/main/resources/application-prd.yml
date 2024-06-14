@@ -49,15 +49,16 @@ cors:
 
 
 jwt:
-  secret: secret1234secret1234secret1234secret1234secret1234secret1234secret1234secret1234secret1234secret1234secret1234secret1234
   access-token-expiration-time: 1800 # 30분
   refresh-token-expiration-time: 2592000 # 30일
-  iss: hay-account-book
 
-email:
-  official:
-    email: k941026h@naver.com
-    password: 12341234
+aws:
+  ses:
+    sender: mail.booroute@gmail.com
+    region: ap-northeast-2
+    # key:
+    #  access: at-arg
+    #  secret: at-arg
 
 logging:
   level:
