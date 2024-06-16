@@ -1,7 +1,11 @@
 package com.bb.accountbook.domain.user.service;
 
+import com.bb.accountbook.common.exception.GlobalCheckedException;
 import com.bb.accountbook.common.exception.GlobalException;
 import com.bb.accountbook.common.model.codes.RoleCode;
+import com.bb.accountbook.common.model.status.MailStatus;
+import com.bb.accountbook.common.model.status.UserStatus;
+import com.bb.accountbook.common.util.RSACrypto;
 import com.bb.accountbook.domain.mail.service.MailService;
 import com.bb.accountbook.domain.user.dto.TokenDto;
 import com.bb.accountbook.domain.user.repository.AuthRepository;
@@ -9,6 +13,7 @@ import com.bb.accountbook.domain.user.repository.RoleRepository;
 import com.bb.accountbook.domain.user.repository.UserRepository;
 import com.bb.accountbook.domain.user.repository.UserRoleRepository;
 import com.bb.accountbook.entity.Auth;
+import com.bb.accountbook.entity.Mail;
 import com.bb.accountbook.entity.User;
 import com.bb.accountbook.entity.UserRole;
 import com.bb.accountbook.security.TokenProvider;
@@ -24,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static com.bb.accountbook.common.model.codes.ErrorCode.*;
+import static com.bb.accountbook.common.model.status.UserStatus.ACTIVE;
 
 @Slf4j
 @Service
@@ -47,6 +53,8 @@ public class UserService {
 
     private final MailService mailService;
 
+    private final RSACrypto rsaCrypto;
+
     public Long signup(String email, String password, String passwordConfirm) {
         // 0. password confirm validation
         if (!password.equals(passwordConfirm)) {
@@ -61,7 +69,7 @@ public class UserService {
         });
 
         // 2. User Entity 생성 && insert
-        User joinedUser = userRepository.save(new User(email, passwordEncoder.encode(password)));
+        User joinedUser = userRepository.save(new User(email, passwordEncoder.encode(password), UserStatus.WAIT));
 
         // 3. default Role Entity 생성 및 UserRole Entity mapping
         List<UserRole> newUserRoles = RoleCode.DEFAULT
@@ -76,7 +84,12 @@ public class UserService {
         userRoleRepository.saveAll(newUserRoles);
 
         // TODO 4. 정상 처리 후 메일 발송
-//        mailService.sendIdentityVerificationEmail(joinedUser, (60 * 15));
+        try {
+            mailService.sendIdentityVerificationEmail(joinedUser, (60 * 15));
+        }
+        catch(GlobalCheckedException e) {
+            log.error(e.getMessage(), e);
+        }
 
         return joinedUser.getId();
     }
@@ -163,4 +176,38 @@ public class UserService {
                 .reset();
         return true;
     }
+
+    public boolean verifyUser(String target) {
+        Long mailId;
+        try {
+            mailId = Long.valueOf(rsaCrypto.decrypt(target));
+        }
+        catch(Exception e) {
+            log.error(e.getMessage(), e);
+            throw new GlobalException(ERR_SYS_000);
+        }
+
+        Mail mail = mailService.findMailById(mailId);
+
+        // 1. status check
+        if (mail.getStatus() != MailStatus.SENT) {
+            log.debug("메일의 상태가 SENT 상태가 아님. === mailId : {}", mailId);
+            throw new GlobalException(ERR_MAIL_003);
+        }
+        // 2. ttl check
+        if (mail.isExpired()) {
+            log.debug("{}.{}({}): {}", this.getClass().getName(), "verifyUser", mail, ERR_MAIL_004.getValue());
+            throw new GlobalException(ERR_MAIL_004);
+        }
+
+        // 3. user update
+        User user = mail.getReceiver();
+        user.changeStatus(ACTIVE);
+
+        // 4. mail update
+        mail.updateStatus(MailStatus.CONFIRMED);
+
+        return true;
+    }
+
 }

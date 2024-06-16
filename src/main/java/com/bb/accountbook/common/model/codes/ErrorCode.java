@@ -75,6 +75,9 @@ public enum ErrorCode {
      */
     ERR_MAIL_000("메일 발송에 실패했습니다.", SC_INTERNAL_SERVER_ERROR),
     ERR_MAIL_001("메일 Form을 읽어오지 못했습니다.", SC_INTERNAL_SERVER_ERROR),
+    ERR_MAIL_002("메일을 찾지 못했습니다.", SC_NOT_FOUND),
+    ERR_MAIL_003("유효하지 않은 메일입니다.", SC_BAD_REQUEST),
+    ERR_MAIL_004("메일의 유효 시간이 지났습니다.", SC_BAD_REQUEST)
 
     ;
 

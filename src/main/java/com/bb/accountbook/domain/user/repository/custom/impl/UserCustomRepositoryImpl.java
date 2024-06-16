@@ -23,12 +23,10 @@ public class UserCustomRepositoryImpl implements UserCustomRepository {
                 "on ur.user = u " +
                 "join fetch Role r " +
                 "on ur.role = r " +
-                "where u.email = :email " +
-                "and u.status = :active";
+                "where u.email = :email";
 
         return em.createQuery(jpql, User.class)
                 .setParameter("email", email)
-                .setParameter("active", UserStatus.ACTIVE)
                 .getResultList().stream().findFirst();
     }
 
@@ -40,11 +38,9 @@ public class UserCustomRepositoryImpl implements UserCustomRepository {
                 "on ur.user = u " +
                 "join fetch Role r " +
                 "on ur.role = r " +
-                "where u.id = :userId " +
-                "and u.status = :active";
+                "where u.id = :userId";
         return em.createQuery(jpql, User.class)
                 .setParameter("userId", userId)
-                .setParameter("active", UserStatus.ACTIVE)
                 .getResultList().stream().findFirst();
     }
 

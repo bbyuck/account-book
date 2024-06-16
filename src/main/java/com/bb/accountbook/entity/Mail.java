@@ -6,6 +6,9 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+
 @Entity
 @Getter
 @Table(name = "tb_mail")
@@ -20,7 +23,7 @@ public class Mail extends BaseEntity {
     @Column(name = "mail_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "mail_receiver_id")
     private User receiver;
 
@@ -31,9 +34,27 @@ public class Mail extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private MailStatus status;
 
+    @Column(name = "mail_sent_date_time")
+    private LocalDateTime sentDateTime;
+
     public Mail(User receiver, Integer ttl) {
         this.receiver = receiver;
         this.ttl = ttl;
         this.status = MailStatus.WAIT;
+    }
+
+    public void changeStatusToSent() {
+        this.status = MailStatus.SENT;
+        this.sentDateTime = LocalDateTime.now();
+    }
+
+    public boolean isExpired() {
+        LocalDateTime expiryTime = sentDateTime.plus(ttl, ChronoUnit.SECONDS);
+        LocalDateTime now = LocalDateTime.now();
+        return expiryTime.isAfter(now);
+    }
+
+    public void updateStatus(MailStatus status) {
+        this.status = status;
     }
 }

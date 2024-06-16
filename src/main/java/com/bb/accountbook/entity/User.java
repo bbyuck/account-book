@@ -60,6 +60,12 @@ public class User extends BaseEntity {
         this.status = UserStatus.ACTIVE;
     }
 
+    public User(String email, String password, UserStatus status) {
+        this.email = email;
+        this.password = password;
+        this.status = status;
+    }
+
     public boolean isActive() {
         return this.status == UserStatus.ACTIVE;
     }

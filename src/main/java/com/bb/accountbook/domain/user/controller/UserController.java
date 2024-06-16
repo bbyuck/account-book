@@ -29,7 +29,7 @@ public class UserController {
     @PostMapping("/api/v1/signup")
     public ApiResponse<UserSignUpResponseDto> signup(@RequestBody @Valid UserSignUpRequestDto userSignUpRequestDto) {
         Long joinedUserId = userService.signup(userSignUpRequestDto.getEmail(), userSignUpRequestDto.getPassword(), userSignUpRequestDto.getPasswordConfirm());
-        return new ApiResponse<>(new UserSignUpResponseDto(joinedUserId), "가입이 완료되었습니다.");
+        return new ApiResponse<>(new UserSignUpResponseDto(joinedUserId), "본인 인증 메일이 발송되었습니다.\n메일을 확인하여 본인 인증을 진행해주세요.\n본인 인증을 완료해야 가입이 완료됩니다.");
     }
 
     @PostMapping("/api/v1/authenticate")
@@ -50,4 +50,10 @@ public class UserController {
     public ApiResponse<LogoutResponseDto> logout() {
         return new ApiResponse<>(new LogoutResponseDto(userService.logout(securityContextProvider.getCurrentEmail())));
     }
+
+    @PostMapping("/api/v1/verify")
+    public ApiResponse<UserVerifyResponseDto> verifyUser(@RequestBody @Valid UserVerifyRequestDto requestDto) {
+        return new ApiResponse<>(new UserVerifyResponseDto(userService.verifyUser(requestDto.getTarget())));
+    }
+
 }
