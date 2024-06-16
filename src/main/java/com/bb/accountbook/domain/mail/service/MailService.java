@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Optional;
 
 import static com.bb.accountbook.common.model.codes.ErrorCode.*;
 
@@ -40,6 +39,8 @@ public class MailService {
     @Value("${aws.ses.sender}")
     private String sender;
 
+    @Value("${aws.ses.use}")
+    private boolean sesUse;
 
     public Long createMail(User receiver, Integer ttl) {
         Mail mail = new Mail(receiver, ttl);
@@ -58,6 +59,10 @@ public class MailService {
     }
 
     public boolean sendIdentityVerificationEmail(User receiver, Integer ttl) throws GlobalCheckedException {
+        /**
+         * TODO - 메일 조회해서 마지막으로 수신한 메일이 3분 이내에 있으면 발송하지 않음
+         */
+
         /**
          * 1. mail entity 생성
          */
@@ -126,5 +131,9 @@ public class MailService {
             log.debug("{}.{}({}): {}", this.getClass().getName(), "findMailById", mailId, ERR_MAIL_002.getValue());
             return new GlobalException(ERR_MAIL_002);
         });
+    }
+
+    public boolean canUse() {
+        return sesUse;
     }
 }

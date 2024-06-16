@@ -55,6 +55,7 @@ jwt:
 
 aws:
   ses:
+    use: false
     sender: mail.booroute@gmail.com
     region: ap-northeast-2
     # key:

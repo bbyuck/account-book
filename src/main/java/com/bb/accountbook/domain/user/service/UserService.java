@@ -4,7 +4,6 @@ import com.bb.accountbook.common.exception.GlobalCheckedException;
 import com.bb.accountbook.common.exception.GlobalException;
 import com.bb.accountbook.common.model.codes.RoleCode;
 import com.bb.accountbook.common.model.status.MailStatus;
-import com.bb.accountbook.common.model.status.UserStatus;
 import com.bb.accountbook.common.util.RSACrypto;
 import com.bb.accountbook.domain.mail.service.MailService;
 import com.bb.accountbook.domain.user.dto.TokenDto;
@@ -30,6 +29,7 @@ import java.util.List;
 
 import static com.bb.accountbook.common.model.codes.ErrorCode.*;
 import static com.bb.accountbook.common.model.status.UserStatus.ACTIVE;
+import static com.bb.accountbook.common.model.status.UserStatus.WAIT;
 
 @Slf4j
 @Service
@@ -55,6 +55,43 @@ public class UserService {
 
     private final RSACrypto rsaCrypto;
 
+    public Long signupWithEmailVerification(String email, String password, String passwordConfirm) {
+        // 0. password confirm validation
+        if (!password.equals(passwordConfirm)) {
+            log.debug("{}.{}({}): {}", this.getClass().getName(), "signup", email, ERR_VALID_004.getValue());
+            throw new GlobalException(ERR_VALID_004);
+        }
+
+        // 1. 중복 체크
+        userRepository.findByEmail(email).ifPresent((user) -> {
+            log.debug("{}.{}({}): {}", this.getClass().getName(), "signup", email, ERR_USR_001.getValue());
+            throw new GlobalException(ERR_USR_001);
+        });
+
+        // 2. User Entity 생성 && insert
+        User joinedUser = userRepository.save(new User(email, passwordEncoder.encode(password), WAIT) );
+
+        // 3. default Role Entity 생성 및 UserRole Entity mapping
+        List<UserRole> newUserRoles = RoleCode.DEFAULT
+                .stream()
+                .map(roleCode ->
+                        new UserRole(joinedUser, roleRepository.findByCode(roleCode)
+                                .orElseThrow(() -> {
+                                    log.debug("{}.{}({}): {}", this.getClass().getName(), "signup", email, "Role Entity를 찾을 수 없습니다.");
+                                    return new GlobalException(ERR_SYS_000);
+                                }))
+                ).toList();
+        userRoleRepository.saveAll(newUserRoles);
+
+        try {
+            mailService.sendIdentityVerificationEmail(joinedUser, (60 * 15));
+        } catch (GlobalCheckedException e) {
+            log.error(e.getMessage(), e);
+        }
+
+        return joinedUser.getId();
+    }
+
     public Long signup(String email, String password, String passwordConfirm) {
         // 0. password confirm validation
         if (!password.equals(passwordConfirm)) {
@@ -69,7 +106,7 @@ public class UserService {
         });
 
         // 2. User Entity 생성 && insert
-        User joinedUser = userRepository.save(new User(email, passwordEncoder.encode(password), UserStatus.WAIT));
+        User joinedUser = userRepository.save(new User(email, passwordEncoder.encode(password)));
 
         // 3. default Role Entity 생성 및 UserRole Entity mapping
         List<UserRole> newUserRoles = RoleCode.DEFAULT
@@ -82,14 +119,6 @@ public class UserService {
                                 }))
                 ).toList();
         userRoleRepository.saveAll(newUserRoles);
-
-        // TODO 4. 정상 처리 후 메일 발송
-        try {
-            mailService.sendIdentityVerificationEmail(joinedUser, (60 * 15));
-        }
-        catch(GlobalCheckedException e) {
-            log.error(e.getMessage(), e);
-        }
 
         return joinedUser.getId();
     }
