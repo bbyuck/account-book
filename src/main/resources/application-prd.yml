@@ -25,6 +25,7 @@ spring:
       - /api/v1/authenticate  # 로그인
       - /api/v1/reissue/token # 토큰 재발행
       - /api/v1/signup        # 회원가입
+      - /api/v1/verify        # email 인증
       - /favicon.ico          # 파비콘
       - /error                # 에러
       - /h2-console           # h2-console
