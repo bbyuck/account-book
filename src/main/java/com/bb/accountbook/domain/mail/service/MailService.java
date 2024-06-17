@@ -5,6 +5,7 @@ import com.amazonaws.services.simpleemail.model.SendEmailResult;
 import com.bb.accountbook.common.exception.GlobalCheckedException;
 import com.bb.accountbook.common.exception.GlobalException;
 import com.bb.accountbook.common.model.codes.ErrorCode;
+import com.bb.accountbook.common.model.codes.MailCode;
 import com.bb.accountbook.common.util.RSACrypto;
 import com.bb.accountbook.domain.mail.MailSender;
 import com.bb.accountbook.domain.mail.repository.MailRepository;
@@ -42,8 +43,8 @@ public class MailService {
     @Value("${aws.ses.use}")
     private boolean sesUse;
 
-    public Long createMail(User receiver, Integer ttl) {
-        Mail mail = new Mail(receiver, ttl);
+    public Long createMail(MailCode code, User receiver, Integer ttl) {
+        Mail mail = new Mail(code, receiver, ttl);
         return mailRepository.save(mail).getId();
     }
 
@@ -66,7 +67,7 @@ public class MailService {
         /**
          * 1. mail entity 생성
          */
-        Long mailId = createMail(receiver, ttl);
+        Long mailId = createMail(MailCode.V000, receiver, ttl);
 
         /**
          * 2. mail 정보 set

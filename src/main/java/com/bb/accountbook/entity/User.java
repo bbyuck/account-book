@@ -33,9 +33,6 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private UserStatus status;
 
-    @Column(name = "underlying_asset")
-    private Long underlyingAsset = 0L;
-
     @OneToMany(mappedBy = "owner")
     private List<Ledger> ledgers = new ArrayList<>();
 
@@ -72,10 +69,6 @@ public class User extends BaseEntity {
 
     public void changeStatus(UserStatus status) {
         this.status = status;
-    }
-
-    public void changeUnderlyingAsset(Long amount) {
-        this.underlyingAsset = amount;
     }
 
 }

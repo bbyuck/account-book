@@ -1,5 +1,6 @@
 package com.bb.accountbook.entity;
 
+import com.bb.accountbook.common.model.codes.MailCode;
 import com.bb.accountbook.common.model.status.MailStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -30,6 +31,10 @@ public class Mail extends BaseEntity {
     @Column(name = "mail_ttl")
     private Integer ttl;
 
+    @Column(name = "mail_code")
+    @Enumerated(EnumType.STRING)
+    private MailCode code;
+
     @Column(name = "mail_status")
     @Enumerated(EnumType.STRING)
     private MailStatus status;
@@ -37,7 +42,8 @@ public class Mail extends BaseEntity {
     @Column(name = "mail_sent_date_time")
     private LocalDateTime sentDateTime;
 
-    public Mail(User receiver, Integer ttl) {
+    public Mail(MailCode code, User receiver, Integer ttl) {
+        this.code = code;
         this.receiver = receiver;
         this.ttl = ttl;
         this.status = MailStatus.WAIT;
