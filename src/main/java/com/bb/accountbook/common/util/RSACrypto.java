@@ -19,10 +19,10 @@ import java.util.Map;
 public class RSACrypto {
 
     @Value("${key.rsa.public}")
-    public String publicKey;
+    private String publicKey;
 
     @Value("${key.rsa.private}")
-    public String privateKey;
+    private String privateKey;
 
     /*
      * 암호화 : 공개키로 진행

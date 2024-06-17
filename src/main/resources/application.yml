@@ -65,9 +65,14 @@ aws:
     use: false
     sender: mail.booroute@gmail.com
     region: ap-northeast-2
-    # key:
-    #  access: at-arg
-    #  secret: at-arg
+    key:
+      access: at-arg
+      secret: at-arg
+
+key:
+  rsa:
+    private: local-private-key
+    public: local-public-key
 
 logging:
   level:

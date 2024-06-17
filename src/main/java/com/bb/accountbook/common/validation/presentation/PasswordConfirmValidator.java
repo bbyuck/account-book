@@ -1,7 +1,8 @@
-package com.bb.accountbook.common.validation;
+package com.bb.accountbook.common.validation.presentation;
 
 import com.bb.accountbook.common.exception.GlobalException;
-import com.bb.accountbook.common.validation.constraints.PasswordConfirm;
+import com.bb.accountbook.common.validation.UserValidation;
+import com.bb.accountbook.common.validation.presentation.constraints.PasswordConfirm;
 import io.micrometer.common.util.StringUtils;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
@@ -18,6 +19,19 @@ public class PasswordConfirmValidator implements ConstraintValidator<PasswordCon
     private String passwordFieldName;
     private String passwordConfirmFieldName;
 
+    private String getFieldValue(Object object, String fieldName) {
+        Class<?> clazz = object.getClass();
+        try {
+            Field field = clazz.getDeclaredField(fieldName);
+            field.setAccessible(true);
+            return (String) field.get(object);
+        }
+        catch (NoSuchFieldException | IllegalAccessException e) {
+            log.debug(e.getMessage(), e);
+            throw new GlobalException(ERR_SYS_000);
+        }
+    }
+
     @Override
     public void initialize(PasswordConfirm constraintAnnotation) {
         this.passwordFieldName = constraintAnnotation.passwordFieldName();
@@ -31,19 +45,6 @@ public class PasswordConfirmValidator implements ConstraintValidator<PasswordCon
 
     @Override
     public boolean isValid(Object value, ConstraintValidatorContext context) {
-        return getFieldValue(value, passwordFieldName).equals(getFieldValue(value, passwordConfirmFieldName));
-    }
-
-    private String getFieldValue(Object object, String fieldName) {
-        Class<?> clazz = object.getClass();
-        try {
-            Field field = clazz.getDeclaredField(fieldName);
-            field.setAccessible(true);
-            return (String) field.get(object);
-        }
-        catch (NoSuchFieldException | IllegalAccessException e) {
-            log.debug(e.getMessage(), e);
-            throw new GlobalException(ERR_SYS_000);
-        }
+        return UserValidation.passwordConfirmValidation(getFieldValue(value, passwordFieldName), getFieldValue(value, passwordConfirmFieldName));
     }
 }

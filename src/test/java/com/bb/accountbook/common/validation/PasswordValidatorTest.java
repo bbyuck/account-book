@@ -1,5 +1,6 @@
 package com.bb.accountbook.common.validation;
 
+import com.bb.accountbook.common.validation.presentation.PasswordValidator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

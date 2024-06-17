@@ -1,6 +1,7 @@
 package com.bb.accountbook.domain.user.controller;
 
 import com.bb.accountbook.common.model.ApiResponse;
+import com.bb.accountbook.common.model.codes.SuccessCode;
 import com.bb.accountbook.domain.user.dto.*;
 import com.bb.accountbook.domain.user.service.UserService;
 import com.bb.accountbook.security.SecurityContextProvider;
@@ -10,10 +11,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import static com.bb.accountbook.common.model.codes.SuccessCode.*;
+import static com.bb.accountbook.common.model.codes.SuccessCode.SUC_USR_000;
+import static com.bb.accountbook.common.model.codes.SuccessCode.SUC_USR_001;
 
 @Slf4j
 @RestController
@@ -29,13 +31,13 @@ public class UserController {
     @PostMapping("/api/v1/signup")
     public ApiResponse<UserSignUpResponseDto> signup(@RequestBody @Valid UserSignUpRequestDto userSignUpRequestDto) {
         Long joinedUserId = userService.signup(userSignUpRequestDto.getEmail(), userSignUpRequestDto.getPassword(), userSignUpRequestDto.getPasswordConfirm());
-        return new ApiResponse<>(new UserSignUpResponseDto(joinedUserId), "가입이 완료되었습니다.");
+        return new ApiResponse<>(new UserSignUpResponseDto(joinedUserId), SUC_USR_000);
     }
 
     @PostMapping("/api/v2/signup")
     public ApiResponse<UserSignUpResponseDto> signupWithEmailVerification(@RequestBody @Valid UserSignUpRequestDto userSignUpRequestDto) {
         Long joinedUserId = userService.signupWithEmailVerification(userSignUpRequestDto.getEmail(), userSignUpRequestDto.getPassword(), userSignUpRequestDto.getPasswordConfirm());
-        return new ApiResponse<>(new UserSignUpResponseDto(joinedUserId), "본인 인증 메일이 발송되었습니다.\n메일을 확인하여 본인 인증을 진행해주세요.\n본인 인증을 완료해야 가입이 완료됩니다.");
+        return new ApiResponse<>(new UserSignUpResponseDto(joinedUserId), SUC_USR_001);
     }
 
     @PostMapping("/api/v1/authenticate")
@@ -54,12 +56,21 @@ public class UserController {
 
     @PostMapping("/api/v1/logout")
     public ApiResponse<LogoutResponseDto> logout() {
-        return new ApiResponse<>(new LogoutResponseDto(userService.logout(securityContextProvider.getCurrentEmail())));
+        return new ApiResponse<>(new LogoutResponseDto(userService.logout(securityContextProvider.getCurrentEmail())), SUC_USR_002);
     }
 
     @PostMapping("/api/v1/verify")
     public ApiResponse<UserVerifyResponseDto> verifyUser(@RequestBody @Valid UserVerifyRequestDto requestDto) {
-        return new ApiResponse<>(new UserVerifyResponseDto(userService.verifyUser(requestDto.getTarget())));
+        return new ApiResponse<>(new UserVerifyResponseDto(userService.verifyUser(requestDto.getTarget())), USC_USR_004);
+    }
+
+    @PutMapping("/api/v1/user/password")
+    public ApiResponse<UserPasswordChangeResponseDto> changeUserPassword(@RequestBody @Valid UserPasswordChangeRequestDto requestDto) {
+        return new ApiResponse<>(new UserPasswordChangeResponseDto(
+                userService.changeUserPassword(
+                        securityContextProvider.getCurrentEmail()
+                        , requestDto.getPassword()
+                        , requestDto.getPasswordConfirm())), SUC_USR_003);
     }
 
 }

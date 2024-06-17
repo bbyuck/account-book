@@ -1,6 +1,6 @@
-package com.bb.accountbook.common.validation;
+package com.bb.accountbook.common.validation.presentation;
 
-import com.bb.accountbook.common.validation.constraints.YearMonth;
+import com.bb.accountbook.common.validation.presentation.constraints.YearMonth;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 

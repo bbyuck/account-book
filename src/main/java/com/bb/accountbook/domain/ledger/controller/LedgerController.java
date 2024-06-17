@@ -1,7 +1,7 @@
 package com.bb.accountbook.domain.ledger.controller;
 
 import com.bb.accountbook.common.model.ApiResponse;
-import com.bb.accountbook.common.validation.constraints.YearMonth;
+import com.bb.accountbook.common.validation.presentation.constraints.YearMonth;
 import com.bb.accountbook.domain.ledger.dto.*;
 import com.bb.accountbook.domain.ledger.service.LedgerService;
 import com.bb.accountbook.entity.Ledger;

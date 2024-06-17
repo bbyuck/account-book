@@ -5,6 +5,7 @@ import com.bb.accountbook.common.exception.GlobalException;
 import com.bb.accountbook.common.model.codes.RoleCode;
 import com.bb.accountbook.common.model.status.MailStatus;
 import com.bb.accountbook.common.util.RSACrypto;
+import com.bb.accountbook.common.validation.UserValidation;
 import com.bb.accountbook.domain.mail.service.MailService;
 import com.bb.accountbook.domain.user.dto.TokenDto;
 import com.bb.accountbook.domain.user.repository.AuthRepository;
@@ -93,8 +94,13 @@ public class UserService {
     }
 
     public Long signup(String email, String password, String passwordConfirm) {
-        // 0. password confirm validation
-        if (!password.equals(passwordConfirm)) {
+        // 0. password validation
+        if (!UserValidation.passwordValidation(password)) {
+            log.debug("{}.{}({}): {}", this.getClass().getName(), "signup", email, ERR_VALID_003.getValue());
+            throw new GlobalException(ERR_VALID_003);
+        }
+
+        if (!UserValidation.passwordConfirmValidation(password, passwordConfirm)) {
             log.debug("{}.{}({}): {}", this.getClass().getName(), "signup", email, ERR_VALID_004.getValue());
             throw new GlobalException(ERR_VALID_004);
         }
@@ -239,4 +245,24 @@ public class UserService {
         return true;
     }
 
+    public boolean changeUserPassword(String email, String password, String passwordConfirm) {
+        // 0. password validation
+        if (!UserValidation.passwordValidation(password)) {
+            log.debug("{}.{}({}, {}, {}): {}", this.getClass().getName(), "changeUserPassword", email, password, passwordConfirm, ERR_VALID_003.getValue());
+            throw new GlobalException(ERR_VALID_003);
+        }
+
+        if (!UserValidation.passwordConfirmValidation(password, passwordConfirm)) {
+            log.debug("{}.{}({}, {}, {}): {}", this.getClass().getName(), "changeUserPassword", email, password, passwordConfirm, ERR_VALID_004.getValue());
+            throw new GlobalException(ERR_VALID_004);
+        }
+
+        User user = findUserByEmail(email);
+        user.changePassword(passwordEncoder.encode(password));
+
+        // logout 처리
+        logout(email);
+
+        return true;
+    }
 }
