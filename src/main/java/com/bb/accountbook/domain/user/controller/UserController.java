@@ -42,7 +42,8 @@ public class UserController {
 
     @PostMapping("/api/v1/authenticate")
     public ApiResponse<TokenDto> login(@RequestBody @Valid LoginDto loginDto, HttpServletResponse response) {
-        TokenDto tokenDto = userService.authenticate(loginDto.getEmail(), loginDto.getPassword(), loginDto.isAutoLogin());
+        TokenDto tokenDto = userService.authenticate(loginDto.getEmail(), loginDto.getPassword());
+        userService.updateAuth(securityContextProvider.getCurrentEmail(), tokenDto, loginDto.isAutoLogin());
         response.addHeader("Authorization", "Bearer " + tokenDto.getAccessToken());
 
         return new ApiResponse<>(tokenDto);
@@ -70,7 +71,8 @@ public class UserController {
                 userService.changeUserPassword(
                         securityContextProvider.getCurrentEmail()
                         , requestDto.getPassword()
-                        , requestDto.getPasswordConfirm())), SUC_USR_003);
+                        , requestDto.getNewPassword()
+                        , requestDto.getNewPasswordConfirm())), SUC_USR_003);
     }
 
 }

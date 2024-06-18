@@ -24,6 +24,8 @@ public class QMail extends EntityPathBase<Mail> {
 
     public final QBaseEntity _super = new QBaseEntity(this);
 
+    public final EnumPath<com.bb.accountbook.common.model.codes.MailCode> code = createEnum("code", com.bb.accountbook.common.model.codes.MailCode.class);
+
     //inherited
     public final StringPath createdBy = _super.createdBy;
 
@@ -33,6 +35,8 @@ public class QMail extends EntityPathBase<Mail> {
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final QUser receiver;
+
+    public final DateTimePath<java.time.LocalDateTime> sentDateTime = createDateTime("sentDateTime", java.time.LocalDateTime.class);
 
     public final EnumPath<com.bb.accountbook.common.model.status.MailStatus> status = createEnum("status", com.bb.accountbook.common.model.status.MailStatus.class);
 

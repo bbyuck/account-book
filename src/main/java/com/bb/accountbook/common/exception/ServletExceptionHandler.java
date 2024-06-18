@@ -5,7 +5,6 @@ import com.bb.accountbook.common.model.codes.ErrorCode;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -36,12 +35,12 @@ public class ServletExceptionHandler {
         response.setStatus(HttpStatus.BAD_REQUEST.value());
 
 
-        boolean isPropertyExist = ValidationMessage.map.containsKey(e.getBindingResult().getFieldError().getDefaultMessage());
+        boolean isPropertyExist = Validation.map.containsKey(e.getBindingResult().getFieldError().getDefaultMessage());
         String message = isPropertyExist
-                ? ValidationMessage.map.get(e.getBindingResult().getFieldError().getDefaultMessage()).getValue()
+                ? Validation.map.get(e.getBindingResult().getFieldError().getDefaultMessage()).getValue()
                 : e.getBindingResult().getFieldError().getDefaultMessage();
         ErrorCode errorCode = isPropertyExist
-                ? ValidationMessage.map.get(e.getBindingResult().getFieldError().getDefaultMessage())
+                ? Validation.map.get(e.getBindingResult().getFieldError().getDefaultMessage())
                 : ERR_SYS_003;
 
         return new ApiResponse<>(errorCode, message);

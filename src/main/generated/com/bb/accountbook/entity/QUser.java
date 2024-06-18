@@ -46,8 +46,6 @@ public class QUser extends EntityPathBase<User> {
 
     public final EnumPath<com.bb.accountbook.common.model.status.UserStatus> status = createEnum("status", com.bb.accountbook.common.model.status.UserStatus.class);
 
-    public final NumberPath<Long> underlyingAsset = createNumber("underlyingAsset", Long.class);
-
     //inherited
     public final StringPath updatedBy = _super.updatedBy;
 

@@ -65,10 +65,12 @@ class UserServiceTest {
         User joinedUser = userService.findUserById(joinedUserId);
 
         // login
-        userService.authenticate(joinedUser.getEmail(), password, true);
+        TokenDto tokenDto = userService.authenticate(joinedUser.getEmail(), password);
+        userService.updateAuth(joinedUser.getEmail(), tokenDto, true);
 
         // change password
-        userService.changeUserPassword(joinedUser.getEmail(), "wpassword123!@#", "wpassword123!@#");
+        String newPassword = "wpassword123!@#";
+        userService.changeUserPassword(joinedUser.getEmail(), password, newPassword, newPassword);
 
         Auth auth = authRepository.findByUserEmail(joinedUser.getEmail()).orElseThrow(() -> new IllegalStateException("auth 찾을 수 없음"));
 
@@ -78,7 +80,7 @@ class UserServiceTest {
         Assertions.assertThat(auth.getRefreshToken()).isNull();
         Assertions.assertThat(auth.isAutoLogin()).isFalse();
 
-        TokenDto token = userService.authenticate(email, "wpassword123!@#", true);
+        TokenDto token = userService.authenticate(email, newPassword);
         Assertions.assertThat(token).isNotNull();
     }
 

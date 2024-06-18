@@ -2,6 +2,7 @@ package com.bb.accountbook.domain.user.service;
 
 import com.bb.accountbook.common.exception.GlobalCheckedException;
 import com.bb.accountbook.common.exception.GlobalException;
+import com.bb.accountbook.common.model.codes.ErrorCode;
 import com.bb.accountbook.common.model.codes.RoleCode;
 import com.bb.accountbook.common.model.status.MailStatus;
 import com.bb.accountbook.common.util.RSACrypto;
@@ -70,7 +71,7 @@ public class UserService {
         });
 
         // 2. User Entity 생성 && insert
-        User joinedUser = userRepository.save(new User(email, passwordEncoder.encode(password), WAIT) );
+        User joinedUser = userRepository.save(new User(email, passwordEncoder.encode(password), WAIT));
 
         // 3. default Role Entity 생성 및 UserRole Entity mapping
         List<UserRole> newUserRoles = RoleCode.DEFAULT
@@ -150,10 +151,9 @@ public class UserService {
         return auth.getId();
     }
 
-    public TokenDto authenticate(String email, String password, boolean autoLogin) {
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
 
-        User user = findUserByEmail(email);
+    public TokenDto authenticate(String email, String password) {
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
 
         // authenticate 메소드가 실행이 될 때 CustomUserDetailsService class의 loadUserByUsername 메소드가 실행
         Authentication authentication = null;
@@ -165,16 +165,7 @@ public class UserService {
         }
 
         // authentication 객체를 createToken 메소드를 통해서 JWT Token을 생성
-        TokenDto token = tokenProvider.createToken(authentication);
-        token.setAutoLogin(autoLogin);
-
-        // token info save if not exist / update if exist
-        authRepository.findByUserId(user.getId())
-                .ifPresentOrElse(
-                        auth -> auth.update(token.getRefreshToken(), token.isAutoLogin())
-                        , () -> saveAuthInfo(user, token));
-
-        return token;
+        return tokenProvider.createToken(authentication);
     }
 
     public TokenDto reissueToken(String refreshToken) {
@@ -216,8 +207,7 @@ public class UserService {
         Long mailId;
         try {
             mailId = Long.valueOf(rsaCrypto.decrypt(target));
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             log.error(e.getMessage(), e);
             throw new GlobalException(ERR_SYS_000);
         }
@@ -245,24 +235,48 @@ public class UserService {
         return true;
     }
 
-    public boolean changeUserPassword(String email, String password, String passwordConfirm) {
+    public boolean changeUserPassword(String email, String password, String newPassword, String newPasswordConfirm) {
+        try {
+            // 인증 로직만 사용
+            authenticate(email, password);
+        }
+        catch (GlobalException e) {
+            log.debug(e.getMessage(), e);
+            throw new GlobalException(ERR_USR_003);
+        }
+
         // 0. password validation
-        if (!UserValidation.passwordValidation(password)) {
-            log.debug("{}.{}({}, {}, {}): {}", this.getClass().getName(), "changeUserPassword", email, password, passwordConfirm, ERR_VALID_003.getValue());
+        if (!UserValidation.passwordValidation(newPassword)) {
+            log.debug("{}.{}({}, {}, {}, {}): {}", this.getClass().getName(), "changeUserPassword", email, password, newPassword, newPasswordConfirm, ERR_VALID_003.getValue());
             throw new GlobalException(ERR_VALID_003);
         }
 
-        if (!UserValidation.passwordConfirmValidation(password, passwordConfirm)) {
-            log.debug("{}.{}({}, {}, {}): {}", this.getClass().getName(), "changeUserPassword", email, password, passwordConfirm, ERR_VALID_004.getValue());
+        if (!UserValidation.passwordConfirmValidation(newPassword, newPasswordConfirm)) {
+            log.debug("{}.{}({}, {}, {}, {}): {}", this.getClass().getName(), "changeUserPassword", email, password, newPassword, newPasswordConfirm, ERR_VALID_004.getValue());
             throw new GlobalException(ERR_VALID_004);
         }
 
+        if (password.equals(newPassword)) {
+            log.debug("{}.{}({}, {}, {}, {}): {}", this.getClass().getName(), "changeUserPassword", email, password, newPassword, newPasswordConfirm, ERR_VALID_004.getValue());
+            throw new GlobalException(ERR_USR_004);
+        }
+
         User user = findUserByEmail(email);
-        user.changePassword(passwordEncoder.encode(password));
+        user.changePassword(passwordEncoder.encode(newPassword));
 
         // logout 처리
         logout(email);
 
         return true;
+    }
+
+    public void updateAuth(String email, TokenDto token, boolean autoLogin) {
+        token.setAutoLogin(autoLogin);
+
+        // token info save if not exist / update if exist
+        authRepository.findByUserEmail(email)
+                .ifPresentOrElse(
+                        auth -> auth.update(token.getRefreshToken(), token.isAutoLogin())
+                        , () -> saveAuthInfo(findUserByEmail(email), token));
     }
 }
