@@ -26,8 +26,13 @@ public class CustomService {
     private final String DEFAULT_COLOR = "d1fbff";
 
     public Long saveCustom(String email, CustomCode customCode, String customValue) {
-        User user = userService.findUserByEmail(email);
-        Custom custom = customRepository.save(new Custom(user, customCode, customValue));
+        Custom custom = customRepository.findCustomByOwnerEmailAndCode(email, customCode)
+                .orElseGet(() -> {
+                    User user = userService.findUserByEmail(email);
+                    return customRepository.save(new Custom(user, customCode, customValue));
+                });
+        custom.changeValue(customValue);
+
         return custom.getId();
     }
 
@@ -48,8 +53,7 @@ public class CustomService {
         try {
             Custom custom = findCustom(email, CustomCode.COLOR);
             return custom.getValue();
-        }
-        catch(GlobalException ge) {
+        } catch (GlobalException ge) {
             return DEFAULT_COLOR;
         }
     }

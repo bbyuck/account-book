@@ -1,7 +1,6 @@
 package com.bb.accountbook.domain.user.controller;
 
 import com.bb.accountbook.common.model.ApiResponse;
-import com.bb.accountbook.common.model.codes.SuccessCode;
 import com.bb.accountbook.domain.user.dto.*;
 import com.bb.accountbook.domain.user.service.UserService;
 import com.bb.accountbook.security.SecurityContextProvider;
@@ -62,7 +61,7 @@ public class UserController {
 
     @PostMapping("/api/v1/verify")
     public ApiResponse<UserVerifyResponseDto> verifyUser(@RequestBody @Valid UserVerifyRequestDto requestDto) {
-        return new ApiResponse<>(new UserVerifyResponseDto(userService.verifyUser(requestDto.getTarget())), USC_USR_004);
+        return new ApiResponse<>(new UserVerifyResponseDto(userService.verifyUser(requestDto.getTarget())), SUC_USR_004);
     }
 
     @PutMapping("/api/v1/user/password")

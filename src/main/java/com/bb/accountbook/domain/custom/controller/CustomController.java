@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.bb.accountbook.common.model.codes.SuccessCode.SUC_CUS_000;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -29,7 +31,7 @@ public class CustomController {
     @PostMapping("/api/v1/custom")
     public ApiResponse<CustomCreateResponseDto> createCustom(@RequestBody CustomCreateRequestDto requestDto) {
         Long customId = customService.saveCustom(securityContextProvider.getCurrentEmail(), requestDto.getCustomCode(), requestDto.getCustomValue());
-        return new ApiResponse<>(new CustomCreateResponseDto(customId));
+        return new ApiResponse<>(new CustomCreateResponseDto(customId), SUC_CUS_000);
     }
 
     @GetMapping("/api/v1/custom")

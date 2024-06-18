@@ -37,4 +37,8 @@ public class Custom extends BaseEntity {
         this.value = value;
     }
 
+    public void changeValue(String value) {
+        this.value = value;
+    }
+
 }

@@ -20,7 +20,7 @@ class CustomServiceTest {
 
     @Test
     @DisplayName("유저별 커스터마이즈 Entity 저장")
-    public void saveCustom() throws Exception {
+    public void insertCustomWithSaveCustom() throws Exception {
         // given
         String userEmail = "abc123@naver.com";
         CustomCode code = CustomCode.COLOR;
@@ -31,9 +31,24 @@ class CustomServiceTest {
 
         // then
         Assertions.assertThat(savedCustomId).isNotNull();
-
     }
 
+    @Test
+    @DisplayName("유저별 커스터마이즈 Entity update 처리")
+    public void updateCustomWithSaveCustom() throws Exception {
+        // given
+        String userEmail = "abc123@naver.com";
+        CustomCode code = CustomCode.COLOR;
+        String value = "98DF96";
+
+        // when
+        Long savedCustomId = customService.saveCustom(userEmail, code, value);
+        Long updatedCustomId = customService.saveCustom(userEmail, code, "123456");
+
+
+        // then
+        Assertions.assertThat(savedCustomId).isEqualTo(updatedCustomId);
+    }
 
     @Test
     @DisplayName("유저별 커스터마이즈 조회")
