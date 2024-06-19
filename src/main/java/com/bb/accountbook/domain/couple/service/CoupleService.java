@@ -2,6 +2,8 @@ package com.bb.accountbook.domain.couple.service;
 
 import com.bb.accountbook.common.exception.GlobalException;
 import com.bb.accountbook.common.model.status.CoupleStatus;
+import com.bb.accountbook.common.model.status.UserCoupleStatus;
+import com.bb.accountbook.domain.couple.dto.CoupleStatusFindResponseDto;
 import com.bb.accountbook.domain.couple.repository.CoupleRepository;
 import com.bb.accountbook.domain.user.service.UserService;
 import com.bb.accountbook.entity.Couple;
@@ -135,20 +137,25 @@ public class CoupleService {
     }
 
     @Transactional(readOnly = true)
-    public boolean isExistCouple(String userEmail) {
-        Optional<UserCouple> optional = coupleRepository.findUserCoupleByUserEmail(userEmail);
+    public boolean isActiveCouple(String email) {
+        Optional<UserCouple> optional = coupleRepository.findUserCoupleByUserEmail(email);
         return optional.isPresent() && optional.get().getStatus() == ACTIVE;
     }
 
     @Transactional(readOnly = true)
-    public Couple findCoupleByUserEmail(String userEmail) {
-        return coupleRepository.findCoupleByUserEmail(userEmail).orElseThrow(() -> {
-            log.debug("{}.{}({}): {}", this.getClass().getName(), "findCoupleByUserEmail", userEmail, ERR_CPL_001.getValue());
+    public Couple findCoupleByUserEmail(String email) {
+        return coupleRepository.findCoupleByUserEmail(email).orElseThrow(() -> {
+            log.debug("{}.{}({}): {}", this.getClass().getName(), "findCoupleByUserEmail", email, ERR_CPL_001.getValue());
             return new GlobalException(ERR_CPL_001);
         });
     }
 
-    public boolean isCouple(String userEmail) {
-        return coupleRepository.findCoupleByUserEmail(userEmail).isPresent();
+    @Transactional(readOnly = true)
+    public CoupleStatusFindResponseDto findCoupleAndUserCoupleStatus(String email) {
+        return coupleRepository.findUserCoupleByUserEmail(email)
+                .stream()
+                .findFirst()
+                .map(userCouple -> new CoupleStatusFindResponseDto(userCouple.getCouple().getStatus(), userCouple.getStatus()))
+                .orElseGet(() -> new CoupleStatusFindResponseDto(CoupleStatus.NONE, UserCoupleStatus.NONE));
     }
 }

@@ -19,4 +19,5 @@ public interface CoupleCustomRepository {
     Optional<Couple> findCoupleByUserEmail(String userEmail);
     Optional<UserCouple> findUserCoupleByUserEmailAndCoupleId(String userEmail, Long coupleId);
     Optional<UserCouple> findUserCoupleByUserEmail(String userEmail);
+
 }

@@ -30,7 +30,7 @@ class CoupleServiceTest {
 
     @Test
     @DisplayName("남 -> 여 커플로 연결 신청")
-    public void connect() throws Exception {
+    void connect() throws Exception {
         // given
         User man = userService.findUserByEmail("k941026h@naver.com");
         User woman = userService.findUserByEmail("abc123@naver.com");
@@ -51,7 +51,7 @@ class CoupleServiceTest {
 
     @Test
     @DisplayName("남 -> 여 커플로 연결 신청 후 여자 계정으로 수락")
-    public void applyConnectRequest() throws Exception {
+    void applyConnectRequest() throws Exception {
         // given
         Long manId = 3L;
         Long manUserCoupleId = 1L;
@@ -66,5 +66,11 @@ class CoupleServiceTest {
         // then
         Assertions.assertThat(userCouple.getStatus()).isEqualTo(UserCoupleStatus.ACTIVE);
         Assertions.assertThat(userCouple.getNickname()).isEqualTo("test");
+    }
+
+    @Test
+    @DisplayName("user email로 coupleid 조회 -> 커플 아닐시 null")
+    void findCoupleIdByEmail() throws Exception {
+
     }
 }

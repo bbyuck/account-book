@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
@@ -106,7 +105,7 @@ public class LedgerService {
     public List<Ledger> findCoupleMonthlyLedger(String email, String yearMonth) {
         LocalDate[] monthlyDuration = DateTimeUtil.getMonthlyDuration(yearMonth);
 
-        if (!coupleService.isExistCouple(email)) {
+        if (!coupleService.isActiveCouple(email)) {
             log.debug("{}.{}({}, {}): {}", this.getClass().getName(), "findCoupleMonthlyLedger", email, yearMonth, ERR_CPL_003.getValue());
             throw new GlobalException(ERR_CPL_003);
         }
@@ -132,12 +131,12 @@ public class LedgerService {
 
     @Transactional(readOnly = true)
     public List<Ledger> findMonthlyLedger(String userEmail, String yearMonth) {
-        return coupleService.isExistCouple(userEmail) ? findCoupleMonthlyLedger(userEmail, yearMonth) : findPersonalMonthlyLedger(userEmail, yearMonth);
+        return coupleService.isActiveCouple(userEmail) ? findCoupleMonthlyLedger(userEmail, yearMonth) : findPersonalMonthlyLedger(userEmail, yearMonth);
     }
 
     @Transactional(readOnly = true)
     public List<Ledger> findLedgers(String userEmail) {
-        return coupleService.isExistCouple(userEmail) ? findCoupleLedgers(userEmail) : findPersonalLedgers(userEmail);
+        return coupleService.isActiveCouple(userEmail) ? findCoupleLedgers(userEmail) : findPersonalLedgers(userEmail);
     }
 
     @Transactional(readOnly = true)
@@ -147,7 +146,7 @@ public class LedgerService {
 
     @Transactional(readOnly = true)
     public List<Ledger> findCoupleLedgers(String email) {
-        if (!coupleService.isExistCouple(email)) {
+        if (!coupleService.isActiveCouple(email)) {
             log.debug("{}.{}({}): {}", this.getClass().getName(), "findPersonalLedgers", email, ERR_CPL_003.getValue());
             throw new GlobalException(ERR_CPL_003);
         }
@@ -165,7 +164,7 @@ public class LedgerService {
      * @return
      */
     public LedgerDetailDto findLedger(String email, Long ledgerId) {
-        return coupleService.isCouple(email)
+        return coupleService.isActiveCouple(email)
                 ? findCoupleLedger(coupleService.findCoupleByUserEmail(email).getId(), ledgerId)
                 : findPersonalLedger(email, ledgerId);
     }
@@ -282,7 +281,7 @@ public class LedgerService {
 
     public boolean deleteLedger(String email, Long ledgerId) {
         Ledger ledger;
-        if (coupleService.isCouple(email)) {
+        if (coupleService.isActiveCouple(email)) {
             Long coupleId = coupleService.findCoupleByUserEmail(email).getId();
              ledger = ledgerRepository.findLedgerWithUserCouple(coupleId, ledgerId).orElseThrow(() -> {
                 log.debug("{}.{}({}, {}): {}", this.getClass().getName(), "findCoupleLedger", coupleId, ledgerId, ERR_LED_000.getValue());

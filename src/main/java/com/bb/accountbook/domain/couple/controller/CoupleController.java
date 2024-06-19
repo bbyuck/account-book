@@ -1,14 +1,12 @@
 package com.bb.accountbook.domain.couple.controller;
 
 import com.bb.accountbook.common.model.ApiResponse;
-import com.bb.accountbook.domain.couple.dto.CoupleConnectionApplyRequestDto;
-import com.bb.accountbook.domain.couple.dto.CoupleConnectionApplyResponseDto;
-import com.bb.accountbook.domain.couple.dto.CoupleConnectionRequestDto;
-import com.bb.accountbook.domain.couple.dto.CoupleConnectionResponseDto;
+import com.bb.accountbook.domain.couple.dto.*;
 import com.bb.accountbook.domain.couple.service.CoupleService;
 import com.bb.accountbook.security.SecurityContextProvider;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,5 +30,10 @@ public class CoupleController {
     public ApiResponse<CoupleConnectionApplyResponseDto> applyCoupleRequest(@RequestBody @Valid CoupleConnectionApplyRequestDto requestDto) {
         Long apiCallersUserCoupleId = coupleService.applyConnectRequest(requestDto.getUserCoupleId(), requestDto.getNickname());
         return new ApiResponse<>(new CoupleConnectionApplyResponseDto(apiCallersUserCoupleId));
+    }
+
+    @GetMapping("/api/v1/couple/status")
+    public ApiResponse<CoupleStatusFindResponseDto> findCoupleAndUserCoupleStatus() {
+        return new ApiResponse<>(coupleService.findCoupleAndUserCoupleStatus(securityContextProvider.getCurrentEmail()));
     }
 }
