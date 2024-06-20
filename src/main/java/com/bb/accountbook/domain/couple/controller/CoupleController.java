@@ -1,6 +1,7 @@
 package com.bb.accountbook.domain.couple.controller;
 
 import com.bb.accountbook.common.model.ApiResponse;
+import com.bb.accountbook.common.model.codes.SuccessCode;
 import com.bb.accountbook.domain.couple.dto.*;
 import com.bb.accountbook.domain.couple.service.CoupleService;
 import com.bb.accountbook.security.SecurityContextProvider;
@@ -10,6 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import static com.bb.accountbook.common.model.codes.SuccessCode.SUC_COUP_000;
 
 
 @RestController
@@ -23,7 +26,7 @@ public class CoupleController {
     @PostMapping("/api/v1/couple")
     public ApiResponse<CoupleConnectionResponseDto> coupleConnect(@RequestBody @Valid CoupleConnectionRequestDto requestDto) {
         Long apiCallersUserCoupleId = coupleService.connectToOpponent(securityContextProvider.getCurrentEmail(), requestDto.getOpponentEmail(), requestDto.getNickname(), requestDto.getCoupleName());
-        return new ApiResponse<>(new CoupleConnectionResponseDto(apiCallersUserCoupleId));
+        return new ApiResponse<>(new CoupleConnectionResponseDto(apiCallersUserCoupleId), SUC_COUP_000);
     }
 
     @PostMapping("/api/v1/couple/apply")

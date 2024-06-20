@@ -1,6 +1,7 @@
 package com.bb.accountbook.domain.couple.service;
 
 import com.bb.accountbook.common.exception.GlobalException;
+import com.bb.accountbook.common.model.codes.ErrorCode;
 import com.bb.accountbook.common.model.status.CoupleStatus;
 import com.bb.accountbook.common.model.status.UserCoupleStatus;
 import com.bb.accountbook.domain.couple.dto.CoupleStatusFindResponseDto;
@@ -50,10 +51,6 @@ public class CoupleService {
         return userCouple.getId();
     }
 
-    public Long createCouple(String coupleName) {
-        Couple createdCouple = coupleRepository.save(new Couple(coupleName));
-        return createdCouple.getId();
-    }
 
     @Transactional(readOnly = true)
     public Couple findCouple(Long coupleId) {
@@ -97,10 +94,30 @@ public class CoupleService {
      * @return userCoupleId
      */
     public Long connectToOpponent(String apiCallerEmail, String opponentEmail, String nickname, String coupleName) {
-        Couple couple = coupleRepository.findCoupleByUserEmail(apiCallerEmail)
-                .orElse(findCouple(createCouple(coupleName)));
 
-        // 그룹에 참여
+        coupleRepository.findCoupleByUserEmail(apiCallerEmail).ifPresent(couple -> {
+            log.debug("{} ====== {}", ERR_COUP_000.getValue(), apiCallerEmail);
+            throw new GlobalException(ERR_COUP_000);
+        });
+
+
+        try {
+            userService.findUserByEmail(opponentEmail);
+        }
+        catch (GlobalException e) {
+            log.debug("{} ====== {}", ERR_USR_000, opponentEmail);
+            throw new GlobalException(ERR_COUP_002);
+        }
+
+        coupleRepository.findCoupleByUserEmail(opponentEmail).ifPresent(couple -> {
+            log.debug("상대가 이미 커플로 등록되어 있습니다.", opponentEmail);
+            throw new GlobalException(ERR_COUP_001);
+        });
+
+        Couple couple = new Couple(coupleName);
+        coupleRepository.save(couple);
+
+        // userCouple mapping 생성
         UserCouple callersUserCouple = findUserCouple(joinCouple(apiCallerEmail, couple.getId(), nickname));
 
         callersUserCouple.changeStatus(ACTIVE);

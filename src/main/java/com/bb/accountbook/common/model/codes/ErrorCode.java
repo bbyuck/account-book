@@ -81,6 +81,13 @@ public enum ErrorCode {
     ERR_MAIL_002("메일을 찾지 못했습니다.", SC_NOT_FOUND),
     ERR_MAIL_003("유효하지 않은 메일입니다.", SC_BAD_REQUEST),
     ERR_MAIL_004("메일의 유효 시간이 지났습니다.", SC_BAD_REQUEST),
+
+    /**
+     * Couple
+     */
+    ERR_COUP_000("이미 커플 등록이 되어있습니다.", SC_BAD_REQUEST),
+    ERR_COUP_001("상대가 이미 커플로 등록되어 있습니다.", SC_BAD_REQUEST),
+    ERR_COUP_002("상대를 찾을 수 없습니다.", SC_BAD_REQUEST),
     ;
 
     private final String value;

@@ -21,8 +21,12 @@ public enum SuccessCode {
     /**
      * Custom
      */
-    SUC_CUS_000("컬러가 설정되었습니다.", SC_OK)
+    SUC_CUS_000("컬러가 설정되었습니다.", SC_OK),
 
+    /**
+     * Couple
+     */
+    SUC_COUP_000("요청을 보냈습니다.", SC_OK);
     ;
 
     private final String value;
