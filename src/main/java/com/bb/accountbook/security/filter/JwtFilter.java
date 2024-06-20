@@ -3,6 +3,10 @@ package com.bb.accountbook.security.filter;
 import com.bb.accountbook.common.exception.GlobalException;
 import com.bb.accountbook.security.TokenProvider;
 import com.bb.accountbook.security.config.CustomSecurityProperties;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.security.SecurityException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
@@ -15,6 +19,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
+
+import static com.bb.accountbook.common.model.codes.ErrorCode.*;
+import static com.bb.accountbook.common.model.codes.ErrorCode.ERR_AUTH_007;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -37,9 +44,22 @@ public class JwtFilter extends GenericFilterBean {
                 Authentication authentication = tokenProvider.getAuthentication(jwt);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 log.debug("Security Context에 '{}' 인증 정보를 저장했습니다. URI : {}", authentication.getName(), requestURI);
-            } catch (GlobalException e) {
-                log.error("{} : {}", e.getErrorCode().getValue(), requestURI);
-                request.setAttribute("errorCode", e.getErrorCode());
+            }
+            catch(SecurityException | MalformedJwtException e) {
+                log.debug("{} : {}", ERR_AUTH_004.getValue(), requestURI);
+                request.setAttribute("errorCode", ERR_AUTH_004);
+            }
+            catch(ExpiredJwtException e) {
+                log.debug("{} : {}", ERR_AUTH_005.getValue(), requestURI);
+                request.setAttribute("errorCode",ERR_AUTH_005);
+            }
+            catch(UnsupportedJwtException e) {
+                log.debug("{} : {}", ERR_AUTH_006.getValue(), requestURI);
+                request.setAttribute("errorCode", ERR_AUTH_006);
+            }
+            catch(IllegalArgumentException e) {
+                log.debug("{} : {}", ERR_AUTH_007.getValue(), requestURI);
+                request.setAttribute("errorCode", ERR_AUTH_007);
             }
         }
 

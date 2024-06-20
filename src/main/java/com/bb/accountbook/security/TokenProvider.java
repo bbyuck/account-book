@@ -19,6 +19,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.security.Key;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -106,22 +108,21 @@ public class TokenProvider implements InitializingBean {
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);
     }
 
+    public LocalDateTime getExpiration(String token) {
+        Claims claims = Jwts
+                .parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        return claims.getExpiration().toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+    }
+
     public void validate(String token) {
-        try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-        }
-        catch(SecurityException | MalformedJwtException e) {
-            throw new GlobalException(ERR_AUTH_004);
-        }
-        catch(ExpiredJwtException e) {
-            throw new GlobalException(ERR_AUTH_005);
-        }
-        catch(UnsupportedJwtException e) {
-            throw new GlobalException(ERR_AUTH_006);
-        }
-        catch(IllegalArgumentException e) {
-            throw new GlobalException(ERR_AUTH_007);
-        }
+        Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
     }
 
     // Request Header 에서 토큰 정보를 꺼내오기 위한 메소드

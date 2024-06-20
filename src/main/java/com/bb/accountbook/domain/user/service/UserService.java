@@ -18,6 +18,7 @@ import com.bb.accountbook.entity.Mail;
 import com.bb.accountbook.entity.User;
 import com.bb.accountbook.entity.UserRole;
 import com.bb.accountbook.security.TokenProvider;
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,6 +28,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 import static com.bb.accountbook.common.model.codes.ErrorCode.*;
@@ -187,7 +191,19 @@ public class UserService {
         }
 
         TokenDto token = tokenProvider.createToken(authentication);
-        auth.updateRefreshToken(token.getRefreshToken());
+        LocalDateTime expiration = tokenProvider.getExpiration(refreshToken);
+        LocalDateTime now = LocalDateTime.now();
+
+        if (Duration.between(now, expiration).toDays() < 7) {
+            // expiration까지 7일 이내로 남았을 경우 refresh token도 재발급
+            log.debug("토큰의 expiration이 7일 이내로 남아 refresh token도 재발급 처리 합니다. ====== {}", auth.getUser().getEmail());
+            auth.updateRefreshToken(token.getRefreshToken());
+        }
+        else {
+            // expiration까지 7일 이상 남았을 경우 기존 refresh token 담아 return
+            token.setRefreshToken(refreshToken);
+        }
+
 
         return token;
     }
@@ -239,8 +255,7 @@ public class UserService {
         try {
             // 인증 로직만 사용
             authenticate(email, password);
-        }
-        catch (GlobalException e) {
+        } catch (GlobalException e) {
             log.debug(e.getMessage(), e);
             throw new GlobalException(ERR_USR_003);
         }
