@@ -242,8 +242,10 @@ public class LedgerService {
                             dailyLedgerDto.getLedgers().forEach(ledgerDto -> {
                                 if (ledgerDto.getLedgerCode() == LedgerCode.I) {
                                     dailyLedgerDto.addDailyIncome(ledgerDto.getAmount());
-                                } else if (ledgerDto.getLedgerCode() == LedgerCode.E || ledgerDto.getLedgerCode() == LedgerCode.S) {
+                                } else if (ledgerDto.getLedgerCode() == LedgerCode.E) {
                                     dailyLedgerDto.addDailyExpenditure(ledgerDto.getAmount());
+                                } else if (ledgerDto.getLedgerCode() == LedgerCode.S) {
+                                    dailyLedgerDto.addDailySave(ledgerDto.getAmount());
                                 }
                             });
 
@@ -283,12 +285,11 @@ public class LedgerService {
         Ledger ledger;
         if (coupleService.isActiveCouple(email)) {
             Long coupleId = coupleService.findCoupleByUserEmail(email).getId();
-             ledger = ledgerRepository.findLedgerWithUserCouple(coupleId, ledgerId).orElseThrow(() -> {
+            ledger = ledgerRepository.findLedgerWithUserCouple(coupleId, ledgerId).orElseThrow(() -> {
                 log.debug("{}.{}({}, {}): {}", this.getClass().getName(), "findCoupleLedger", coupleId, ledgerId, ERR_LED_000.getValue());
                 return new GlobalException(ERR_LED_000);
             });
-        }
-        else {
+        } else {
             ledger = ledgerRepository.findLedgerByIdAndUserEmail(ledgerId, email).orElseThrow(() -> {
                 log.debug("{}.{}({}, {}): {}", this.getClass().getName(), "findPersonalLedger", email, ledgerId, ERR_LED_000.getValue());
                 return new GlobalException(ERR_LED_000);

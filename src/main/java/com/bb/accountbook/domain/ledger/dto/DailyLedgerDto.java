@@ -11,13 +11,18 @@ public class DailyLedgerDto {
     private List<LedgerDto> ledgers;
     private Long dailyIncome = 0L;
     private Long dailyExpenditure = 0L;
+    private Long dailySave = 0L;
 
 
-    public void addDailyIncome(Long amount){
+    public void addDailyIncome(Long amount) {
         this.dailyIncome += amount;
     }
 
     public void addDailyExpenditure(Long amount) {
         this.dailyExpenditure += amount;
+    }
+
+    public void addDailySave(Long amount) {
+        this.dailySave += amount;
     }
 }
