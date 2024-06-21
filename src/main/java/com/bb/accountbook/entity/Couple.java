@@ -28,6 +28,7 @@ public class Couple {
     private String name;
 
     @Column(name = "couple_status")
+    @Enumerated(EnumType.STRING)
     private CoupleStatus status;
 
     @OneToMany(mappedBy = "couple")
