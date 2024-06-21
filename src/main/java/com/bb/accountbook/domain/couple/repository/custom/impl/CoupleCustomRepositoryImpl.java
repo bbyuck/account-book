@@ -1,5 +1,6 @@
 package com.bb.accountbook.domain.couple.repository.custom.impl;
 
+import com.bb.accountbook.common.model.status.UserCoupleStatus;
 import com.bb.accountbook.domain.couple.repository.custom.CoupleCustomRepository;
 import com.bb.accountbook.entity.Couple;
 import com.bb.accountbook.entity.UserCouple;
@@ -81,6 +82,20 @@ public class CoupleCustomRepositoryImpl implements CoupleCustomRepository {
 
         return em.createQuery(jpql, UserCouple.class)
                 .setParameter("userEmail", userEmail)
+                .getResultList().stream().findFirst();
+    }
+
+    @Override
+    public Optional<UserCouple> findUserCoupleByUserEmailAndStatus(String email, UserCoupleStatus status) {
+        String jpql = "select uc " +
+                "from UserCouple uc " +
+                "join fetch User u " +
+                "on uc.user = u " +
+                "where u.email = :email " +
+                "and uc.status = :status";
+        return em.createQuery(jpql, UserCouple.class)
+                .setParameter("email", email)
+                .setParameter("status", status)
                 .getResultList().stream().findFirst();
     }
 

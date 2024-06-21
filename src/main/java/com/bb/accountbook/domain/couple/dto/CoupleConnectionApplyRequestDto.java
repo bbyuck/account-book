@@ -14,6 +14,5 @@ public class CoupleConnectionApplyRequestDto {
     @NotNull
     private Long userCoupleId;
 
-    @NotBlank
     private String nickname;
 }

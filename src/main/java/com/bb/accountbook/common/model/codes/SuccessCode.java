@@ -26,7 +26,8 @@ public enum SuccessCode {
     /**
      * Couple
      */
-    SUC_COUP_000("요청을 보냈습니다.", SC_OK);
+    SUC_COUP_000("요청을 보냈습니다.", SC_OK),
+    SUC_COUP_001("커플로 연결되었습니다.", SC_OK)
     ;
 
     private final String value;

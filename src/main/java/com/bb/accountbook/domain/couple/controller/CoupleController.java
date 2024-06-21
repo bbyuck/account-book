@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import static com.bb.accountbook.common.model.codes.SuccessCode.SUC_COUP_000;
+import static com.bb.accountbook.common.model.codes.SuccessCode.SUC_COUP_001;
 
 
 @RestController
@@ -32,11 +33,16 @@ public class CoupleController {
     @PostMapping("/api/v1/couple/apply")
     public ApiResponse<CoupleConnectionApplyResponseDto> applyCoupleRequest(@RequestBody @Valid CoupleConnectionApplyRequestDto requestDto) {
         Long apiCallersUserCoupleId = coupleService.applyConnectRequest(requestDto.getUserCoupleId(), requestDto.getNickname());
-        return new ApiResponse<>(new CoupleConnectionApplyResponseDto(apiCallersUserCoupleId));
+        return new ApiResponse<>(new CoupleConnectionApplyResponseDto(apiCallersUserCoupleId), SUC_COUP_001);
     }
 
     @GetMapping("/api/v1/couple/status")
     public ApiResponse<CoupleStatusFindResponseDto> findCoupleAndUserCoupleStatus() {
         return new ApiResponse<>(coupleService.findCoupleAndUserCoupleStatus(securityContextProvider.getCurrentEmail()));
+    }
+
+    @GetMapping("/api/v1/couple/connect")
+    public ApiResponse<CoupleConnectionInfoResponseDto> findCoupleConnectionInfo() {
+        return new ApiResponse<>(coupleService.findCoupleConnectionInfo(securityContextProvider.getCurrentEmail()));
     }
 }

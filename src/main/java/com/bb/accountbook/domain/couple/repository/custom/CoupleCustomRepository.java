@@ -1,5 +1,6 @@
 package com.bb.accountbook.domain.couple.repository.custom;
 
+import com.bb.accountbook.common.model.status.UserCoupleStatus;
 import com.bb.accountbook.entity.Couple;
 import com.bb.accountbook.entity.UserCouple;
 import org.springframework.stereotype.Repository;
@@ -19,5 +20,7 @@ public interface CoupleCustomRepository {
     Optional<Couple> findCoupleByUserEmail(String userEmail);
     Optional<UserCouple> findUserCoupleByUserEmailAndCoupleId(String userEmail, Long coupleId);
     Optional<UserCouple> findUserCoupleByUserEmail(String userEmail);
+    Optional<UserCouple> findUserCoupleByUserEmailAndStatus(String userEmail, UserCoupleStatus status);
+
 
 }

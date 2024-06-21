@@ -33,11 +33,14 @@ public enum ErrorCode {
     /**
      * Couple Error
      */
-    ERR_CPL_000("선택한 커플에 연결 된 유저수가 정확하지 않습니다.", UNPROCESSABLE_ENTITY),
+    ERR_CPL_000("상대를 찾을 수 없습니다.", SC_BAD_REQUEST),
     ERR_CPL_001("커플 정보를 찾을 수 없습니다.", SC_NOT_FOUND),
-    ERR_CPL_002("이미 커플로 연결되어 있습니다.", SC_CONFLICT),
+    ERR_CPL_002("이미 커플로 등록이 되어있습니다.", SC_CONFLICT),
     ERR_CPL_003("커플 매핑 정보를 찾을 수 없습니다.", SC_NOT_FOUND),
     ERR_CPL_004("커플 상태가 활성 상태가 아닙니다.", SC_CONFLICT),
+    ERR_CPL_005("상대가 이미 커플로 등록되어 있습니다.", SC_BAD_REQUEST),
+    ERR_CPL_006("커플 정보가 정확하지 않습니다.", SC_INTERNAL_SERVER_ERROR),
+    ERR_CPL_007("받은 요청을 찾을 수 없습니다.", SC_NOT_FOUND),
 
     /**
      * Ledger Error
@@ -82,13 +85,8 @@ public enum ErrorCode {
     ERR_MAIL_003("유효하지 않은 메일입니다.", SC_BAD_REQUEST),
     ERR_MAIL_004("메일의 유효 시간이 지났습니다.", SC_BAD_REQUEST),
 
-    /**
-     * Couple
-     */
-    ERR_COUP_000("이미 커플 등록이 되어있습니다.", SC_BAD_REQUEST),
-    ERR_COUP_001("상대가 이미 커플로 등록되어 있습니다.", SC_BAD_REQUEST),
-    ERR_COUP_002("상대를 찾을 수 없습니다.", SC_BAD_REQUEST),
     ;
+
 
     private final String value;
     private final int httpStatus;

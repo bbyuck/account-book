@@ -4,6 +4,7 @@ import com.bb.accountbook.common.exception.GlobalException;
 import com.bb.accountbook.common.model.codes.ErrorCode;
 import com.bb.accountbook.common.model.status.CoupleStatus;
 import com.bb.accountbook.common.model.status.UserCoupleStatus;
+import com.bb.accountbook.domain.couple.dto.CoupleConnectionInfoResponseDto;
 import com.bb.accountbook.domain.couple.dto.CoupleStatusFindResponseDto;
 import com.bb.accountbook.domain.couple.repository.CoupleRepository;
 import com.bb.accountbook.domain.user.service.UserService;
@@ -33,7 +34,8 @@ public class CoupleService {
 
     private final UserService userService;
 
-    @Transactional
+
+    @Transactional(readOnly = true)
     public UserCouple findUserCouple(Long userCoupleId) {
         return coupleRepository.findUserCoupleById(userCoupleId).orElseThrow(() -> {
             log.debug("{}.{}({}): {}", this.getClass().getName(), "findUserCouple", userCoupleId, ERR_CPL_003.getValue());
@@ -96,22 +98,21 @@ public class CoupleService {
     public Long connectToOpponent(String apiCallerEmail, String opponentEmail, String nickname, String coupleName) {
 
         coupleRepository.findCoupleByUserEmail(apiCallerEmail).ifPresent(couple -> {
-            log.debug("{} ====== {}", ERR_COUP_000.getValue(), apiCallerEmail);
-            throw new GlobalException(ERR_COUP_000);
+            log.debug("{} ====== {}", ERR_CPL_002.getValue(), apiCallerEmail);
+            throw new GlobalException(ERR_CPL_002);
         });
 
 
         try {
             userService.findUserByEmail(opponentEmail);
-        }
-        catch (GlobalException e) {
+        } catch (GlobalException e) {
             log.debug("{} ====== {}", ERR_USR_000, opponentEmail);
-            throw new GlobalException(ERR_COUP_002);
+            throw new GlobalException(ERR_CPL_000);
         }
 
         coupleRepository.findCoupleByUserEmail(opponentEmail).ifPresent(couple -> {
             log.debug("상대가 이미 커플로 등록되어 있습니다.", opponentEmail);
-            throw new GlobalException(ERR_COUP_001);
+            throw new GlobalException(ERR_CPL_005);
         });
 
         Couple couple = new Couple(coupleName);
@@ -174,5 +175,55 @@ public class CoupleService {
                 .findFirst()
                 .map(userCouple -> new CoupleStatusFindResponseDto(userCouple.getCouple().getStatus(), userCouple.getStatus()))
                 .orElseGet(() -> new CoupleStatusFindResponseDto(CoupleStatus.NONE, UserCoupleStatus.NONE));
+    }
+
+    @Transactional(readOnly = true)
+    public CoupleConnectionInfoResponseDto findCoupleConnectionInfo(String email) {
+        Couple couple = coupleRepository.findCoupleByUserEmail(email).orElseThrow(() -> {
+            log.debug("연결된 커플 정보를 찾을 수 없습니다. ====== {}", email);
+            throw new GlobalException(ERR_CPL_007);
+        });
+
+        List<UserCouple> userCouples = couple.getUserCouples();
+        if (userCouples.size() != 2) {
+            log.debug("커플 정보가 정확하지 않습니다. ====== {}", email);
+            throw new GlobalException(ERR_CPL_006);
+        }
+
+//        UserCouple opponentUserCouple = userCouples.stream()
+//                .filter(userCouple ->
+//                .findFirst()
+//                .orElseThrow(() -> {
+//                    log.debug("연결된 커플 정보를 찾을 수 없습니다. ====== {}", email);
+//                    throw new GlobalException(ERR_CPL_001);
+//                });
+
+        UserCouple apiCallerUserCouple = null;
+        UserCouple opponentUserCouple = null;
+
+        for (UserCouple userCouple : userCouples) {
+            if (userCouple.getUser().getEmail().equals(email)) {
+                apiCallerUserCouple = userCouple;
+            } else {
+                opponentUserCouple = userCouple;
+            }
+        }
+
+        if (apiCallerUserCouple == null || opponentUserCouple == null) {
+            log.debug("{} ====== {}", ERR_CPL_006.getValue(), email);
+            throw new GlobalException(ERR_CPL_006);
+        }
+
+        if (opponentUserCouple.getStatus() != ACTIVE) {
+            log.debug("{} ====== {}", ERR_CPL_000.getValue(), email);
+            throw new GlobalException((ERR_CPL_000));
+        }
+
+        return new CoupleConnectionInfoResponseDto(
+                apiCallerUserCouple.getId()
+                , opponentUserCouple.getStatus()
+                , opponentUserCouple.getUser().getEmail()
+                , opponentUserCouple.getNickname()
+                , couple.getName());
     }
 }
