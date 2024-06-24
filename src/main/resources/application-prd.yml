@@ -64,8 +64,8 @@ aws:
 
 logging:
   level:
-    com.bb.accountbook: debug
-    org.springframework: debug
+    com.bb.accountbook: error
+    org.springframework: error
     org.hibernate:
       type:
         descriptor.sql: error
