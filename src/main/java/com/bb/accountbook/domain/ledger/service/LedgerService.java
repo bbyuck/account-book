@@ -18,12 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 
-import static com.bb.accountbook.common.model.codes.ErrorCode.*;
-import static java.util.stream.Collectors.groupingBy;
+import static com.bb.accountbook.common.model.codes.ErrorCode.ERR_CPL_003;
+import static com.bb.accountbook.common.model.codes.ErrorCode.ERR_LED_000;
 
 @Slf4j
 @Service
@@ -203,25 +200,18 @@ public class LedgerService {
     }
 
     public MonthlyLedgerResponseDto getMonthlyLedgerResponseDto(List<Ledger> monthlyLedgers, String yearMonth) {
-        MonthlyLedgerResponseDto dataDto = new MonthlyLedgerResponseDto();
+        MonthlyLedgerResponseDto dataDto = new MonthlyLedgerResponseDto(yearMonth);
 
-        dataDto.setYearMonth(yearMonth);
-        AtomicReference<Long> totalIncome = new AtomicReference<>(0L);
-        AtomicReference<Long> totalExpenditure = new AtomicReference<>(0L);
-        AtomicReference<Long> totalSave = new AtomicReference<>(0L);
-
-
-        Map<Integer, DailyLedgerDto> ledgersPerDay = monthlyLedgers.stream()
-                .map(ledger -> {
+        monthlyLedgers
+                .forEach(ledger -> {
                     switch (ledger.getCode()) {
-                        case I -> totalIncome.updateAndGet(v -> v + ledger.getAmount());
-                        case E -> totalExpenditure.updateAndGet(v -> v + ledger.getAmount());
-                        case S -> totalSave.updateAndGet(v -> v + ledger.getAmount());
+                        case I -> dataDto.addTotalIncome(ledger.getAmount());
+                        case E -> dataDto.addTotalExpenditure(ledger.getAmount());
+                        case S -> dataDto.addTotalSave(ledger.getAmount());
                         default -> {
                         }
                     }
-
-                    return new LedgerDto(
+                    LedgerDto ledgerDto = new LedgerDto(
                             ledger.getId(),
                             ledger.getOwner().getUserCouple() != null ? ledger.getOwner().getUserCouple().getNickname() : "",
                             ledger.getCode(),
@@ -230,34 +220,10 @@ public class LedgerService {
                             ledger.getDescription(),
                             customService.getCustomColor(ledger.getOwner().getEmail())
                     );
-                })
-                .collect(groupingBy(LedgerDto::getDay))
-                .entrySet()
-                .stream()
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        e -> {
-                            DailyLedgerDto dailyLedgerDto = new DailyLedgerDto();
-                            dailyLedgerDto.setLedgers(e.getValue());
-                            dailyLedgerDto.getLedgers().forEach(ledgerDto -> {
-                                if (ledgerDto.getLedgerCode() == LedgerCode.I) {
-                                    dailyLedgerDto.addDailyIncome(ledgerDto.getAmount());
-                                } else if (ledgerDto.getLedgerCode() == LedgerCode.E) {
-                                    dailyLedgerDto.addDailyExpenditure(ledgerDto.getAmount());
-                                } else if (ledgerDto.getLedgerCode() == LedgerCode.S) {
-                                    dailyLedgerDto.addDailySave(ledgerDto.getAmount());
-                                }
-                            });
 
-                            return dailyLedgerDto;
-                        }
-                ));
+                    dataDto.getLedgersPerDay().get(ledgerDto.getDay()).addLedger(ledgerDto);
+                });
 
-
-        dataDto.setTotalIncome(totalIncome.get());
-        dataDto.setTotalExpenditure(totalExpenditure.get());
-        dataDto.setTotalSave(totalSave.get());
-        dataDto.setLedgersPerDay(ledgersPerDay);
 
         return dataDto;
     }

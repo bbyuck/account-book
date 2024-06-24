@@ -32,11 +32,11 @@ public class DateTimeUtil {
         return answer;
     }
 
-    private static LocalDate getMonthlyStartDate(int year, int month) {
+    public static LocalDate getMonthlyStartDate(int year, int month) {
         return LocalDate.of(year, month, 1);
     }
 
-    private static LocalDate getMonthlyEndDate(int year, int month) {
+    public static LocalDate getMonthlyEndDate(int year, int month) {
         Set<Integer> monthWith31Days = Set.of(1, 3, 5, 7, 8, 10, 12);
 
         if (monthWith31Days.contains(month)) {
