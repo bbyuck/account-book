@@ -18,7 +18,6 @@ import com.bb.accountbook.entity.Mail;
 import com.bb.accountbook.entity.User;
 import com.bb.accountbook.entity.UserRole;
 import com.bb.accountbook.security.TokenProvider;
-import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -30,7 +29,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 import static com.bb.accountbook.common.model.codes.ErrorCode.*;
@@ -293,5 +291,28 @@ public class UserService {
                 .ifPresentOrElse(
                         auth -> auth.update(token.getRefreshToken(), token.isAutoLogin())
                         , () -> saveAuthInfo(findUserByEmail(email), token));
+    }
+
+
+    public TokenDto authenticateAdmin(String email, String password) {
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
+
+        // authenticate 메소드가 실행이 될 때 CustomUserDetailsService class의 loadUserByUsername 메소드가 실행
+        Authentication authentication = null;
+        try {
+            authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+        }
+        catch (Exception e) {
+            log.error(ERR_AUTH_001.getValue());
+            throw new GlobalException(ERR_AUTH_001);
+        }
+
+        if (authentication != null && authentication.getAuthorities().stream().noneMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(RoleCode.ROLE_ADMIN.name()))) {
+            log.debug("{} ====== {}", ERR_AUTH_002.getValue(), email);
+            throw new GlobalException(ERR_AUTH_002);
+        }
+
+        // authentication 객체를 createToken 메소드를 통해서 JWT Token을 생성
+        return tokenProvider.createToken(authentication);
     }
 }

@@ -9,9 +9,11 @@ import com.bb.accountbook.domain.couple.service.CoupleService;
 import com.bb.accountbook.domain.custom.service.CustomService;
 import com.bb.accountbook.domain.ledger.service.LedgerService;
 import com.bb.accountbook.domain.user.repository.RoleRepository;
+import com.bb.accountbook.domain.user.repository.UserRoleRepository;
 import com.bb.accountbook.domain.user.service.UserService;
 import com.bb.accountbook.entity.Role;
 import com.bb.accountbook.entity.User;
+import com.bb.accountbook.entity.UserRole;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
@@ -33,11 +35,23 @@ public class TestData {
     private final CoupleService coupleService;
     private final LedgerService ledgerService;
     private final RoleRepository roleRepository;
+    private final UserRoleRepository userRoleRepository;
     private final CoupleRepository coupleRepository;
     private final CustomService customService;
 
     public void init() {
         roleRepository.saveAllAndFlush(Arrays.stream(RoleCode.values()).map(Role::new).collect(Collectors.toList()));
+    }
+
+    public void createAdmin() {
+        String email = "admin@naver.com";
+        String password = "1q2w3e4R!@";
+        Long userId = userService.signup(email, password, password);
+        User user = userService.findUserById(userId);
+        Role role = roleRepository.findByCode(RoleCode.ROLE_ADMIN).orElseThrow(() -> new IllegalStateException("Role Entity 없음"));
+
+        UserRole userRole = new UserRole(user, role);
+        userRoleRepository.save(userRole);
     }
 
     public void initUsers() {
