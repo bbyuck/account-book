@@ -11,6 +11,7 @@ import com.bb.accountbook.domain.ledger.repository.LedgerRepository;
 import com.bb.accountbook.domain.user.service.UserService;
 import com.bb.accountbook.entity.Couple;
 import com.bb.accountbook.entity.Ledger;
+import com.bb.accountbook.entity.LedgerCategory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -39,7 +40,7 @@ public class LedgerService {
     /**
      * 가계부 상세 항목입력
      *
-     * @param apiCallerId
+     * @param apiCallerEmail
      * @param ledgerCode
      * @param ledgerDate
      * @param ledgerAmount
@@ -47,13 +48,28 @@ public class LedgerService {
      * @return
      */
     public Long insertLedger(String apiCallerEmail, LedgerCode ledgerCode, LocalDate ledgerDate, Long ledgerAmount, String ledgerDescription) {
+        return insertLedger(null, apiCallerEmail, ledgerCode, ledgerDate, ledgerAmount, ledgerDescription);
+    }
+
+    /**
+     * 가계부 상세 항목입력
+     *
+     * @param ledgerCategory
+     * @param apiCallerEmail
+     * @param ledgerCode
+     * @param ledgerDate
+     * @param ledgerAmount
+     * @param ledgerDescription
+     * @return
+     */
+    public Long insertLedger(LedgerCategory ledgerCategory, String apiCallerEmail, LedgerCode ledgerCode, LocalDate ledgerDate, Long ledgerAmount, String ledgerDescription) {
         if (ledgerAmount <= 0) {
             log.error(ErrorCode.ERR_LED_001.getValue());
             throw new GlobalException(ErrorCode.ERR_LED_001);
         }
 
         Ledger savedLedger = ledgerRepository.save(
-                new Ledger(userService.findUserByEmail(apiCallerEmail), ledgerCode, ledgerDate, ledgerAmount, ledgerDescription)
+                new Ledger(ledgerCategory, userService.findUserByEmail(apiCallerEmail), ledgerCode, ledgerDate, ledgerAmount, ledgerDescription)
         );
         return savedLedger.getId();
     }

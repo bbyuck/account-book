@@ -131,6 +131,8 @@ public class LedgerCustomRepositoryImpl implements LedgerCustomRepository {
                 .getResultList();
     }
 
+
+
     @Override
     public List<Ledger> findPersonalLedgers(String email) {
         String jpql = "select l " +
@@ -191,5 +193,16 @@ public class LedgerCustomRepositoryImpl implements LedgerCustomRepository {
                 .setParameter("ledgerId", ledgerId)
                 .setParameter("email", email)
                 .getResultList().stream().findFirst();
+    }
+
+    @Override
+    public int clearLedgerCategories(Long ledgerCategoryId) {
+        String jpql = "update Ledger l " +
+                "set l.ledgerCategory = null " +
+                "where l.ledgerCategory.id = :ledgerCategoryId";
+
+        return em.createQuery(jpql)
+                .setParameter("ledgerCategoryId", ledgerCategoryId)
+                .executeUpdate();
     }
 }

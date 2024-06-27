@@ -45,8 +45,9 @@ public enum ErrorCode {
     /**
      * Ledger Error
      */
-    ERR_LED_000("가계부 상세 항목을 찾을 수 없습니다.", SC_NOT_FOUND),
+    ERR_LED_000("가계부 상세 항목을 찾지 못했습니다.", SC_NOT_FOUND),
     ERR_LED_001("가계부 금액은 0원 이상이어야 합니다.", UNPROCESSABLE_ENTITY),
+    ERR_LED_002("가계부 카테고리를 찾지 못했습니다.", SC_NOT_FOUND),
 
     /**
      * Authentication, Authorization

@@ -40,6 +40,8 @@ public class QLedger extends EntityPathBase<Ledger> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final QLedgerCategory ledgerCategory;
+
     public final QUser owner;
 
     //inherited
@@ -66,6 +68,7 @@ public class QLedger extends EntityPathBase<Ledger> {
 
     public QLedger(Class<? extends Ledger> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
+        this.ledgerCategory = inits.isInitialized("ledgerCategory") ? new QLedgerCategory(forProperty("ledgerCategory"), inits.get("ledgerCategory")) : null;
         this.owner = inits.isInitialized("owner") ? new QUser(forProperty("owner"), inits.get("owner")) : null;
     }
 

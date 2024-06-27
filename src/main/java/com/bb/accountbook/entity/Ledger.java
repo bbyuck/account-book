@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
+import static jakarta.persistence.ConstraintMode.*;
+
 @Entity
 @Getter
 @Table(name = "tb_ledger")
@@ -26,6 +28,10 @@ public class Ledger extends BaseEntity {
     @JoinColumn(name = "owner_id")
     private User owner;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ledger_category_id", foreignKey = @ForeignKey(NO_CONSTRAINT))
+    private LedgerCategory ledgerCategory;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "ledger_code", nullable = false)
     private LedgerCode code;
@@ -39,12 +45,18 @@ public class Ledger extends BaseEntity {
     @Column(name = "ledger_description", length = 100)
     private String description;
 
+
     public Ledger(User user, LedgerCode code, LocalDate date, Long amount, String description) {
         this.owner = user;
         this.code = code;
         this.date = date;
         this.amount = amount;
         this.description = description;
+    }
+
+    public Ledger(LedgerCategory ledgerCategory, User user, LedgerCode code, LocalDate date, Long amount, String description) {
+        this(user, code, date, amount, description);
+        this.ledgerCategory = ledgerCategory;
     }
 
     public void update(LedgerCode code, LocalDate date, Long amount, String description) {

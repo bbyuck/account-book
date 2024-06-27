@@ -26,8 +26,6 @@ public class QUser extends EntityPathBase<User> {
 
     public final QAuth auth;
 
-    public final ListPath<Cause, QCause> causes = this.<Cause, QCause>createList("causes", Cause.class, QCause.class, PathInits.DIRECT2);
-
     //inherited
     public final StringPath createdBy = _super.createdBy;
 
@@ -39,6 +37,8 @@ public class QUser extends EntityPathBase<User> {
     public final StringPath email = createString("email");
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
+
+    public final ListPath<LedgerCategory, QLedgerCategory> ledgerCategories = this.<LedgerCategory, QLedgerCategory>createList("ledgerCategories", LedgerCategory.class, QLedgerCategory.class, PathInits.DIRECT2);
 
     public final ListPath<Ledger, QLedger> ledgers = this.<Ledger, QLedger>createList("ledgers", Ledger.class, QLedger.class, PathInits.DIRECT2);
 

@@ -1,6 +1,8 @@
 package com.bb.accountbook.domain.ledger.repository.custom;
 
 import com.bb.accountbook.entity.Ledger;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -36,5 +38,5 @@ public interface LedgerCustomRepository {
     List<Ledger> findPersonalSavings(Long userId);
     List<Ledger> findPersonalSavingsByEmail(String email);
     List<Ledger> findCoupleSavings(Long coupleId);
-
+    int clearLedgerCategories(Long id);
 }
