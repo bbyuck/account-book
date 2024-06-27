@@ -7,22 +7,19 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
-import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
- * QRole is a Querydsl query type for Role
+ * QIcon is a Querydsl query type for Icon
  */
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
-public class QRole extends EntityPathBase<Role> {
+public class QIcon extends EntityPathBase<Icon> {
 
-    private static final long serialVersionUID = -1463468728L;
+    private static final long serialVersionUID = -1463748277L;
 
-    public static final QRole role = new QRole("role");
+    public static final QIcon icon = new QIcon("icon");
 
     public final QBaseEntity _super = new QBaseEntity(this);
-
-    public final EnumPath<com.bb.accountbook.common.model.codes.RoleCode> code = createEnum("code", com.bb.accountbook.common.model.codes.RoleCode.class);
 
     //inherited
     public final StringPath createdBy = _super.createdBy;
@@ -32,7 +29,7 @@ public class QRole extends EntityPathBase<Role> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final ListPath<RoleMenu, QRoleMenu> roleMenus = this.<RoleMenu, QRoleMenu>createList("roleMenus", RoleMenu.class, QRoleMenu.class, PathInits.DIRECT2);
+    public final StringPath srcPath = createString("srcPath");
 
     //inherited
     public final StringPath updatedBy = _super.updatedBy;
@@ -40,16 +37,16 @@ public class QRole extends EntityPathBase<Role> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedDate = _super.updatedDate;
 
-    public QRole(String variable) {
-        super(Role.class, forVariable(variable));
+    public QIcon(String variable) {
+        super(Icon.class, forVariable(variable));
     }
 
-    public QRole(Path<? extends Role> path) {
+    public QIcon(Path<? extends Icon> path) {
         super(path.getType(), path.getMetadata());
     }
 
-    public QRole(PathMetadata metadata) {
-        super(Role.class, metadata);
+    public QIcon(PathMetadata metadata) {
+        super(Icon.class, metadata);
     }
 
 }

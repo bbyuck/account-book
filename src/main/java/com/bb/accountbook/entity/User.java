@@ -37,7 +37,7 @@ public class User extends BaseEntity {
     private List<Ledger> ledgers = new ArrayList<>();
 
     @OneToMany(mappedBy = "owner")
-    private List<Cause> causes = new ArrayList<>();
+    private List<LedgerCategory> ledgerCategories = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
     private List<UserRole> userRoles = new ArrayList<>();

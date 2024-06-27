@@ -6,6 +6,9 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @Table(name = "tb_role")
@@ -23,6 +26,9 @@ public class Role extends BaseEntity {
     @Column(name = "role_code")
     @Enumerated(EnumType.STRING)
     private RoleCode code;
+
+    @OneToMany(mappedBy = "role")
+    private List<RoleMenu> roleMenus = new ArrayList<>();
 
     public Role(RoleCode code) {
         this.code = code;

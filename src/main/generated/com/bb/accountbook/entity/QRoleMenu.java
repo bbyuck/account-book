@@ -11,20 +11,18 @@ import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
- * QLedgerCause is a Querydsl query type for LedgerCause
+ * QRoleMenu is a Querydsl query type for RoleMenu
  */
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
-public class QLedgerCause extends EntityPathBase<LedgerCause> {
+public class QRoleMenu extends EntityPathBase<RoleMenu> {
 
-    private static final long serialVersionUID = -1992236178L;
+    private static final long serialVersionUID = 502915783L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
-    public static final QLedgerCause ledgerCause = new QLedgerCause("ledgerCause");
+    public static final QRoleMenu roleMenu = new QRoleMenu("roleMenu");
 
     public final QBaseEntity _super = new QBaseEntity(this);
-
-    public final QCause cause;
 
     //inherited
     public final StringPath createdBy = _super.createdBy;
@@ -34,7 +32,9 @@ public class QLedgerCause extends EntityPathBase<LedgerCause> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final QLedger ledger;
+    public final QMenu menu;
+
+    public final QRole role;
 
     //inherited
     public final StringPath updatedBy = _super.updatedBy;
@@ -42,26 +42,26 @@ public class QLedgerCause extends EntityPathBase<LedgerCause> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedDate = _super.updatedDate;
 
-    public QLedgerCause(String variable) {
-        this(LedgerCause.class, forVariable(variable), INITS);
+    public QRoleMenu(String variable) {
+        this(RoleMenu.class, forVariable(variable), INITS);
     }
 
-    public QLedgerCause(Path<? extends LedgerCause> path) {
+    public QRoleMenu(Path<? extends RoleMenu> path) {
         this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
     }
 
-    public QLedgerCause(PathMetadata metadata) {
+    public QRoleMenu(PathMetadata metadata) {
         this(metadata, PathInits.getFor(metadata, INITS));
     }
 
-    public QLedgerCause(PathMetadata metadata, PathInits inits) {
-        this(LedgerCause.class, metadata, inits);
+    public QRoleMenu(PathMetadata metadata, PathInits inits) {
+        this(RoleMenu.class, metadata, inits);
     }
 
-    public QLedgerCause(Class<? extends LedgerCause> type, PathMetadata metadata, PathInits inits) {
+    public QRoleMenu(Class<? extends RoleMenu> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.cause = inits.isInitialized("cause") ? new QCause(forProperty("cause"), inits.get("cause")) : null;
-        this.ledger = inits.isInitialized("ledger") ? new QLedger(forProperty("ledger"), inits.get("ledger")) : null;
+        this.menu = inits.isInitialized("menu") ? new QMenu(forProperty("menu")) : null;
+        this.role = inits.isInitialized("role") ? new QRole(forProperty("role")) : null;
     }
 
 }

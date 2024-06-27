@@ -7,22 +7,19 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
-import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
- * QRole is a Querydsl query type for Role
+ * QMenu is a Querydsl query type for Menu
  */
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
-public class QRole extends EntityPathBase<Role> {
+public class QMenu extends EntityPathBase<Menu> {
 
-    private static final long serialVersionUID = -1463468728L;
+    private static final long serialVersionUID = -1463627215L;
 
-    public static final QRole role = new QRole("role");
+    public static final QMenu menu = new QMenu("menu");
 
     public final QBaseEntity _super = new QBaseEntity(this);
-
-    public final EnumPath<com.bb.accountbook.common.model.codes.RoleCode> code = createEnum("code", com.bb.accountbook.common.model.codes.RoleCode.class);
 
     //inherited
     public final StringPath createdBy = _super.createdBy;
@@ -30,9 +27,15 @@ public class QRole extends EntityPathBase<Role> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdDate = _super.createdDate;
 
+    public final NumberPath<Integer> depth = createNumber("depth", Integer.class);
+
+    public final NumberPath<Long> iconId = createNumber("iconId", Long.class);
+
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final ListPath<RoleMenu, QRoleMenu> roleMenus = this.<RoleMenu, QRoleMenu>createList("roleMenus", RoleMenu.class, QRoleMenu.class, PathInits.DIRECT2);
+    public final StringPath srcPath = createString("srcPath");
+
+    public final StringPath title = createString("title");
 
     //inherited
     public final StringPath updatedBy = _super.updatedBy;
@@ -40,16 +43,16 @@ public class QRole extends EntityPathBase<Role> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedDate = _super.updatedDate;
 
-    public QRole(String variable) {
-        super(Role.class, forVariable(variable));
+    public QMenu(String variable) {
+        super(Menu.class, forVariable(variable));
     }
 
-    public QRole(Path<? extends Role> path) {
+    public QMenu(Path<? extends Menu> path) {
         super(path.getType(), path.getMetadata());
     }
 
-    public QRole(PathMetadata metadata) {
-        super(Role.class, metadata);
+    public QMenu(PathMetadata metadata) {
+        super(Menu.class, metadata);
     }
 
 }

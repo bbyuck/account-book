@@ -11,16 +11,16 @@ import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
- * QCause is a Querydsl query type for Cause
+ * QLedgerCategory is a Querydsl query type for LedgerCategory
  */
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
-public class QCause extends EntityPathBase<Cause> {
+public class QLedgerCategory extends EntityPathBase<LedgerCategory> {
 
-    private static final long serialVersionUID = 1862848983L;
+    private static final long serialVersionUID = 1403696089L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
-    public static final QCause cause = new QCause("cause");
+    public static final QLedgerCategory ledgerCategory = new QLedgerCategory("ledgerCategory");
 
     public final QBaseEntity _super = new QBaseEntity(this);
 
@@ -29,6 +29,8 @@ public class QCause extends EntityPathBase<Cause> {
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdDate = _super.createdDate;
+
+    public final QIcon icon;
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
@@ -44,24 +46,25 @@ public class QCause extends EntityPathBase<Cause> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedDate = _super.updatedDate;
 
-    public QCause(String variable) {
-        this(Cause.class, forVariable(variable), INITS);
+    public QLedgerCategory(String variable) {
+        this(LedgerCategory.class, forVariable(variable), INITS);
     }
 
-    public QCause(Path<? extends Cause> path) {
+    public QLedgerCategory(Path<? extends LedgerCategory> path) {
         this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
     }
 
-    public QCause(PathMetadata metadata) {
+    public QLedgerCategory(PathMetadata metadata) {
         this(metadata, PathInits.getFor(metadata, INITS));
     }
 
-    public QCause(PathMetadata metadata, PathInits inits) {
-        this(Cause.class, metadata, inits);
+    public QLedgerCategory(PathMetadata metadata, PathInits inits) {
+        this(LedgerCategory.class, metadata, inits);
     }
 
-    public QCause(Class<? extends Cause> type, PathMetadata metadata, PathInits inits) {
+    public QLedgerCategory(Class<? extends LedgerCategory> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
+        this.icon = inits.isInitialized("icon") ? new QIcon(forProperty("icon")) : null;
         this.owner = inits.isInitialized("owner") ? new QUser(forProperty("owner"), inits.get("owner")) : null;
     }
 
