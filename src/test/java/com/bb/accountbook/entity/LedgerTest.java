@@ -33,15 +33,6 @@ class LedgerTest {
     @Autowired
     LedgerCategoryService ledgerCategoryService;
 
-
-    @BeforeEach
-    public void createTestUser() {
-        String email = "user@test.net";
-        String password = "1q2w3e4R!@";
-        userService.signup(email, password, password);
-    }
-
-
     @Test
     @DisplayName("연관관계 매핑시 nullable 테스트")
     void testMapping() {

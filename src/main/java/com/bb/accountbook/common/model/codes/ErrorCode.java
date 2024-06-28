@@ -86,7 +86,10 @@ public enum ErrorCode {
     ERR_MAIL_003("유효하지 않은 메일입니다.", SC_BAD_REQUEST),
     ERR_MAIL_004("메일의 유효 시간이 지났습니다.", SC_BAD_REQUEST),
 
-    ;
+    /**
+     * Icon
+     */
+    ERR_ICO_000("아이콘을 찾지 못했습니다.", SC_NOT_FOUND);
 
 
     private final String value;

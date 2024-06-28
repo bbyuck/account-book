@@ -1,14 +1,14 @@
 package com.bb.accountbook.domain.ledger.service;
 
 import com.bb.accountbook.common.model.codes.LedgerCode;
+import com.bb.accountbook.domain.couple.dto.CoupleConnectionInfoResponseDto;
+import com.bb.accountbook.domain.couple.service.CoupleService;
 import com.bb.accountbook.domain.user.repository.UserRepository;
 import com.bb.accountbook.domain.user.service.UserService;
 import com.bb.accountbook.entity.Ledger;
 import com.bb.accountbook.entity.LedgerCategory;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -19,6 +19,7 @@ import static com.bb.accountbook.common.model.codes.LedgerCode.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class LedgerCategoryServiceTest {
 
     @Autowired
@@ -30,14 +31,18 @@ class LedgerCategoryServiceTest {
     @Autowired
     LedgerService ledgerService;
 
+    @Autowired
+    UserRepository userRepository;
 
-    @BeforeEach
+    @Autowired
+    CoupleService coupleService;
+
+    @BeforeAll
     public void createTestUser() {
         String email = "user@test.net";
         String password = "1q2w3e4R!@";
         userService.signup(email, password, password);
     }
-
 
     @Test
     @DisplayName("카테고리 생성")
@@ -111,9 +116,7 @@ class LedgerCategoryServiceTest {
         // given
         String email = "user@test.net";
 
-
         String name = "배달비";
-
 
         LedgerCategory category = ledgerCategoryService.findLedgerCategoryById(ledgerCategoryService.insertLedgerCategory(email, name, E));
 
@@ -131,4 +134,54 @@ class LedgerCategoryServiceTest {
         Assertions.assertThat(ledger2.getLedgerCategory()).isNull();
     }
 
+    @Test
+    @DisplayName("커플일 경우 커플 소유 카테고리 전체 조회")
+    void findCoupleOwnCategories() {
+        // given
+        String email2 = "coupleuser2@test.net";
+        String password = "1q2w3e4R!@";
+        userService.signup(email2, password, password);
+
+        String email1 = "coupleuser1@test.net";
+        userService.signup(email1, password, password);
+
+        // when
+        coupleService.connectToOpponent(email1, email2, "caller", "coup");
+
+        CoupleConnectionInfoResponseDto coupleConnectionInfo = coupleService.findCoupleConnectionInfo(email2);
+        coupleService.applyConnectRequest(coupleConnectionInfo.getUserCoupleId(), "oppo");
+
+        String name1 = "배달비";
+        LedgerCode ledgerCode1 = E;
+
+        String name2 = "정기예금";
+        LedgerCode ledgerCode2 = S;
+
+        String name3 = "교통비";
+        LedgerCode ledgerCode3 = E;
+
+        String name4 = "월급";
+        LedgerCode ledgerCode4 = I;
+
+        // when
+        Long categoryId1 = ledgerCategoryService.insertLedgerCategory(email2, name1, ledgerCode1);
+        Long categoryId2 = ledgerCategoryService.insertLedgerCategory(email2, name2, ledgerCode2);
+        Long categoryId3 = ledgerCategoryService.insertLedgerCategory(email1, name3, ledgerCode3);
+        Long categoryId4 = ledgerCategoryService.insertLedgerCategory(email1, name4, ledgerCode4);
+
+        LedgerCategory category1 = ledgerCategoryService.findLedgerCategoryById(categoryId1);
+        LedgerCategory category2 = ledgerCategoryService.findLedgerCategoryById(categoryId2);
+        LedgerCategory category3 = ledgerCategoryService.findLedgerCategoryById(categoryId3);
+        LedgerCategory category4 = ledgerCategoryService.findLedgerCategoryById(categoryId4);
+
+        //
+
+        // then
+        int size1 = ledgerCategoryService.findOwnLedgerCategories(email1).size();
+        Assertions.assertThat(size1).isEqualTo(4);
+        int size2 = ledgerCategoryService.findOwnLedgerCategories(email2).size();
+        Assertions.assertThat(size2).isEqualTo(4);
+
+
+    }
 }
