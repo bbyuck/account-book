@@ -60,6 +60,10 @@ dependencies {
     /* aws-sdk-ses */
     implementation 'com.amazonaws:aws-java-sdk-ses:1.12.741'
 
+    /* p6spy for test */
+    implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.0'
+
+
 
     clean {
 		delete file('src/main/generated')
