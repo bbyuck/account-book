@@ -3,9 +3,12 @@ package com.bb.accountbook.domain.ledger.service;
 import com.bb.accountbook.common.exception.GlobalException;
 import com.bb.accountbook.common.model.codes.ErrorCode;
 import com.bb.accountbook.common.model.codes.LedgerCode;
+import com.bb.accountbook.domain.couple.service.CoupleService;
+import com.bb.accountbook.domain.icon.service.IconService;
 import com.bb.accountbook.domain.ledger.repository.LedgerCategoryRepository;
 import com.bb.accountbook.domain.ledger.repository.LedgerRepository;
 import com.bb.accountbook.domain.user.service.UserService;
+import com.bb.accountbook.entity.Couple;
 import com.bb.accountbook.entity.LedgerCategory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,8 +29,12 @@ public class LedgerCategoryService {
 
     private final UserService userService;
 
-    public Long insertLedgerCategory(String email, String name, LedgerCode ledgerCode) {
-        LedgerCategory category = new LedgerCategory(userService.findUserByEmail(email), name, ledgerCode);
+    private final CoupleService coupleService;
+
+    private final IconService iconService;
+
+    public Long insertLedgerCategory(String email, String name, LedgerCode ledgerCode, Long iconId) {
+        LedgerCategory category = new LedgerCategory(userService.findUserByEmail(email), name, ledgerCode, iconService.findIconById(iconId));
         return ledgerCategoryRepository.save(category).getId();
     }
 
@@ -40,12 +47,41 @@ public class LedgerCategoryService {
     }
 
     @Transactional(readOnly = true)
+    public LedgerCategory findOwnLedgerCategory(String email, Long id) {
+        return ledgerCategoryRepository.findByOwnerEmailAndId(email, id).orElseThrow(() -> {
+            log.debug("{} ====== {}", ErrorCode.ERR_LED_002.getValue(), id);
+            return new GlobalException(ErrorCode.ERR_LED_002);
+        });
+    }
+
+    @Transactional(readOnly = true)
     public List<LedgerCategory> findOwnLedgerCategories(String email) {
-        return ledgerCategoryRepository.findByOwnerEmail(email);
+        if (coupleService.isActiveCouple(email)) {
+            Couple couple = coupleService.findCoupleByUserEmail(email);
+            return ledgerCategoryRepository.findCoupleOwnCategoriesByOwnerEmail(couple.getId());
+        }
+        else {
+            return ledgerCategoryRepository.findByOwnerEmail(email);
+        }
     }
 
     public void deleteLedgerCategory(Long id) {
         ledgerRepository.clearLedgerCategories(id);
-        ledgerCategoryRepository.delete(findLedgerCategoryById(id));
+        ledgerCategoryRepository.deleteById(id);
+    }
+
+    public void deleteOwnLedgerCategory(String email, Long categoryId) {
+        findOwnLedgerCategory(email, categoryId);
+        deleteLedgerCategory(categoryId);
+    }
+
+    public void updateOwnLedgerCategory(String email, Long categoryId, String name, LedgerCode ledgerCode, Long iconId) {
+        LedgerCategory category = findOwnLedgerCategory(email, categoryId);
+        category.update(name, ledgerCode, iconService.findIconById(iconId));
+    }
+
+    public void updateLedgerCategory(Long categoryId, String name, LedgerCode ledgerCode, Long iconId) {
+        LedgerCategory category = findLedgerCategoryById(categoryId);
+        category.update(name, ledgerCode, iconService.findIconById(iconId));
     }
 }

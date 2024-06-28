@@ -28,7 +28,7 @@ public class Ledger extends BaseEntity {
     @JoinColumn(name = "owner_id")
     private User owner;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ledger_category_id", foreignKey = @ForeignKey(NO_CONSTRAINT))
     private LedgerCategory ledgerCategory;
 

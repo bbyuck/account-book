@@ -18,7 +18,8 @@ import static jakarta.persistence.ConstraintMode.NO_CONSTRAINT;
         initialValue = 1, allocationSize = 50)
 public class LedgerCategory extends BaseEntity {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Column(name = "ledger_category_id")
     private Long id;
 
@@ -45,13 +46,19 @@ public class LedgerCategory extends BaseEntity {
         this.ledgerCode = ledgerCode;
     }
 
-    public LedgerCategory(String name, User user, LedgerCode ledgerCode, Icon icon) {
+    public LedgerCategory(User user, String name, LedgerCode ledgerCode, Icon icon) {
         this.name = name;
         user.getLedgerCategories().add(this);
 
         this.owner = user;
         this.ledgerCode = ledgerCode;
 
+        this.icon = icon;
+    }
+
+    public void update(String name, LedgerCode ledgerCode, Icon icon) {
+        this.name = name;
+        this.ledgerCode = ledgerCode;
         this.icon = icon;
     }
 }
