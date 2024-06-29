@@ -10,13 +10,15 @@ import lombok.Data;
 public class LedgerCategoryDto {
     private Long ledgerCategoryId;
     private String ledgerCategoryName;
-    private String iconSrcPath;
+    private Long iconId;
+    private String iconName;
     private LedgerCode ledgerCode;
 
     public LedgerCategoryDto(LedgerCategory ledgerCategory) {
         this.ledgerCategoryId = ledgerCategory.getId();
         this.ledgerCategoryName = ledgerCategory.getName();
-        this.iconSrcPath = ledgerCategory.getIcon().getSrcPath();
+        this.iconId = ledgerCategory.getIcon().getId();
+        this.iconName = ledgerCategory.getIcon().getName();
         this.ledgerCode = ledgerCategory.getLedgerCode();
     }
 }

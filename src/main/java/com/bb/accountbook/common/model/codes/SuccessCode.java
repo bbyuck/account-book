@@ -27,7 +27,17 @@ public enum SuccessCode {
      * Couple
      */
     SUC_COUP_000("요청을 보냈습니다.", SC_OK),
-    SUC_COUP_001("커플로 연결되었습니다.", SC_OK)
+    SUC_COUP_001("커플로 연결되었습니다.", SC_OK),
+
+    /**
+     * Ledger
+     */
+    SUC_LED_000("가계부가 등록되었습니다.", SC_OK),
+    SUC_LED_001("가계부가 수정되었습니다.", SC_OK),
+    SUC_LED_002("가계부가 삭제되었습니다.", SC_OK),
+    SUC_LED_003("가계부 카테고리가 추가되었습니다.", SC_OK),
+    SUC_LED_004("가계부 카테고리가 수정되었습니다.", SC_OK),
+    SUC_LED_005("가계부 카테고리가 삭제되었습니다.", SC_OK)
     ;
 
     private final String value;
