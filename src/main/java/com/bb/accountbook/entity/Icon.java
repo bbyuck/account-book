@@ -19,7 +19,15 @@ public class Icon extends BaseEntity {
     @Column(name = "icon_id")
     private Long id;
 
-    @Column(name = "icon_src_path")
-    private String srcPath;
+    @Column(name = "icon_name")
+    private String name;
+
+    public void change(String name) {
+        this.name = name;
+    }
+
+    public Icon(String name) {
+        this.name = name;
+    }
 
 }

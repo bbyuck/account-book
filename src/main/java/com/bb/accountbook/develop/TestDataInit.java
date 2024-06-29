@@ -19,6 +19,7 @@ public class TestDataInit {
         testData.ledgerServiceTestData();
         testData.customTestData();
         testData.createAdmin();
+        testData.createIcons();
     }
     
 }

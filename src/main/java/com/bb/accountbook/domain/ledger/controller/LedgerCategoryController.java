@@ -6,12 +6,12 @@ import com.bb.accountbook.domain.ledger.dto.*;
 import com.bb.accountbook.domain.ledger.service.LedgerCategoryService;
 import com.bb.accountbook.security.SecurityContextProvider;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.stream.Collectors;
 
-@Slf4j
+import static com.bb.accountbook.common.model.codes.SuccessCode.*;
+
 @RestController
 @RequiredArgsConstructor
 public class LedgerCategoryController {
@@ -28,7 +28,7 @@ public class LedgerCategoryController {
                                 requestDto.getLedgerCategoryName(),
                                 requestDto.getLedgerCode(),
                                 requestDto.getIconId())
-                )
+                ), SUC_LED_003
         );
     }
 
@@ -50,12 +50,12 @@ public class LedgerCategoryController {
     @PutMapping("/api/v1/ledger/category/{categoryId}")
     public ApiResponse<LedgerCategoryUpdateResponseDto> updateOwnLedgerCategory(@PathVariable("categoryId") Long categoryId, @RequestBody LedgerCategoryUpdateRequestDto requestDto) {
         ledgerCategoryService.updateOwnLedgerCategory(securityContextProvider.getCurrentEmail(), categoryId, requestDto.getLedgerCategoryName(), requestDto.getLedgerCode(), requestDto.getIconId());
-        return null;
+        return new ApiResponse<>(new LedgerCategoryUpdateResponseDto(), SUC_LED_004);
     }
 
     @DeleteMapping("/api/v1/ledger/category/{categoryId}")
     public ApiResponse<LedgerCategoryDeleteResponseDto> deleteOwnLedgerCategory(@PathVariable("categoryId") Long categoryId) {
         ledgerCategoryService.deleteOwnLedgerCategory(securityContextProvider.getCurrentEmail(), categoryId);
-        return new ApiResponse<>(new LedgerCategoryDeleteResponseDto(true));
+        return new ApiResponse<>(new LedgerCategoryDeleteResponseDto(), SUC_LED_005);
     }
 }

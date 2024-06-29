@@ -56,8 +56,8 @@ class LedgerCategoryServiceTest {
         LedgerCode ledgerCode2 = S;
 
         // when
-        Long categoryId1 = ledgerCategoryService.insertLedgerCategory(email, name1, ledgerCode1);
-        Long categoryId2 = ledgerCategoryService.insertLedgerCategory(email, name2, ledgerCode2);
+        Long categoryId1 = ledgerCategoryService.insertLedgerCategory(email, name1, ledgerCode1, 5L);
+        Long categoryId2 = ledgerCategoryService.insertLedgerCategory(email, name2, ledgerCode2, 6L);
 
         // then
         Assertions.assertThat(categoryId1).isNotNull();
@@ -76,8 +76,8 @@ class LedgerCategoryServiceTest {
         LedgerCode ledgerCode2 = S;
 
         // when
-        Long categoryId1 = ledgerCategoryService.insertLedgerCategory(email, name1, ledgerCode1);
-        Long categoryId2 = ledgerCategoryService.insertLedgerCategory(email, name2, ledgerCode2);
+        Long categoryId1 = ledgerCategoryService.insertLedgerCategory(email, name1, ledgerCode1, 7L);
+        Long categoryId2 = ledgerCategoryService.insertLedgerCategory(email, name2, ledgerCode2, 8L);
 
         LedgerCategory category1 = ledgerCategoryService.findLedgerCategoryById(categoryId1);
         LedgerCategory category2 = ledgerCategoryService.findLedgerCategoryById(categoryId2);
@@ -102,8 +102,8 @@ class LedgerCategoryServiceTest {
         LedgerCode ledgerCode2 = S;
 
         // when
-        ledgerCategoryService.insertLedgerCategory(email, name1, ledgerCode1);
-        ledgerCategoryService.insertLedgerCategory(email, name2, ledgerCode2);
+        ledgerCategoryService.insertLedgerCategory(email, name1, ledgerCode1, 9L);
+        ledgerCategoryService.insertLedgerCategory(email, name2, ledgerCode2, 10L);
         List<LedgerCategory> ownLedgerCategories = ledgerCategoryService.findOwnLedgerCategories(email);
 
         // then
@@ -118,7 +118,7 @@ class LedgerCategoryServiceTest {
 
         String name = "배달비";
 
-        LedgerCategory category = ledgerCategoryService.findLedgerCategoryById(ledgerCategoryService.insertLedgerCategory(email, name, E));
+        LedgerCategory category = ledgerCategoryService.findLedgerCategoryById(ledgerCategoryService.insertLedgerCategory(email, name, E, 1L));
 
         Long ledgerId1 = ledgerService.insertLedger(category, email, I, LocalDate.of(2024, 5, 12), 20000L, "배달비 테스트");
         Long ledgerId2 = ledgerService.insertLedger(category, email, E, LocalDate.of(2024, 3, 12), 50000L, "배달비 테스트2");
@@ -164,10 +164,10 @@ class LedgerCategoryServiceTest {
         LedgerCode ledgerCode4 = I;
 
         // when
-        Long categoryId1 = ledgerCategoryService.insertLedgerCategory(email2, name1, ledgerCode1);
-        Long categoryId2 = ledgerCategoryService.insertLedgerCategory(email2, name2, ledgerCode2);
-        Long categoryId3 = ledgerCategoryService.insertLedgerCategory(email1, name3, ledgerCode3);
-        Long categoryId4 = ledgerCategoryService.insertLedgerCategory(email1, name4, ledgerCode4);
+        Long categoryId1 = ledgerCategoryService.insertLedgerCategory(email2, name1, ledgerCode1, 1L);
+        Long categoryId2 = ledgerCategoryService.insertLedgerCategory(email2, name2, ledgerCode2, 2L);
+        Long categoryId3 = ledgerCategoryService.insertLedgerCategory(email1, name3, ledgerCode3, 3L);
+        Long categoryId4 = ledgerCategoryService.insertLedgerCategory(email1, name4, ledgerCode4, 4L);
 
         LedgerCategory category1 = ledgerCategoryService.findLedgerCategoryById(categoryId1);
         LedgerCategory category2 = ledgerCategoryService.findLedgerCategoryById(categoryId2);

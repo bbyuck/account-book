@@ -1,6 +1,7 @@
 package com.bb.accountbook.domain.ledger.controller;
 
 import com.bb.accountbook.common.model.ApiResponse;
+import com.bb.accountbook.common.model.codes.SuccessCode;
 import com.bb.accountbook.common.validation.presentation.constraints.YearMonth;
 import com.bb.accountbook.domain.ledger.dto.*;
 import com.bb.accountbook.domain.ledger.service.LedgerService;
@@ -12,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static com.bb.accountbook.common.model.codes.SuccessCode.*;
 
 
 @Slf4j
@@ -26,13 +29,13 @@ public class LedgerController {
     @PostMapping("/api/v1/ledger")
     public ApiResponse<LedgerInsertResponseDto> insertLedger(@RequestBody @Valid LedgerInsertRequestDto requestDto) {
         Long savedLedgerId = ledgerService.insertLedger(securityContextProvider.getCurrentEmail(), requestDto.getLedgerCode(), requestDto.getLedgerDate(), requestDto.getLedgerAmount(), requestDto.getLedgerDescription());
-        return new ApiResponse<>(new LedgerInsertResponseDto(savedLedgerId));
+        return new ApiResponse<>(new LedgerInsertResponseDto(savedLedgerId), SUC_LED_000);
     }
 
     @PutMapping("/api/v1/ledger/{ledgerId}")
     public ApiResponse<LedgerUpdateResponseDto> updateLedger(@PathVariable("ledgerId") Long ledgerId, @RequestBody @Valid LedgerUpdateRequestDto requestDto) {
         Long updatedLedgerId = ledgerService.updateLedger(ledgerId, requestDto.getLedgerCode(), requestDto.getLedgerDate(), requestDto.getLedgerAmount(), requestDto.getLedgerDescription());
-        return new ApiResponse<>(new LedgerUpdateResponseDto(updatedLedgerId));
+        return new ApiResponse<>(new LedgerUpdateResponseDto(updatedLedgerId), SUC_LED_001);
     }
 
     @GetMapping("/api/v1/ledger/{ledgerId}")
@@ -42,7 +45,7 @@ public class LedgerController {
 
     @DeleteMapping("/api/v1/ledger/{ledgerId}")
     public ApiResponse<LedgerDeleteResponseDto> deleteLedger(@PathVariable("ledgerId") Long ledgerId) {
-        return new ApiResponse<>(new LedgerDeleteResponseDto(ledgerService.deleteLedger(securityContextProvider.getCurrentEmail(), ledgerId)));
+        return new ApiResponse<>(new LedgerDeleteResponseDto(ledgerService.deleteLedger(securityContextProvider.getCurrentEmail(), ledgerId)), SUC_LED_002);
     }
 
     @GetMapping("/api/v1/personal/ledger/{ledgerId}")

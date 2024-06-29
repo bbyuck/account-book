@@ -7,6 +7,7 @@ import com.bb.accountbook.common.model.status.UserStatus;
 import com.bb.accountbook.domain.couple.repository.CoupleRepository;
 import com.bb.accountbook.domain.couple.service.CoupleService;
 import com.bb.accountbook.domain.custom.service.CustomService;
+import com.bb.accountbook.domain.icon.service.IconService;
 import com.bb.accountbook.domain.ledger.service.LedgerService;
 import com.bb.accountbook.domain.user.repository.RoleRepository;
 import com.bb.accountbook.domain.user.repository.UserRoleRepository;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Profile({"local", "dev", "default"})
@@ -38,9 +40,44 @@ public class TestData {
     private final UserRoleRepository userRoleRepository;
     private final CoupleRepository coupleRepository;
     private final CustomService customService;
+    private final IconService iconService;
 
     public void init() {
         roleRepository.saveAllAndFlush(Arrays.stream(RoleCode.values()).map(Role::new).collect(Collectors.toList()));
+    }
+
+    public void createIcons() {
+        List<String> icons = List.of("baby-carriage",
+                "bag-shopping",
+                "basket-shopping",
+                "bowl-rice",
+                "bus",
+                "cake-candles",
+                "car",
+                "cart-shopping",
+                "charging-station",
+                "chart-line",
+                "chart-pie",
+                "computer",
+                "credit-card",
+                "dumbbell",
+                "gamepad",
+                "gift",
+                "heart",
+                "hospital",
+                "house-chimney",
+                "kit-medical",
+                "martini-glass-citrus",
+                "mug-hot",
+                "plus",
+                "spoon",
+                "square-plus",
+                "suitcase-rolling",
+                "taxi",
+                "train-subway",
+                "won-sign");
+
+        icons.forEach(iconService::insertIcon);
     }
 
     public void createAdmin() {
