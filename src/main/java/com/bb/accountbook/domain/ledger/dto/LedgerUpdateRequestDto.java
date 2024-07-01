@@ -23,4 +23,6 @@ public class LedgerUpdateRequestDto {
     private Long ledgerAmount = 0L;
 
     private String ledgerDescription;
+
+    private Long ledgerCategoryId;
 }

@@ -12,6 +12,7 @@ import com.bb.accountbook.domain.user.service.UserService;
 import com.bb.accountbook.entity.Couple;
 import com.bb.accountbook.entity.Ledger;
 import com.bb.accountbook.entity.LedgerCategory;
+import com.bb.accountbook.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -105,11 +106,13 @@ public class LedgerService {
      * @param ledgerDate
      * @param ledgerAmount
      * @param ledgerDescription
+     * @param ledgerCategoryId
      * @return
      */
-    public Long updateLedger(Long ledgerId, LedgerCode ledgerCode, LocalDate ledgerDate, Long ledgerAmount, String ledgerDescription) {
-        Ledger targetLedger = findLedgerById(ledgerId);
-        targetLedger.update(ledgerCode, ledgerDate, ledgerAmount, ledgerDescription);
+    public Long updateLedger(String email, Long ledgerId, LedgerCode ledgerCode, LocalDate ledgerDate, Long ledgerAmount, String ledgerDescription, Long ledgerCategoryId) {
+        Ledger targetLedger = findLedger(email, ledgerId);
+        targetLedger.update(ledgerCode, ledgerDate, ledgerAmount, ledgerDescription,
+                ledgerCategoryId == null ? null : ledgerCategoryService.findOwnLedgerCategory(email, ledgerCategoryId));
 
         return targetLedger.getId();
     }
@@ -181,10 +184,11 @@ public class LedgerService {
     /**
      * 가계부 상세 항목 조회
      *
+     * @param email
      * @param ledgerId
      * @return
      */
-    public LedgerDto findLedger(String email, Long ledgerId) {
+    public Ledger findLedger(String email, Long ledgerId) {
         return coupleService.isActiveCouple(email)
                 ? findCoupleLedger(coupleService.findCoupleByUserEmail(email).getId(), ledgerId)
                 : findPersonalLedger(email, ledgerId);
@@ -198,23 +202,11 @@ public class LedgerService {
      * @return
      */
     @Transactional(readOnly = true)
-    public LedgerDto findPersonalLedger(String email, Long ledgerId) {
-        Ledger ledger = ledgerRepository.findLedgerByIdAndUserEmail(ledgerId, email).orElseThrow(() -> {
+    public Ledger findPersonalLedger(String email, Long ledgerId) {
+        return ledgerRepository.findLedgerByIdAndUserEmail(ledgerId, email).orElseThrow(() -> {
             log.debug("{}.{}({}, {}): {}", this.getClass().getName(), "findPersonalLedger", email, ledgerId, ERR_LED_000.getValue());
             return new GlobalException(ERR_LED_000);
         });
-
-        return LedgerDto.builder()
-                .ledgerId(ledger.getId())
-                .ledgerCode(ledger.getCode())
-                .year(ledger.getDate().getYear())
-                .month(ledger.getDate().getMonthValue())
-                .day(ledger.getDate().getDayOfMonth())
-                .dayOfWeek(ledger.getDate().getDayOfWeek().getValue())
-                .description(ledger.getDescription())
-                .amount(ledger.getAmount())
-                .category(new LedgerCategoryDto(ledger.getLedgerCategory()))
-                .build();
     }
 
     /**
@@ -225,24 +217,11 @@ public class LedgerService {
      * @return
      */
     @Transactional(readOnly = true)
-    public LedgerDto findCoupleLedger(Long coupleId, Long ledgerId) {
-        Ledger ledger = ledgerRepository.findLedgerWithUserCouple(coupleId, ledgerId).orElseThrow(() -> {
+    public Ledger findCoupleLedger(Long coupleId, Long ledgerId) {
+        return ledgerRepository.findLedgerWithUserCouple(coupleId, ledgerId).orElseThrow(() -> {
             log.debug("{}.{}({}, {}): {}", this.getClass().getName(), "findCoupleLedger", coupleId, ledgerId, ERR_LED_000.getValue());
             return new GlobalException(ERR_LED_000);
         });
-
-        return LedgerDto.builder()
-                .ledgerId(ledger.getId())
-                .ownerNickname(ledger.getOwner().getUserCouple().getNickname())
-                .ledgerCode(ledger.getCode())
-                .year(ledger.getDate().getYear())
-                .month(ledger.getDate().getMonthValue())
-                .day(ledger.getDate().getDayOfMonth())
-                .dayOfWeek(ledger.getDate().getDayOfWeek().getValue())
-                .description(ledger.getDescription())
-                .amount(ledger.getAmount())
-                .category(new LedgerCategoryDto(ledger.getLedgerCategory()))
-                .build();
     }
 
     public MonthlyLedgerResponseDto getMonthlyLedgerResponseDto(List<Ledger> monthlyLedgers, String yearMonth) {
@@ -259,7 +238,7 @@ public class LedgerService {
                     }
                     LedgerDto ledgerDto = LedgerDto.builder()
                             .ledgerId(ledger.getId())
-                            .ownerNickname(ledger.getOwner().getUserCouple() != null ? ledger.getOwner().getUserCouple().getNickname() : "")
+//                            .ownerNickname(ledger.getOwner().getUserCouple() != null ? ledger.getOwner().getUserCouple().getNickname() : "")
                             .ledgerCode(ledger.getCode())
                             .year(ledger.getDate().getYear())
                             .month(ledger.getDate().getMonthValue())
@@ -268,6 +247,7 @@ public class LedgerService {
                             .description(ledger.getDescription())
                             .amount(ledger.getAmount())
                             .category(new LedgerCategoryDto(ledger.getLedgerCategory()))
+                            .color(customService.getCustomColor(ledger.getOwner().getEmail()))
                             .build();
 
 

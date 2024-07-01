@@ -38,13 +38,20 @@ public class LedgerController {
 
     @PutMapping("/api/v1/ledger/{ledgerId}")
     public ApiResponse<LedgerUpdateResponseDto> updateLedger(@PathVariable("ledgerId") Long ledgerId, @RequestBody @Valid LedgerUpdateRequestDto requestDto) {
-        Long updatedLedgerId = ledgerService.updateLedger(ledgerId, requestDto.getLedgerCode(), requestDto.getLedgerDate(), requestDto.getLedgerAmount(), requestDto.getLedgerDescription());
-        return new ApiResponse<>(new LedgerUpdateResponseDto(updatedLedgerId), SUC_LED_001);
+        return new ApiResponse<>(new LedgerUpdateResponseDto(
+                ledgerService.updateLedger(
+                        securityContextProvider.getCurrentEmail(),
+                        ledgerId,
+                        requestDto.getLedgerCode(),
+                        requestDto.getLedgerDate(),
+                        requestDto.getLedgerAmount(),
+                        requestDto.getLedgerDescription(),
+                        requestDto.getLedgerCategoryId())), SUC_LED_001);
     }
 
     @GetMapping("/api/v1/ledger/{ledgerId}")
     public ApiResponse<LedgerDto> findLedger(@PathVariable("ledgerId") Long ledgerId) {
-        return new ApiResponse<>(ledgerService.findLedger(securityContextProvider.getCurrentEmail(), ledgerId));
+        return new ApiResponse<>(new LedgerDto(ledgerService.findLedger(securityContextProvider.getCurrentEmail(), ledgerId)));
     }
 
     @DeleteMapping("/api/v1/ledger/{ledgerId}")
@@ -54,12 +61,12 @@ public class LedgerController {
 
     @GetMapping("/api/v1/personal/ledger/{ledgerId}")
     public ApiResponse<LedgerDto> findPersonalLedger(@PathVariable("ledgerId") Long ledgerId) {
-        return new ApiResponse<>(ledgerService.findPersonalLedger(securityContextProvider.getCurrentEmail(), ledgerId));
+        return new ApiResponse<>(new LedgerDto(ledgerService.findPersonalLedger(securityContextProvider.getCurrentEmail(), ledgerId)));
     }
 
     @GetMapping("/api/v1/couple/ledger/{ledgerId}")
     public ApiResponse<LedgerDto> findCoupleLedger(@PathVariable("ledgerId") Long ledgerId, @RequestParam("ci") Long coupleId) {
-        return new ApiResponse<>(ledgerService.findCoupleLedger(coupleId, ledgerId));
+        return new ApiResponse<>(new LedgerDto(ledgerService.findCoupleLedger(coupleId, ledgerId)));
     }
 
     @GetMapping("/api/v1/monthly/ledger")
