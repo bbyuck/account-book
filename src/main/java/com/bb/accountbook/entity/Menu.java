@@ -5,6 +5,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import static jakarta.persistence.ConstraintMode.NO_CONSTRAINT;
+
 @Entity
 @Getter
 @Table(name = "tb_menu")
@@ -19,11 +21,12 @@ public class Menu extends BaseEntity {
     @Column(name = "menu_id")
     private Long id;
 
-    @Column(name = "icon_id")
-    private Long iconId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "icon_id", foreignKey = @ForeignKey(NO_CONSTRAINT))
+    private Icon icon;
 
-    @Column(name = "menu_title")
-    private String title;
+    @Column(name = "menu_name")
+    private String name;
 
     @Column(name = "menu_src_path")
     private String srcPath;
