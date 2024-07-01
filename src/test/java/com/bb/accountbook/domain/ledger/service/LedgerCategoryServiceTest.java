@@ -1,6 +1,7 @@
 package com.bb.accountbook.domain.ledger.service;
 
 import com.bb.accountbook.common.model.codes.LedgerCode;
+import com.bb.accountbook.develop.TestData;
 import com.bb.accountbook.domain.couple.dto.CoupleConnectionInfoResponseDto;
 import com.bb.accountbook.domain.couple.service.CoupleService;
 import com.bb.accountbook.domain.user.repository.UserRepository;
@@ -19,7 +20,6 @@ import static com.bb.accountbook.common.model.codes.LedgerCode.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class LedgerCategoryServiceTest {
 
     @Autowired
@@ -37,12 +37,8 @@ class LedgerCategoryServiceTest {
     @Autowired
     CoupleService coupleService;
 
-    @BeforeAll
-    public void createTestUser() {
-        String email = "user@test.net";
-        String password = "1q2w3e4R!@";
-        userService.signup(email, password, password);
-    }
+    @Autowired
+    TestData testData;
 
     @Test
     @DisplayName("카테고리 생성")
@@ -94,7 +90,7 @@ class LedgerCategoryServiceTest {
     @DisplayName("소유한 카테고리 조회 - 파라미터 없음")
     void findOwnLedgerCategoriesWithoutParam() {
         // given
-        String email = "user@test.net";
+        String email = "k941026h@naver.com";
         String name1 = "배달비";
         LedgerCode ledgerCode1 = E;
 

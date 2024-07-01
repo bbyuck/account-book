@@ -184,7 +184,7 @@ public class LedgerService {
      * @param ledgerId
      * @return
      */
-    public LedgerDetailDto findLedger(String email, Long ledgerId) {
+    public LedgerDto findLedger(String email, Long ledgerId) {
         return coupleService.isActiveCouple(email)
                 ? findCoupleLedger(coupleService.findCoupleByUserEmail(email).getId(), ledgerId)
                 : findPersonalLedger(email, ledgerId);
@@ -198,12 +198,23 @@ public class LedgerService {
      * @return
      */
     @Transactional(readOnly = true)
-    public LedgerPersonalDetailDto findPersonalLedger(String email, Long ledgerId) {
+    public LedgerDto findPersonalLedger(String email, Long ledgerId) {
         Ledger ledger = ledgerRepository.findLedgerByIdAndUserEmail(ledgerId, email).orElseThrow(() -> {
             log.debug("{}.{}({}, {}): {}", this.getClass().getName(), "findPersonalLedger", email, ledgerId, ERR_LED_000.getValue());
             return new GlobalException(ERR_LED_000);
         });
-        return new LedgerPersonalDetailDto(ledger.getId(), ledger.getCode(), ledger.getDate(), ledger.getAmount(), ledger.getDescription());
+
+        return LedgerDto.builder()
+                .ledgerId(ledger.getId())
+                .ledgerCode(ledger.getCode())
+                .year(ledger.getDate().getYear())
+                .month(ledger.getDate().getMonthValue())
+                .day(ledger.getDate().getDayOfMonth())
+                .dayOfWeek(ledger.getDate().getDayOfWeek().getValue())
+                .description(ledger.getDescription())
+                .amount(ledger.getAmount())
+                .category(new LedgerCategoryDto(ledger.getLedgerCategory()))
+                .build();
     }
 
     /**
@@ -214,13 +225,24 @@ public class LedgerService {
      * @return
      */
     @Transactional(readOnly = true)
-    public LedgerCoupleDetailDto findCoupleLedger(Long coupleId, Long ledgerId) {
+    public LedgerDto findCoupleLedger(Long coupleId, Long ledgerId) {
         Ledger ledger = ledgerRepository.findLedgerWithUserCouple(coupleId, ledgerId).orElseThrow(() -> {
             log.debug("{}.{}({}, {}): {}", this.getClass().getName(), "findCoupleLedger", coupleId, ledgerId, ERR_LED_000.getValue());
             return new GlobalException(ERR_LED_000);
         });
 
-        return new LedgerCoupleDetailDto(ledger.getId(), ledger.getCode(), ledger.getDate(), ledger.getAmount(), ledger.getDescription(), ledger.getOwner().getUserCouple().getNickname());
+        return LedgerDto.builder()
+                .ledgerId(ledger.getId())
+                .ownerNickname(ledger.getOwner().getUserCouple().getNickname())
+                .ledgerCode(ledger.getCode())
+                .year(ledger.getDate().getYear())
+                .month(ledger.getDate().getMonthValue())
+                .day(ledger.getDate().getDayOfMonth())
+                .dayOfWeek(ledger.getDate().getDayOfWeek().getValue())
+                .description(ledger.getDescription())
+                .amount(ledger.getAmount())
+                .category(new LedgerCategoryDto(ledger.getLedgerCategory()))
+                .build();
     }
 
     public MonthlyLedgerResponseDto getMonthlyLedgerResponseDto(List<Ledger> monthlyLedgers, String yearMonth) {
@@ -235,15 +257,19 @@ public class LedgerService {
                         default -> {
                         }
                     }
-                    LedgerDto ledgerDto = new LedgerDto(
-                            ledger.getId(),
-                            ledger.getOwner().getUserCouple() != null ? ledger.getOwner().getUserCouple().getNickname() : "",
-                            ledger.getCode(),
-                            ledger.getDate(),
-                            ledger.getAmount(),
-                            ledger.getDescription(),
-                            customService.getCustomColor(ledger.getOwner().getEmail())
-                    );
+                    LedgerDto ledgerDto = LedgerDto.builder()
+                            .ledgerId(ledger.getId())
+                            .ownerNickname(ledger.getOwner().getUserCouple() != null ? ledger.getOwner().getUserCouple().getNickname() : "")
+                            .ledgerCode(ledger.getCode())
+                            .year(ledger.getDate().getYear())
+                            .month(ledger.getDate().getMonthValue())
+                            .day(ledger.getDate().getDayOfMonth())
+                            .dayOfWeek(ledger.getDate().getDayOfWeek().getValue())
+                            .description(ledger.getDescription())
+                            .amount(ledger.getAmount())
+                            .category(new LedgerCategoryDto(ledger.getLedgerCategory()))
+                            .build();
+
 
                     dataDto.getLedgersPerDay().get(ledgerDto.getDay()).addLedger(ledgerDto);
                 });

@@ -4,7 +4,7 @@ import com.bb.accountbook.common.exception.GlobalException;
 import com.bb.accountbook.common.model.codes.LedgerCode;
 import com.bb.accountbook.develop.TestData;
 import com.bb.accountbook.domain.ledger.dto.AssetDto;
-import com.bb.accountbook.domain.ledger.dto.LedgerCoupleDetailDto;
+import com.bb.accountbook.domain.ledger.dto.LedgerDto;
 import com.bb.accountbook.entity.Ledger;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Assertions;
@@ -104,7 +104,7 @@ class LedgerServiceTest {
         Long manLedgerId = 2L;
 
         // when
-        LedgerCoupleDetailDto coupleLedger = ledgerService.findCoupleLedger(coupleId, manLedgerId);
+        LedgerDto coupleLedger = ledgerService.findCoupleLedger(coupleId, manLedgerId);
 
         // then
 

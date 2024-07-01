@@ -43,7 +43,7 @@ public class LedgerController {
     }
 
     @GetMapping("/api/v1/ledger/{ledgerId}")
-    public ApiResponse<LedgerDetailDto> findLedger(@PathVariable("ledgerId") Long ledgerId) {
+    public ApiResponse<LedgerDto> findLedger(@PathVariable("ledgerId") Long ledgerId) {
         return new ApiResponse<>(ledgerService.findLedger(securityContextProvider.getCurrentEmail(), ledgerId));
     }
 
@@ -53,12 +53,12 @@ public class LedgerController {
     }
 
     @GetMapping("/api/v1/personal/ledger/{ledgerId}")
-    public ApiResponse<LedgerDetailDto> findPersonalLedger(@PathVariable("ledgerId") Long ledgerId) {
+    public ApiResponse<LedgerDto> findPersonalLedger(@PathVariable("ledgerId") Long ledgerId) {
         return new ApiResponse<>(ledgerService.findPersonalLedger(securityContextProvider.getCurrentEmail(), ledgerId));
     }
 
     @GetMapping("/api/v1/couple/ledger/{ledgerId}")
-    public ApiResponse<LedgerDetailDto> findCoupleLedger(@PathVariable("ledgerId") Long ledgerId, @RequestParam("ci") Long coupleId) {
+    public ApiResponse<LedgerDto> findCoupleLedger(@PathVariable("ledgerId") Long ledgerId, @RequestParam("ci") Long coupleId) {
         return new ApiResponse<>(ledgerService.findCoupleLedger(coupleId, ledgerId));
     }
 

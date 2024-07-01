@@ -20,7 +20,7 @@ import static jakarta.persistence.ConstraintMode.*;
         initialValue = 1, allocationSize = 50)
 public class Ledger extends BaseEntity {
 
-    @Id @GeneratedValue(generator = "seq_ledger")
+    @Id @GeneratedValue
     @Column(name = "ledger_id")
     private Long id;
 
@@ -28,7 +28,7 @@ public class Ledger extends BaseEntity {
     @JoinColumn(name = "owner_id")
     private User owner;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ledger_category_id", foreignKey = @ForeignKey(NO_CONSTRAINT))
     private LedgerCategory ledgerCategory;
 

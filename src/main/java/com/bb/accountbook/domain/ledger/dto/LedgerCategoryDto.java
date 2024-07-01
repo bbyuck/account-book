@@ -15,10 +15,12 @@ public class LedgerCategoryDto {
     private LedgerCode ledgerCode;
 
     public LedgerCategoryDto(LedgerCategory ledgerCategory) {
-        this.ledgerCategoryId = ledgerCategory.getId();
-        this.ledgerCategoryName = ledgerCategory.getName();
-        this.iconId = ledgerCategory.getIcon().getId();
-        this.iconName = ledgerCategory.getIcon().getName();
-        this.ledgerCode = ledgerCategory.getLedgerCode();
+        if (ledgerCategory != null) {
+            this.ledgerCategoryId = ledgerCategory.getId();
+            this.ledgerCategoryName = ledgerCategory.getName();
+            this.iconId = ledgerCategory.getIcon().getId();
+            this.iconName = ledgerCategory.getIcon().getName();
+            this.ledgerCode = ledgerCategory.getLedgerCode();
+        }
     }
 }

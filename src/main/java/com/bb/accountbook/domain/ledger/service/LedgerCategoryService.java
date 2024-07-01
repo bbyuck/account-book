@@ -84,4 +84,8 @@ public class LedgerCategoryService {
         LedgerCategory category = findLedgerCategoryById(categoryId);
         category.update(name, ledgerCode, iconService.findIconById(iconId));
     }
+
+    public int insertLedgerCategoryList(List<LedgerCategory> ledgerCategories) {
+        return ledgerCategoryRepository.saveAll(ledgerCategories).size();
+    }
 }
