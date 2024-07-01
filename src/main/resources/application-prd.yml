@@ -69,6 +69,7 @@ logging:
     org.hibernate:
       type:
         descriptor.sql: error
+    p6spy: error
 
 jasypt:
   encryptor:
