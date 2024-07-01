@@ -20,7 +20,7 @@ import java.time.temporal.ChronoUnit;
         initialValue = 1, allocationSize = 50)
 public class Mail extends BaseEntity {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(generator = "seq_mail")
     @Column(name = "mail_id")
     private Long id;
 

@@ -28,8 +28,12 @@ public class LedgerController {
 
     @PostMapping("/api/v1/ledger")
     public ApiResponse<LedgerInsertResponseDto> insertLedger(@RequestBody @Valid LedgerInsertRequestDto requestDto) {
-        Long savedLedgerId = ledgerService.insertLedger(securityContextProvider.getCurrentEmail(), requestDto.getLedgerCode(), requestDto.getLedgerDate(), requestDto.getLedgerAmount(), requestDto.getLedgerDescription());
-        return new ApiResponse<>(new LedgerInsertResponseDto(savedLedgerId), SUC_LED_000);
+        return new ApiResponse<>(new LedgerInsertResponseDto(
+                ledgerService.insertLedger(requestDto.getLedgerCategoryId(),
+                        securityContextProvider.getCurrentEmail(), requestDto.getLedgerCode(),
+                        requestDto.getLedgerDate(),
+                        requestDto.getLedgerAmount(),
+                        requestDto.getLedgerDescription())), SUC_LED_000);
     }
 
     @PutMapping("/api/v1/ledger/{ledgerId}")

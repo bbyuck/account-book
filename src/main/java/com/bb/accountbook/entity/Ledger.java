@@ -20,7 +20,7 @@ import static jakarta.persistence.ConstraintMode.*;
         initialValue = 1, allocationSize = 50)
 public class Ledger extends BaseEntity {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(generator = "seq_ledger")
     @Column(name = "ledger_id")
     private Long id;
 

@@ -60,7 +60,7 @@ public class QRoleMenu extends EntityPathBase<RoleMenu> {
 
     public QRoleMenu(Class<? extends RoleMenu> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.menu = inits.isInitialized("menu") ? new QMenu(forProperty("menu")) : null;
+        this.menu = inits.isInitialized("menu") ? new QMenu(forProperty("menu"), inits.get("menu")) : null;
         this.role = inits.isInitialized("role") ? new QRole(forProperty("role")) : null;
     }
 

@@ -118,13 +118,13 @@ class LedgerCategoryServiceTest {
 
         String name = "배달비";
 
-        LedgerCategory category = ledgerCategoryService.findLedgerCategoryById(ledgerCategoryService.insertLedgerCategory(email, name, E, 1L));
+        Long categoryId = ledgerCategoryService.insertLedgerCategory(email, name, E, 1L);
 
-        Long ledgerId1 = ledgerService.insertLedger(category, email, I, LocalDate.of(2024, 5, 12), 20000L, "배달비 테스트");
-        Long ledgerId2 = ledgerService.insertLedger(category, email, E, LocalDate.of(2024, 3, 12), 50000L, "배달비 테스트2");
+        Long ledgerId1 = ledgerService.insertLedger(categoryId, email, I, LocalDate.of(2024, 5, 12), 20000L, "배달비 테스트");
+        Long ledgerId2 = ledgerService.insertLedger(categoryId, email, E, LocalDate.of(2024, 3, 12), 50000L, "배달비 테스트2");
 
         // when
-        ledgerCategoryService.deleteLedgerCategory(category.getId());
+        ledgerCategoryService.deleteLedgerCategory(categoryId);
 
         // then
         Ledger ledger1 = ledgerService.findLedgerById(ledgerId1);

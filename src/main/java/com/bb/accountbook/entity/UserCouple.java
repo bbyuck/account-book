@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
         initialValue = 1, allocationSize = 50)
 public class UserCouple {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(generator = "seq_user_couple")
     @Column(name = "user_couple_id")
     private Long id;
 

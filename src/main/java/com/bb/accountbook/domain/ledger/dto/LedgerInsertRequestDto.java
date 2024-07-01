@@ -23,4 +23,6 @@ public class LedgerInsertRequestDto {
     private Long ledgerAmount = 0L;
 
     private String ledgerDescription;
+
+    private Long ledgerCategoryId;
 }

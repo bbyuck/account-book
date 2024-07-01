@@ -37,6 +37,8 @@ public class LedgerService {
 
     private final CustomService customService;
 
+    private final LedgerCategoryService ledgerCategoryService;
+
     /**
      * 가계부 상세 항목입력
      *
@@ -54,7 +56,7 @@ public class LedgerService {
     /**
      * 가계부 상세 항목입력
      *
-     * @param ledgerCategory
+     * @param ledgerCategoryId
      * @param apiCallerEmail
      * @param ledgerCode
      * @param ledgerDate
@@ -62,14 +64,20 @@ public class LedgerService {
      * @param ledgerDescription
      * @return
      */
-    public Long insertLedger(LedgerCategory ledgerCategory, String apiCallerEmail, LedgerCode ledgerCode, LocalDate ledgerDate, Long ledgerAmount, String ledgerDescription) {
+    public Long insertLedger(Long ledgerCategoryId, String apiCallerEmail, LedgerCode ledgerCode, LocalDate ledgerDate, Long ledgerAmount, String ledgerDescription) {
         if (ledgerAmount <= 0) {
             log.error(ErrorCode.ERR_LED_001.getValue());
             throw new GlobalException(ErrorCode.ERR_LED_001);
         }
 
         Ledger savedLedger = ledgerRepository.save(
-                new Ledger(ledgerCategory, userService.findUserByEmail(apiCallerEmail), ledgerCode, ledgerDate, ledgerAmount, ledgerDescription)
+                new Ledger(
+                        ledgerCategoryId == null ? null : ledgerCategoryService.findOwnLedgerCategory(apiCallerEmail, ledgerCategoryId),
+                        userService.findUserByEmail(apiCallerEmail),
+                        ledgerCode,
+                        ledgerDate,
+                        ledgerAmount,
+                        ledgerDescription)
         );
         return savedLedger.getId();
     }
