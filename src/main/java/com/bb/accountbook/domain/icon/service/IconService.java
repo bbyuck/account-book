@@ -1,6 +1,7 @@
 package com.bb.accountbook.domain.icon.service;
 
 import com.bb.accountbook.common.exception.GlobalException;
+import com.bb.accountbook.domain.icon.dto.MultiIconInsertRequestDto;
 import com.bb.accountbook.domain.icon.repository.IconRepository;
 import com.bb.accountbook.entity.Icon;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.bb.accountbook.common.model.codes.ErrorCode.ERR_ICO_000;
 
@@ -34,6 +36,15 @@ public class IconService {
 
     public Long insertIcon(String name) {
         return iconRepository.save(new Icon(name)).getId();
+    }
+
+    public int insertIcons(MultiIconInsertRequestDto multiIconInsertRequestDto) {
+        return iconRepository
+                .saveAll(multiIconInsertRequestDto.getList()
+                        .stream()
+                        .map(iconInsertRequestDto -> new Icon(iconInsertRequestDto.getName()))
+                        .collect(Collectors.toList()))
+                .size();
     }
 
     public Long updateIcon(Long id, String name) {
