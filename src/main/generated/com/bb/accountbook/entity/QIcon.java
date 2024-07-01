@@ -29,7 +29,7 @@ public class QIcon extends EntityPathBase<Icon> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final StringPath srcPath = createString("srcPath");
+    public final StringPath name = createString("name");
 
     //inherited
     public final StringPath updatedBy = _super.updatedBy;
