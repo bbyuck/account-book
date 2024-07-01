@@ -59,11 +59,12 @@ public class Ledger extends BaseEntity {
         this.ledgerCategory = ledgerCategory;
     }
 
-    public void update(LedgerCode code, LocalDate date, Long amount, String description) {
+    public void update(LedgerCode code, LocalDate date, Long amount, String description, LedgerCategory ledgerCategory) {
         this.code = code;
         this.date = date;
         this.amount = amount;
         this.description = description;
+        this.ledgerCategory = ledgerCategory;
     }
 
 }
