@@ -18,8 +18,11 @@ public class TestDataInit {
         testData.initUsers();
         testData.ledgerServiceTestData();
         testData.customTestData();
+
+
         testData.createAdmin();
         testData.createIcons();
+        testData.createTestUserCategory("user@test.net");
     }
     
 }

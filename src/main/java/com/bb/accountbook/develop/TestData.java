@@ -8,22 +8,23 @@ import com.bb.accountbook.domain.couple.repository.CoupleRepository;
 import com.bb.accountbook.domain.couple.service.CoupleService;
 import com.bb.accountbook.domain.custom.service.CustomService;
 import com.bb.accountbook.domain.icon.service.IconService;
+import com.bb.accountbook.domain.ledger.service.LedgerCategoryService;
 import com.bb.accountbook.domain.ledger.service.LedgerService;
 import com.bb.accountbook.domain.user.repository.RoleRepository;
 import com.bb.accountbook.domain.user.repository.UserRoleRepository;
 import com.bb.accountbook.domain.user.service.UserService;
-import com.bb.accountbook.entity.Role;
-import com.bb.accountbook.entity.User;
-import com.bb.accountbook.entity.UserRole;
+import com.bb.accountbook.entity.*;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Profile({"local", "dev", "default"})
@@ -41,6 +42,8 @@ public class TestData {
     private final CoupleRepository coupleRepository;
     private final CustomService customService;
     private final IconService iconService;
+    private final LedgerCategoryService ledgerCategoryService;
+
 
     public void init() {
         roleRepository.saveAllAndFlush(Arrays.stream(RoleCode.values()).map(Role::new).collect(Collectors.toList()));
@@ -110,6 +113,10 @@ public class TestData {
         String password4 = "1q2w3e4R!@";
         Long userId4 = userService.signup(email4, password4, password4);
 
+        String email5 = "user@test.net";
+        String password5 = "1q2w3e4R!@";
+        userService.signup(email5, password5, password5);
+
 
         User user3 = userService.findUserById(userId3);
         user3.changeStatus(UserStatus.ACTIVE);
@@ -145,5 +152,20 @@ public class TestData {
         CustomCode code = CustomCode.COLOR;
         String value = "3399ff";
         customService.saveCustom(email, code, value);
+    }
+
+    public void createTestUserCategory(String email) {
+        // icon별로 하나씩 추가해버리기
+        User user = userService.findUserByEmail(email);
+        LedgerCode[] codes = {LedgerCode.E, LedgerCode.S, LedgerCode.I};
+        List<Icon> icons = iconService.findAllIcons();
+
+        AtomicInteger i = new AtomicInteger();
+
+        ledgerCategoryService.insertLedgerCategoryList(
+                icons.stream().map(icon -> {
+                    int idx = i.getAndIncrement();
+                    return new LedgerCategory(user, "카테고리" + idx, codes[idx % 3], icon);
+                }).collect(Collectors.toList()));
     }
 }

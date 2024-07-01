@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
         initialValue = 1, allocationSize = 50)
 public class UserRole extends BaseEntity {
 
-    @Id @GeneratedValue(generator = "seq_user_role")
+    @Id @GeneratedValue
     @Column(name = "user_role_id")
     private Long id;
 

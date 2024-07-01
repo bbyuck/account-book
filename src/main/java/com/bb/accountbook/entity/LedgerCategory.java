@@ -23,7 +23,7 @@ public class LedgerCategory extends BaseEntity {
     @Column(name = "ledger_category_id")
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "icon_id", foreignKey = @ForeignKey(NO_CONSTRAINT))
     private Icon icon;
 

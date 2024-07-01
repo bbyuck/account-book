@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
         initialValue = 1, allocationSize = 50)
 public class Icon extends BaseEntity {
 
-    @Id @GeneratedValue(generator = "seq_icon")
+    @Id @GeneratedValue
     @Column(name = "icon_id")
     private Long id;
 

@@ -1,29 +1,25 @@
 package com.bb.accountbook.domain.ledger.dto;
 
 import com.bb.accountbook.common.model.codes.LedgerCode;
+import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
 
 @Data
+@Builder
 public class LedgerDto {
     private Long ledgerId;
     private String ownerNickname;
     private LedgerCode ledgerCode;
-    private String ledgerCodeValue;
-    private int day;
     private Long amount;
     private String description;
     private String color;
+    private LedgerCategoryDto category;
 
-    public LedgerDto(Long ledgerId, String nickname, LedgerCode code, LocalDate date, Long amount, String description, String color) {
-        this.ledgerId = ledgerId;
-        this.ownerNickname = nickname;
-        this.ledgerCode = code;
-        this.ledgerCodeValue = code.getValue();
-        this.day = date.getDayOfMonth();
-        this.amount = amount;
-        this.description = description;
-        this.color = color;
-    }
+    private int year;
+    private int month;
+    private int day;
+    private int dayOfWeek;
+
 }

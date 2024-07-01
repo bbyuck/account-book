@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
         initialValue = 1, allocationSize = 50)
 public class Auth extends BaseEntity {
 
-    @Id @GeneratedValue(generator = "seq_auth")
+    @Id @GeneratedValue
     @Column(name = "auth_id")
     private Long id;
 

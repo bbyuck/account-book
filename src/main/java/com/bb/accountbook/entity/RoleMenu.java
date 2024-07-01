@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
         initialValue = 1, allocationSize = 50)
 public class RoleMenu extends BaseEntity {
 
-    @Id @GeneratedValue(generator = "seq_role_menu")
+    @Id @GeneratedValue
     @Column(name = "role_menu_id")
     private Long id;
 

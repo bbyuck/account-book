@@ -20,7 +20,7 @@ import java.util.List;
 public class Couple {
 
     @Id
-    @GeneratedValue(generator = "seq_couple")
+    @GeneratedValue
     @Column(name = "couple_id")
     private Long id;
 

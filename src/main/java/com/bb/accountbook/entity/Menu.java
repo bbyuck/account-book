@@ -17,7 +17,7 @@ import static jakarta.persistence.ConstraintMode.NO_CONSTRAINT;
         initialValue = 1, allocationSize = 50)
 public class Menu extends BaseEntity {
 
-    @Id @GeneratedValue(generator = "seq_menu")
+    @Id @GeneratedValue
     @Column(name = "menu_id")
     private Long id;
 

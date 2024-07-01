@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
         initialValue = 1, allocationSize = 50)
 public class Custom extends BaseEntity {
 
-    @Id @GeneratedValue(generator = "seq_custom")
+    @Id @GeneratedValue
     @Column(name = "custom_id")
     private Long id;
 

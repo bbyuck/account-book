@@ -19,7 +19,7 @@ import java.util.List;
         initialValue = 1, allocationSize = 50)
 public class Role extends BaseEntity {
 
-    @Id @GeneratedValue(generator = "seq_role")
+    @Id @GeneratedValue
     @Column(name = "role_id")
     private Long id;
 
