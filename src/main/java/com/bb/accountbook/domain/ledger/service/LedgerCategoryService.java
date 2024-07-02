@@ -48,17 +48,26 @@ public class LedgerCategoryService {
 
     @Transactional(readOnly = true)
     public LedgerCategory findOwnLedgerCategory(String email, Long id) {
-        return ledgerCategoryRepository.findByOwnerEmailAndId(email, id).orElseThrow(() -> {
-            log.debug("{} ====== {}", ErrorCode.ERR_LED_002.getValue(), id);
-            return new GlobalException(ErrorCode.ERR_LED_002);
-        });
+        if (coupleService.isActiveCouple(email)) {
+            Couple couple = coupleService.findCoupleByUserEmail(email);
+            return ledgerCategoryRepository.findCoupleOwnCategory(couple.getId(), id).orElseThrow(() -> {
+                log.debug("{} ====== {}", ErrorCode.ERR_LED_002.getValue(), id);
+                return new GlobalException(ErrorCode.ERR_LED_002);
+            });
+        }
+        else {
+            return ledgerCategoryRepository.findByOwnerEmailAndId(email, id).orElseThrow(() -> {
+                log.debug("{} ====== {}", ErrorCode.ERR_LED_002.getValue(), id);
+                return new GlobalException(ErrorCode.ERR_LED_002);
+            });
+        }
     }
 
     @Transactional(readOnly = true)
     public List<LedgerCategory> findOwnLedgerCategories(String email) {
         if (coupleService.isActiveCouple(email)) {
             Couple couple = coupleService.findCoupleByUserEmail(email);
-            return ledgerCategoryRepository.findCoupleOwnCategoriesByOwnerEmail(couple.getId());
+            return ledgerCategoryRepository.findCoupleOwnCategories(couple.getId());
         }
         else {
             return ledgerCategoryRepository.findByOwnerEmail(email);

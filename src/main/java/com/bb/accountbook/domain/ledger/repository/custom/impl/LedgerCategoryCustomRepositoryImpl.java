@@ -29,7 +29,7 @@ public class LedgerCategoryCustomRepositoryImpl implements LedgerCategoryCustomR
     }
 
     @Override
-    public List<LedgerCategory> findCoupleOwnCategoriesByOwnerEmail(Long coupleId) {
+    public List<LedgerCategory> findCoupleOwnCategories(Long coupleId) {
         String jpql = "select lc " +
                 "from LedgerCategory lc " +
                 "join fetch User u " +
@@ -44,6 +44,22 @@ public class LedgerCategoryCustomRepositoryImpl implements LedgerCategoryCustomR
         return em.createQuery(jpql, LedgerCategory.class)
                 .setParameter("coupleId", coupleId)
                 .getResultList();
+    }
+
+    @Override
+    public Optional<LedgerCategory> findCoupleOwnCategory(Long coupleId, Long id) {
+        String jpql = "select lc " +
+                "from LedgerCategory lc " +
+                "join fetch User u " +
+                "on lc.owner = u " +
+                "join fetch UserCouple uc " +
+                "on uc.user = u " +
+                "where uc.couple.id = :coupleId " +
+                "and lc.id = :id";
+        return em.createQuery(jpql, LedgerCategory.class)
+                .setParameter("coupleId", coupleId)
+                .setParameter("id", id)
+                .getResultList().stream().findFirst();
     }
 
     @Override

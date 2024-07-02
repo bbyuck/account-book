@@ -10,7 +10,9 @@ import java.util.Optional;
 public interface LedgerCategoryCustomRepository {
     List<LedgerCategory> findByOwnerEmail(String email);
 
-    List<LedgerCategory> findCoupleOwnCategoriesByOwnerEmail(Long coupleId);
+    List<LedgerCategory> findCoupleOwnCategories(Long coupleId);
+
+    Optional<LedgerCategory> findCoupleOwnCategory(Long coupleId, Long id);
 
     Optional<LedgerCategory> findByOwnerEmailAndId(String email, Long id);
 }
