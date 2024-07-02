@@ -50,7 +50,8 @@ public class TestData {
     }
 
     public void createIcons() {
-        List<String> icons = List.of("baby-carriage",
+        List<String> icons = List.of(
+                "baby-carriage",
                 "bag-shopping",
                 "basket-shopping",
                 "bowl-rice",
@@ -78,7 +79,9 @@ public class TestData {
                 "suitcase-rolling",
                 "taxi",
                 "train-subway",
-                "won-sign");
+                "won-sign",
+                "truck"
+        );
 
         icons.forEach(iconService::insertIcon);
     }

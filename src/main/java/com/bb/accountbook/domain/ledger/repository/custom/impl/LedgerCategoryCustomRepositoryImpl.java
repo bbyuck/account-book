@@ -21,7 +21,8 @@ public class LedgerCategoryCustomRepositoryImpl implements LedgerCategoryCustomR
                 "from LedgerCategory lc " +
                 "join fetch User u " +
                 "on lc.owner = u " +
-                "where u.email = :email";
+                "where u.email = :email " +
+                "order by lc.id";
 
         return em.createQuery(jpql, LedgerCategory.class)
                 .setParameter("email", email)
@@ -40,7 +41,8 @@ public class LedgerCategoryCustomRepositoryImpl implements LedgerCategoryCustomR
                 "   join Couple c " +
                 "   on uc.couple = c " +
                 "   where c.id = :coupleId" +
-                ")";
+                ") " +
+                "order by lc.id";
         return em.createQuery(jpql, LedgerCategory.class)
                 .setParameter("coupleId", coupleId)
                 .getResultList();
