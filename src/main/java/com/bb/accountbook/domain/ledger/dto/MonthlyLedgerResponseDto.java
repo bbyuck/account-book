@@ -24,7 +24,7 @@ public class MonthlyLedgerResponseDto {
 
     public MonthlyLedgerResponseDto(String yearMonth) {
         this.year = Integer.parseInt(yearMonth.substring(0, 4));
-        this.month = Integer.parseInt(yearMonth.substring(5, 6));
+        this.month = Integer.parseInt(yearMonth.substring(4, 6));
 
         int lastDay = DateTimeUtil.getMonthlyEndDate(year, month).getDayOfMonth();
 
