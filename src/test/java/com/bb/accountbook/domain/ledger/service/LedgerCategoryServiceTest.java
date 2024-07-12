@@ -4,6 +4,8 @@ import com.bb.accountbook.common.model.codes.LedgerCode;
 import com.bb.accountbook.develop.TestData;
 import com.bb.accountbook.domain.couple.dto.CoupleConnectionInfoResponseDto;
 import com.bb.accountbook.domain.couple.service.CoupleService;
+import com.bb.accountbook.domain.ledger.service.impl.LedgerCategoryServiceImpl;
+import com.bb.accountbook.domain.ledger.service.impl.LedgerServiceImpl;
 import com.bb.accountbook.domain.user.repository.UserRepository;
 import com.bb.accountbook.domain.user.service.UserService;
 import com.bb.accountbook.entity.Ledger;
@@ -17,19 +19,18 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static com.bb.accountbook.common.model.codes.LedgerCode.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class LedgerCategoryServiceTest {
 
     @Autowired
-    LedgerCategoryService ledgerCategoryService;
+    LedgerCategoryServiceImpl ledgerCategoryService;
 
     @Autowired
     UserService userService;
 
     @Autowired
-    LedgerService ledgerService;
+    LedgerServiceImpl ledgerService;
 
     @Autowired
     UserRepository userRepository;

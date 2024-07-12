@@ -1,9 +1,9 @@
 package com.bb.accountbook.domain.ledger.controller;
 
 import com.bb.accountbook.common.model.ApiResponse;
-import com.bb.accountbook.common.model.codes.SuccessCode;
 import com.bb.accountbook.common.validation.presentation.constraints.YearMonth;
 import com.bb.accountbook.domain.ledger.dto.*;
+import com.bb.accountbook.domain.ledger.service.LedgerPresentationService;
 import com.bb.accountbook.domain.ledger.service.LedgerService;
 import com.bb.accountbook.entity.Ledger;
 import com.bb.accountbook.security.SecurityContextProvider;
@@ -23,6 +23,8 @@ import static com.bb.accountbook.common.model.codes.SuccessCode.*;
 public class LedgerController {
 
     private final LedgerService ledgerService;
+
+    private final LedgerPresentationService ledgerPresentationService;
 
     private final SecurityContextProvider securityContextProvider;
 
@@ -72,19 +74,19 @@ public class LedgerController {
     @GetMapping("/api/v1/monthly/ledger")
     public ApiResponse<MonthlyLedgerResponseDto> findMonthlyLedger(@RequestParam("ym") @Valid @YearMonth String yearMonth) {
         List<Ledger> monthlyLedger = ledgerService.findMonthlyLedger(securityContextProvider.getCurrentEmail(), yearMonth);
-        return new ApiResponse<>(ledgerService.getMonthlyLedgerResponseDto(monthlyLedger, yearMonth));
+        return new ApiResponse<>(ledgerPresentationService.getMonthlyLedgerResponseDto(monthlyLedger, yearMonth));
     }
 
     @GetMapping("/api/v1/monthly/couple/ledger")
     public ApiResponse<MonthlyLedgerResponseDto> findCoupleMonthlyLedger(@RequestParam("ym") @Valid @YearMonth String yearMonth) {
         List<Ledger> monthlyLedgers = ledgerService.findCoupleMonthlyLedger(securityContextProvider.getCurrentEmail(), yearMonth);
-        return new ApiResponse<>(ledgerService.getMonthlyLedgerResponseDto(monthlyLedgers, yearMonth));
+        return new ApiResponse<>(ledgerPresentationService.getMonthlyLedgerResponseDto(monthlyLedgers, yearMonth));
     }
 
     @GetMapping("/api/v1/monthly/personal/ledger")
     public ApiResponse<MonthlyLedgerResponseDto> findPersonalMonthlyLedger(@RequestParam("ym") @Valid @YearMonth String yearMonth) {
         List<Ledger> monthlyLedgers = ledgerService.findPersonalMonthlyLedger(securityContextProvider.getCurrentEmail(), yearMonth);
-        return new ApiResponse<>(ledgerService.getMonthlyLedgerResponseDto(monthlyLedgers, yearMonth));
+        return new ApiResponse<>(ledgerPresentationService.getMonthlyLedgerResponseDto(monthlyLedgers, yearMonth));
     }
 
     @GetMapping("/api/v1/personal/asset")
@@ -96,4 +98,5 @@ public class LedgerController {
     public ApiResponse<AssetDto> findCoupleAsset() {
         return new ApiResponse<>(ledgerService.findCoupleAsset(securityContextProvider.getCurrentEmail()));
     }
+
 }

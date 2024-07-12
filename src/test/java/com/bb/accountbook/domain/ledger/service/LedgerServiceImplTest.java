@@ -5,6 +5,7 @@ import com.bb.accountbook.common.model.codes.LedgerCode;
 import com.bb.accountbook.develop.TestData;
 import com.bb.accountbook.domain.ledger.dto.AssetDto;
 import com.bb.accountbook.domain.ledger.dto.LedgerDto;
+import com.bb.accountbook.domain.ledger.service.impl.LedgerServiceImpl;
 import com.bb.accountbook.entity.Ledger;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Assertions;
@@ -21,10 +22,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Transactional
-class LedgerServiceTest {
+class LedgerServiceImplTest {
 
     @Autowired
-    LedgerService ledgerService;
+    LedgerServiceImpl ledgerService;
 
     @Autowired
     EntityManager em;

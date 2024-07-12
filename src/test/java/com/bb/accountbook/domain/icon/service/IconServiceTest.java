@@ -54,7 +54,7 @@ class IconServiceTest {
         String name2 = "gift";
 
         // then
-        Assertions.assertThat(iconService.findAllIcons().size()).isEqualTo(29);
+        Assertions.assertThat(iconService.findAllIcons().size()).isEqualTo(30);
     }
 
     @Test

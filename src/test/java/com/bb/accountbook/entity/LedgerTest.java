@@ -1,8 +1,8 @@
 package com.bb.accountbook.entity;
 
 import com.bb.accountbook.common.model.codes.LedgerCode;
-import com.bb.accountbook.domain.ledger.service.LedgerCategoryService;
-import com.bb.accountbook.domain.ledger.service.LedgerService;
+import com.bb.accountbook.domain.ledger.service.impl.LedgerCategoryServiceImpl;
+import com.bb.accountbook.domain.ledger.service.impl.LedgerServiceImpl;
 import com.bb.accountbook.domain.user.repository.UserRepository;
 import com.bb.accountbook.domain.user.service.UserService;
 import jakarta.persistence.EntityManager;
@@ -12,8 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class LedgerTest {
@@ -28,10 +26,10 @@ class LedgerTest {
     UserRepository userRepository;
 
     @Autowired
-    LedgerService ledgerService;
+    LedgerServiceImpl ledgerService;
 
     @Autowired
-    LedgerCategoryService ledgerCategoryService;
+    LedgerCategoryServiceImpl ledgerCategoryService;
 
     @Test
     @DisplayName("연관관계 매핑시 nullable 테스트")

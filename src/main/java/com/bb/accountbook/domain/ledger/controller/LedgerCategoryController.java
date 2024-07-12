@@ -3,7 +3,7 @@ package com.bb.accountbook.domain.ledger.controller;
 
 import com.bb.accountbook.common.model.ApiResponse;
 import com.bb.accountbook.domain.ledger.dto.*;
-import com.bb.accountbook.domain.ledger.service.LedgerCategoryService;
+import com.bb.accountbook.domain.ledger.service.impl.LedgerCategoryServiceImpl;
 import com.bb.accountbook.security.SecurityContextProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +15,7 @@ import static com.bb.accountbook.common.model.codes.SuccessCode.*;
 @RestController
 @RequiredArgsConstructor
 public class LedgerCategoryController {
-    private final LedgerCategoryService ledgerCategoryService;
+    private final LedgerCategoryServiceImpl ledgerCategoryService;
 
     private final SecurityContextProvider securityContextProvider;
 

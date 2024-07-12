@@ -8,8 +8,8 @@ import com.bb.accountbook.domain.couple.repository.CoupleRepository;
 import com.bb.accountbook.domain.couple.service.CoupleService;
 import com.bb.accountbook.domain.custom.service.CustomService;
 import com.bb.accountbook.domain.icon.service.IconService;
-import com.bb.accountbook.domain.ledger.service.LedgerCategoryService;
-import com.bb.accountbook.domain.ledger.service.LedgerService;
+import com.bb.accountbook.domain.ledger.service.impl.LedgerCategoryServiceImpl;
+import com.bb.accountbook.domain.ledger.service.impl.LedgerServiceImpl;
 import com.bb.accountbook.domain.user.repository.RoleRepository;
 import com.bb.accountbook.domain.user.repository.UserRoleRepository;
 import com.bb.accountbook.domain.user.service.UserService;
@@ -18,7 +18,6 @@ import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -36,13 +35,13 @@ public class TestData {
     private final EntityManager em;
     private final UserService userService;
     private final CoupleService coupleService;
-    private final LedgerService ledgerService;
+    private final LedgerServiceImpl ledgerService;
     private final RoleRepository roleRepository;
     private final UserRoleRepository userRoleRepository;
     private final CoupleRepository coupleRepository;
     private final CustomService customService;
     private final IconService iconService;
-    private final LedgerCategoryService ledgerCategoryService;
+    private final LedgerCategoryServiceImpl ledgerCategoryService;
 
 
     public void init() {
