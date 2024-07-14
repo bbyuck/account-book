@@ -5,6 +5,7 @@ import com.bb.accountbook.common.model.codes.LedgerCode;
 import com.bb.accountbook.develop.TestData;
 import com.bb.accountbook.domain.ledger.dto.AssetDto;
 import com.bb.accountbook.domain.ledger.dto.LedgerDto;
+import com.bb.accountbook.domain.ledger.dto.MonthlyLedgerRequestDto;
 import com.bb.accountbook.domain.ledger.service.impl.LedgerServiceImpl;
 import com.bb.accountbook.entity.Ledger;
 import jakarta.persistence.EntityManager;
@@ -81,12 +82,21 @@ class LedgerServiceImplTest {
         String anotherManEmail = "abc123@naver.com";
 
         // when
-        List<Ledger> personalMonthlyLedger = ledgerService.findPersonalMonthlyLedger(manEmail, "202404");
-        List<Ledger> coupleMonthlyLedger = ledgerService.findCoupleMonthlyLedger(womanEmail, "202404");
+        List<Ledger> personalMonthlyLedger = ledgerService.findPersonalMonthlyLedger(MonthlyLedgerRequestDto.builder()
+                .email(manEmail)
+                .yearMonth("202404")
+                .build());
+        List<Ledger> coupleMonthlyLedger = ledgerService.findCoupleMonthlyLedger(MonthlyLedgerRequestDto.builder()
+                .email(womanEmail)
+                .yearMonth("202404")
+                .build());
 
 
         // then
-        Assertions.assertThrows(GlobalException.class, () -> ledgerService.findCoupleMonthlyLedger(anotherManEmail, "202404"));
+        Assertions.assertThrows(GlobalException.class, () -> ledgerService.findCoupleMonthlyLedger(MonthlyLedgerRequestDto.builder()
+                .email(anotherManEmail)
+                .yearMonth("202404")
+                .build()));
         assertThat(personalMonthlyLedger.size()).isEqualTo(5);
         assertThat(coupleMonthlyLedger.size()).isEqualTo(8);
         assertThat(coupleMonthlyLedger.get(0).getDate()).isEqualTo(LocalDate.of(2024, 4, 1));

@@ -73,19 +73,33 @@ public class LedgerController {
 
     @GetMapping("/api/v1/monthly/ledger")
     public ApiResponse<MonthlyLedgerResponseDto> findMonthlyLedger(@RequestParam("ym") @Valid @YearMonth String yearMonth) {
-        List<Ledger> monthlyLedger = ledgerService.findMonthlyLedger(securityContextProvider.getCurrentEmail(), yearMonth);
+        List<Ledger> monthlyLedger = ledgerService.findMonthlyLedger(
+                MonthlyLedgerRequestDto.builder()
+                        .email(securityContextProvider.getCurrentEmail())
+                        .yearMonth(yearMonth)
+                        .build());
         return new ApiResponse<>(ledgerPresentationService.getMonthlyLedgerResponseDto(monthlyLedger, yearMonth));
     }
 
     @GetMapping("/api/v1/monthly/couple/ledger")
     public ApiResponse<MonthlyLedgerResponseDto> findCoupleMonthlyLedger(@RequestParam("ym") @Valid @YearMonth String yearMonth) {
-        List<Ledger> monthlyLedgers = ledgerService.findCoupleMonthlyLedger(securityContextProvider.getCurrentEmail(), yearMonth);
+        List<Ledger> monthlyLedgers = ledgerService.findCoupleMonthlyLedger(
+                MonthlyLedgerRequestDto.builder()
+                        .email(securityContextProvider.getCurrentEmail())
+                        .yearMonth(yearMonth)
+                        .build()
+        );
         return new ApiResponse<>(ledgerPresentationService.getMonthlyLedgerResponseDto(monthlyLedgers, yearMonth));
     }
 
     @GetMapping("/api/v1/monthly/personal/ledger")
     public ApiResponse<MonthlyLedgerResponseDto> findPersonalMonthlyLedger(@RequestParam("ym") @Valid @YearMonth String yearMonth) {
-        List<Ledger> monthlyLedgers = ledgerService.findPersonalMonthlyLedger(securityContextProvider.getCurrentEmail(), yearMonth);
+        List<Ledger> monthlyLedgers = ledgerService.findPersonalMonthlyLedger(
+                MonthlyLedgerRequestDto.builder()
+                        .email(securityContextProvider.getCurrentEmail())
+                        .yearMonth(yearMonth)
+                        .build()
+        );
         return new ApiResponse<>(ledgerPresentationService.getMonthlyLedgerResponseDto(monthlyLedgers, yearMonth));
     }
 

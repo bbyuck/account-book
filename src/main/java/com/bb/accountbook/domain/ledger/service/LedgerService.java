@@ -2,6 +2,7 @@ package com.bb.accountbook.domain.ledger.service;
 
 import com.bb.accountbook.common.model.codes.LedgerCode;
 import com.bb.accountbook.domain.ledger.dto.AssetDto;
+import com.bb.accountbook.domain.ledger.dto.MonthlyLedgerRequestDto;
 import com.bb.accountbook.entity.Ledger;
 
 import java.time.LocalDate;
@@ -55,34 +56,6 @@ public interface LedgerService {
      * @return
      */
     Long updateLedger(String email, Long ledgerId, LedgerCode ledgerCode, LocalDate ledgerDate, Long ledgerAmount, String ledgerDescription, Long ledgerCategoryId);
-
-    /**
-     * 월별 가계부 목록 조회
-     * @param userEmail
-     * @param yearMonth
-     * @return
-     */
-    List<Ledger> findMonthlyLedger(String userEmail, String yearMonth);
-
-    /**
-     * 커플 월별 가계부 상세 항목 목록 조회
-     * yearMonth -> yyyyMM
-     *
-     * @param email
-     * @param yearMonth
-     * @return
-     */
-    List<Ledger> findCoupleMonthlyLedger(String email, String yearMonth);
-
-    /**
-     * 개인 월별 가계부 상세 항목 목록 조회
-     * yearMonth -> yyyyMM
-     *
-     * @param userEmail
-     * @param yearMonth
-     * @return
-     */
-    List<Ledger> findPersonalMonthlyLedger(String userEmail, String yearMonth);
 
     /**
      * 전체 가계부 조회
@@ -155,5 +128,31 @@ public interface LedgerService {
      * @return
      */
     boolean deleteLedger(String email, Long ledgerId);
+
+
+    /**
+     * 월별 가계부 목록 조회
+     * @param requestDto
+     * @return
+     */
+    List<Ledger> findMonthlyLedger(MonthlyLedgerRequestDto requestDto);
+
+    /**
+     * 커플 월별 가계부 상세 항목 목록 조회
+     * yearMonth -> yyyyMM
+     *
+     * @param requestDto
+     * @return
+     */
+    List<Ledger> findCoupleMonthlyLedger(MonthlyLedgerRequestDto requestDto);
+
+    /**
+     * 개인 월별 가계부 상세 항목 목록 조회
+     * yearMonth -> yyyyMM
+     *
+     * @param requestDto
+     * @return
+     */
+    List<Ledger> findPersonalMonthlyLedger(MonthlyLedgerRequestDto requestDto);
 
 }

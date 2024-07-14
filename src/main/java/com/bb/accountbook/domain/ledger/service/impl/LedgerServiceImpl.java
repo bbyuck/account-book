@@ -6,6 +6,7 @@ import com.bb.accountbook.common.model.codes.LedgerCode;
 import com.bb.accountbook.common.util.DateTimeUtil;
 import com.bb.accountbook.domain.couple.service.CoupleService;
 import com.bb.accountbook.domain.ledger.dto.AssetDto;
+import com.bb.accountbook.domain.ledger.dto.MonthlyLedgerRequestDto;
 import com.bb.accountbook.domain.ledger.repository.LedgerRepository;
 import com.bb.accountbook.domain.ledger.service.LedgerCategoryService;
 import com.bb.accountbook.domain.ledger.service.LedgerService;
@@ -78,34 +79,6 @@ public class LedgerServiceImpl implements LedgerService {
                 ledgerCategoryId == null ? null : ledgerCategoryService.findOwnLedgerCategory(email, ledgerCategoryId));
 
         return targetLedger.getId();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Ledger> findCoupleMonthlyLedger(String email, String yearMonth) {
-        LocalDate[] monthlyDuration = DateTimeUtil.getMonthlyDuration(yearMonth);
-
-        if (!coupleService.isActiveCouple(email)) {
-            log.debug("{}.{}({}, {}): {}", this.getClass().getName(), "findCoupleMonthlyLedger", email, yearMonth, ERR_CPL_003.getValue());
-            throw new GlobalException(ERR_CPL_003);
-        }
-
-        Couple couple = coupleService.findCoupleByUserEmail(email);
-
-        return ledgerRepository.findCouplePeriodLedger(couple.getId(), monthlyDuration[0], monthlyDuration[1]);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Ledger> findMonthlyLedger(String userEmail, String yearMonth) {
-        return coupleService.isActiveCouple(userEmail) ? findCoupleMonthlyLedger(userEmail, yearMonth) : findPersonalMonthlyLedger(userEmail, yearMonth);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Ledger> findPersonalMonthlyLedger(String userEmail, String yearMonth) {
-        LocalDate[] monthlyDuration = DateTimeUtil.getMonthlyDuration(yearMonth);
-        return ledgerRepository.findPersonalPeriodLedgerByEmail(userEmail, monthlyDuration[0], monthlyDuration[1]);
     }
 
     @Override
@@ -200,5 +173,36 @@ public class LedgerServiceImpl implements LedgerService {
         ledgerRepository.delete(ledger);
 
         return true;
+    }
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Ledger> findCoupleMonthlyLedger(MonthlyLedgerRequestDto requestDto) {
+        LocalDate[] monthlyDuration = DateTimeUtil.getMonthlyDuration(requestDto.getYearMonth());
+
+        if (!coupleService.isActiveCouple(requestDto.getEmail())) {
+            log.debug("{}.{}({}, {}): {}", this.getClass().getName(), "findCoupleMonthlyLedger", requestDto.getEmail(), requestDto.getYearMonth(), ERR_CPL_003.getValue());
+            throw new GlobalException(ERR_CPL_003);
+        }
+
+        Couple couple = coupleService.findCoupleByUserEmail(requestDto.getEmail());
+
+        return ledgerRepository.findCouplePeriodLedger(couple.getId(), monthlyDuration[0], monthlyDuration[1], requestDto.getLedgerCode());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Ledger> findMonthlyLedger(MonthlyLedgerRequestDto requestDto) {
+        return coupleService.isActiveCouple(requestDto.getEmail())
+                ? findCoupleMonthlyLedger(requestDto)
+                : findPersonalMonthlyLedger(requestDto);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Ledger> findPersonalMonthlyLedger(MonthlyLedgerRequestDto requestDto) {
+        LocalDate[] monthlyDuration = DateTimeUtil.getMonthlyDuration(requestDto.getYearMonth());
+        return ledgerRepository.findPersonalPeriodLedgerByEmail(requestDto.getEmail(), monthlyDuration[0], monthlyDuration[1], requestDto.getLedgerCode());
     }
 }

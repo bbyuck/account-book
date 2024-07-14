@@ -1,5 +1,6 @@
 package com.bb.accountbook.domain.ledger.repository.custom;
 
+import com.bb.accountbook.common.model.codes.LedgerCode;
 import com.bb.accountbook.entity.Ledger;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -15,8 +16,8 @@ public interface LedgerCustomRepository {
      * 기간별 조회
      */
     List<Ledger> findPersonalPeriodLedger(Long userId, LocalDate startDate, LocalDate endDate);
-    List<Ledger> findCouplePeriodLedger(Long coupleId, LocalDate startDate, LocalDate endDate);
-    List<Ledger> findPersonalPeriodLedgerByEmail(String email, LocalDate startDate, LocalDate endDate);
+    List<Ledger> findCouplePeriodLedger(Long coupleId, LocalDate startDate, LocalDate endDate, LedgerCode ledgerCode);
+    List<Ledger> findPersonalPeriodLedgerByEmail(String email, LocalDate startDate, LocalDate endDate, LedgerCode ledgerCode);
 
     /**
      * 다건 조회
