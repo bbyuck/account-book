@@ -35,6 +35,7 @@ public class MonthlyLedgerCategoryStatistic {
     @Setter
     private List<AmountPerCategory> amountsPerCategory;
     private int topCount;
+    private Long noCategoryAmount;
 
     public MonthlyLedgerCategoryStatistic(int topCount) {
         this.topCount = topCount;
@@ -42,6 +43,7 @@ public class MonthlyLedgerCategoryStatistic {
         this.income = 0L;
         this.expenditure = 0L;
         this.amountsPerCategory = new ArrayList<>();
+        this.noCategoryAmount = 0L;
     }
 
     public void addSave(Long amount) {
@@ -54,6 +56,10 @@ public class MonthlyLedgerCategoryStatistic {
 
     public void addIncome(Long amount) {
         this.income += amount;
+    }
+
+    public void addNoCategoryAmount(Long amount) {
+        this.noCategoryAmount += amount;
     }
 
     @Data

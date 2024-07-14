@@ -53,11 +53,16 @@ public class LedgerCustomRepositoryImpl implements LedgerCustomRepository {
         if (coupleId != null) {
             dynamicQueryBuilder.and(couple.id.eq(coupleId));
         }
+        if (ledgerCode != null) {
+            dynamicQueryBuilder.and(ledger.code.eq(ledgerCode));
+        }
 
         dynamicQueryBuilder.and(userCouple.status.eq(UserCoupleStatus.ACTIVE));
 
         if (startDate != null && endDate != null) {
-            dynamicQueryBuilder.and(ledger.date.between(startDate, endDate));
+            dynamicQueryBuilder
+                    .and(ledger.date.goe(startDate))
+                    .and(ledger.date.loe(endDate));
         }
         dynamicQueryBuilder.and(user.status.eq(UserStatus.ACTIVE));
 
@@ -204,16 +209,18 @@ public class LedgerCustomRepositoryImpl implements LedgerCustomRepository {
     public List<Ledger> findPersonalPeriodLedgerByEmail(String email, LocalDate startDate, LocalDate endDate, LedgerCode ledgerCode) {
         BooleanBuilder dynamicQueryBuilder = new BooleanBuilder();
 
-        if (ledgerCode != null) {
-            dynamicQueryBuilder.and(ledger.code.eq(ledgerCode));
-        }
-
         if (StringUtils.hasText(email)) {
             dynamicQueryBuilder.and(user.email.eq(email));
         }
 
+        if (ledgerCode != null) {
+            dynamicQueryBuilder.and(ledger.code.eq(ledgerCode));
+        }
+
         if (startDate != null && endDate != null) {
-            dynamicQueryBuilder.and(ledger.date.between(startDate, endDate));
+            dynamicQueryBuilder
+                    .and(ledger.date.goe(startDate))
+                    .and(ledger.date.loe(endDate));
         }
 
         return queryFactory.selectFrom(ledger)

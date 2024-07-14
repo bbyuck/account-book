@@ -42,11 +42,16 @@ public class LedgerStatisticServiceImpl implements LedgerStatisticService {
                 default -> log.debug("잘못된 LedgerCode를 필드로 갖고 있습니다. ====== {}", ledger.getId());
             }
 
-            tempMap.putIfAbsent(
-                    ledger.getLedgerCategory().getId()
-                    , new MonthlyLedgerCategoryStatistic.AmountPerCategory(ledger.getLedgerCategory()));
+            if (ledger.getLedgerCategory() == null) {
+                statistic.addNoCategoryAmount(ledger.getAmount());
+            }
+            else {
+                tempMap.putIfAbsent(
+                        ledger.getLedgerCategory().getId()
+                        , new MonthlyLedgerCategoryStatistic.AmountPerCategory(ledger.getLedgerCategory()));
 
-            tempMap.get(ledger.getLedgerCategory().getId()).add(ledger.getAmount());
+                tempMap.get(ledger.getLedgerCategory().getId()).add(ledger.getAmount());
+            }
         }
 
         statistic.setAmountsPerCategory(
