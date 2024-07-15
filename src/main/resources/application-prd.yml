@@ -64,7 +64,7 @@ aws:
 
 logging:
   level:
-    com.bb.com.bb.accountbook.common.log: info
+    com.bb.accountbook.common.log: info
     com.bb.accountbook: error
     org.springframework: error
     org.hibernate:

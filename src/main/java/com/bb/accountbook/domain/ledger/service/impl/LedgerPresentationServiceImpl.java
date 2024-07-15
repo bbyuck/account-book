@@ -1,5 +1,6 @@
 package com.bb.accountbook.domain.ledger.service.impl;
 
+import com.bb.accountbook.common.log.target.ExecutionTimeLog;
 import com.bb.accountbook.domain.custom.service.CustomService;
 import com.bb.accountbook.domain.ledger.dto.LedgerCategoryDto;
 import com.bb.accountbook.domain.ledger.dto.LedgerDto;
@@ -17,6 +18,7 @@ public class LedgerPresentationServiceImpl implements LedgerPresentationService 
 
     private final CustomService customService;
     @Override
+    @ExecutionTimeLog
     public MonthlyLedgerResponseDto getMonthlyLedgerResponseDto(List<Ledger> monthlyLedgers, String yearMonth) {
         MonthlyLedgerResponseDto dataDto = new MonthlyLedgerResponseDto(yearMonth);
 

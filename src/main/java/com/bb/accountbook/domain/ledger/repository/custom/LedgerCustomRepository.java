@@ -19,6 +19,8 @@ public interface LedgerCustomRepository {
     List<Ledger> findCouplePeriodLedger(Long coupleId, LocalDate startDate, LocalDate endDate, LedgerCode ledgerCode);
     List<Ledger> findPersonalPeriodLedgerByEmail(String email, LocalDate startDate, LocalDate endDate, LedgerCode ledgerCode);
 
+
+
     /**
      * 다건 조회
      */
