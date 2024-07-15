@@ -3,6 +3,7 @@ package com.bb.accountbook.domain.ledger.service;
 import com.bb.accountbook.common.model.codes.LedgerCode;
 import com.bb.accountbook.domain.ledger.dto.AssetDto;
 import com.bb.accountbook.domain.ledger.dto.MonthlyLedgerRequestDto;
+import com.bb.accountbook.domain.ledger.dto.MonthlyLedgerResponseDto;
 import com.bb.accountbook.entity.Ledger;
 
 import java.time.LocalDate;
@@ -128,7 +129,6 @@ public interface LedgerService {
      * @return
      */
     boolean deleteLedger(String email, Long ledgerId);
-
 
     /**
      * 월별 가계부 목록 조회

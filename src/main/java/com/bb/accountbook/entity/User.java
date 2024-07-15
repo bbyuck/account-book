@@ -7,7 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -49,7 +51,7 @@ public class User extends BaseEntity {
     private Auth auth;
 
     @OneToMany(mappedBy = "user")
-    private List<Custom> customs = new ArrayList<>();
+    private Set<Custom> customs = new HashSet<>();
 
     public User(String email, String password) {
         this.email = email;

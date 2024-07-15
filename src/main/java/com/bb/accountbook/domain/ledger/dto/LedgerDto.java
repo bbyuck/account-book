@@ -43,5 +43,17 @@ public class LedgerDto {
         }
     }
 
-
+    @QueryProjection
+    public LedgerDto(Long ledgerId, LedgerCode ledgerCode, Long amount, String description, String color, LedgerCategoryDto category, LocalDate date) {
+        this.ledgerId = ledgerId;
+        this.ledgerCode = ledgerCode;
+        this.amount = amount;
+        this.description = description;
+        this.color = color;
+        this.category = category;
+        this.year = date.getYear();
+        this.month = date.getMonthValue();
+        this.day = date.getDayOfMonth();
+        this.dayOfWeek = date.getDayOfWeek().getValue();
+    }
 }

@@ -32,7 +32,7 @@ public class QUser extends EntityPathBase<User> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdDate = _super.createdDate;
 
-    public final ListPath<Custom, QCustom> customs = this.<Custom, QCustom>createList("customs", Custom.class, QCustom.class, PathInits.DIRECT2);
+    public final SetPath<Custom, QCustom> customs = this.<Custom, QCustom>createSet("customs", Custom.class, QCustom.class, PathInits.DIRECT2);
 
     public final StringPath email = createString("email");
 

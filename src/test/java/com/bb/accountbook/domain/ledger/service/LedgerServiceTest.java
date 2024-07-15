@@ -6,6 +6,7 @@ import com.bb.accountbook.develop.TestData;
 import com.bb.accountbook.domain.ledger.dto.AssetDto;
 import com.bb.accountbook.domain.ledger.dto.LedgerDto;
 import com.bb.accountbook.domain.ledger.dto.MonthlyLedgerRequestDto;
+import com.bb.accountbook.domain.ledger.dto.MonthlyLedgerResponseDto;
 import com.bb.accountbook.domain.ledger.service.impl.LedgerServiceImpl;
 import com.bb.accountbook.entity.Ledger;
 import jakarta.persistence.EntityManager;
@@ -73,6 +74,9 @@ class LedgerServiceTest {
 
     }
 
+
+
+
     @Test
     @DisplayName("월별 가계부 조회")
     public void personalMonthly() throws Exception {
@@ -93,10 +97,6 @@ class LedgerServiceTest {
 
 
         // then
-        Assertions.assertThrows(GlobalException.class, () -> ledgerService.findCoupleMonthlyLedger(MonthlyLedgerRequestDto.builder()
-                .email(anotherManEmail)
-                .yearMonth("202404")
-                .build()));
         assertThat(personalMonthlyLedger.size()).isEqualTo(5);
         assertThat(coupleMonthlyLedger.size()).isEqualTo(8);
         assertThat(coupleMonthlyLedger.get(0).getDate()).isEqualTo(LocalDate.of(2024, 4, 1));

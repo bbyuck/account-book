@@ -1,11 +1,17 @@
 package com.bb.accountbook.domain.ledger.repository.custom.impl;
 
+import com.bb.accountbook.common.model.codes.CustomCode;
 import com.bb.accountbook.common.model.codes.LedgerCode;
 import com.bb.accountbook.common.model.status.UserCoupleStatus;
 import com.bb.accountbook.common.model.status.UserStatus;
 import com.bb.accountbook.domain.ledger.dto.LedgerDto;
+import com.bb.accountbook.domain.ledger.dto.QLedgerCategoryDto;
+import com.bb.accountbook.domain.ledger.dto.QLedgerDto;
 import com.bb.accountbook.domain.ledger.repository.custom.LedgerCustomRepository;
 import com.bb.accountbook.entity.Ledger;
+import com.bb.accountbook.entity.QIcon;
+import com.bb.accountbook.entity.QLedger;
+import com.bb.accountbook.entity.QLedgerCategory;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
@@ -18,7 +24,10 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.bb.accountbook.entity.QCouple.couple;
+import static com.bb.accountbook.entity.QCustom.custom;
+import static com.bb.accountbook.entity.QIcon.*;
 import static com.bb.accountbook.entity.QLedger.ledger;
+import static com.bb.accountbook.entity.QLedgerCategory.*;
 import static com.bb.accountbook.entity.QUser.user;
 import static com.bb.accountbook.entity.QUserCouple.userCouple;
 
@@ -56,8 +65,39 @@ public class LedgerCustomRepositoryImpl implements LedgerCustomRepository {
         if (ledgerCode != null) {
             dynamicQueryBuilder.and(ledger.code.eq(ledgerCode));
         }
+        if (startDate != null && endDate != null) {
+            dynamicQueryBuilder
+                    .and(ledger.date.goe(startDate))
+                    .and(ledger.date.loe(endDate));
+        }
 
-        dynamicQueryBuilder.and(userCouple.status.eq(UserCoupleStatus.ACTIVE));
+        return queryFactory.selectFrom(ledger)
+                .join(user).fetchJoin().on(user.eq(ledger.owner))
+                .leftJoin(ledgerCategory).fetchJoin().on(ledgerCategory.eq(ledger.ledgerCategory))
+                .leftJoin(icon).fetchJoin().on(icon.eq(ledgerCategory.icon))
+                .leftJoin(custom).fetchJoin().on(custom.user.eq(user))
+                .join(userCouple).fetchJoin().on(user.eq(userCouple.user))
+                .join(couple).fetchJoin().on(couple.eq(userCouple.couple))
+                .where(
+                        dynamicQueryBuilder.and(userCouple.status.eq(UserCoupleStatus.ACTIVE))
+                                .and(user.status.eq(UserStatus.ACTIVE))
+                                .and(custom.isNull().or(custom.code.eq(CustomCode.COLOR)))
+                )
+                .orderBy(ledger.date.asc())
+                .fetch();
+    }
+
+    @Override
+    public List<Ledger> findPersonalPeriodLedgerByEmail(String email, LocalDate startDate, LocalDate endDate, LedgerCode ledgerCode) {
+        BooleanBuilder dynamicQueryBuilder = new BooleanBuilder();
+
+        if (StringUtils.hasText(email)) {
+            dynamicQueryBuilder.and(user.email.eq(email));
+        }
+
+        if (ledgerCode != null) {
+            dynamicQueryBuilder.and(ledger.code.eq(ledgerCode));
+        }
 
         if (startDate != null && endDate != null) {
             dynamicQueryBuilder
@@ -65,37 +105,18 @@ public class LedgerCustomRepositoryImpl implements LedgerCustomRepository {
                     .and(ledger.date.loe(endDate));
         }
 
-        dynamicQueryBuilder.and(user.status.eq(UserStatus.ACTIVE));
-
         return queryFactory.selectFrom(ledger)
                 .join(user).fetchJoin().on(user.eq(ledger.owner))
-                .join(userCouple).fetchJoin().on(user.eq(userCouple.user))
-                .join(couple).fetchJoin().on(couple.eq(userCouple.couple))
-                .where(dynamicQueryBuilder)
+                .leftJoin(ledgerCategory).fetchJoin().on(ledgerCategory.eq(ledger.ledgerCategory))
+                .leftJoin(icon).fetchJoin().on(icon.eq(ledgerCategory.icon))
+                .leftJoin(custom).fetchJoin().on(custom.user.eq(user))
+                .where(
+                        dynamicQueryBuilder.and(custom.isNull().or(custom.code.eq(CustomCode.COLOR)))
+                )
                 .orderBy(ledger.date.asc())
                 .fetch();
-
-//        String jpql = "select l " +
-//                "from Ledger l " +
-//                "join fetch User u " +
-//                "on l.owner = u " +
-//                "join fetch UserCouple uc " +
-//                "on uc.user = u " +
-//                "join fetch Couple c " +
-//                "on uc.couple = c " +
-//                "where c.id = :coupleId " +
-//                "and uc.status = :userCoupleStatus " +
-//                "and l.date >= :startDate and l.date <= :endDate " +
-//                "and u.status = :userStatus " +
-//                "order by l.date asc";
-//        return em.createQuery(jpql, Ledger.class)
-//                .setParameter("coupleId", coupleId)
-//                .setParameter("userCoupleStatus", UserCoupleStatus.ACTIVE)
-//                .setParameter("startDate", startDate)
-//                .setParameter("endDate", endDate)
-//                .setParameter("userStatus", UserStatus.ACTIVE)
-//                .getResultList();
     }
+
 
     @Override
     public Optional<Ledger> findLedgerWithUserCouple(Long coupleId, Long ledgerId) {
@@ -202,50 +223,8 @@ public class LedgerCustomRepositoryImpl implements LedgerCustomRepository {
                 .getResultList();
     }
 
-    @Override
-    public List<Ledger> findPersonalPeriodLedgerByEmail(String email, LocalDate startDate, LocalDate endDate, LedgerCode ledgerCode) {
-        BooleanBuilder dynamicQueryBuilder = new BooleanBuilder();
-
-        if (StringUtils.hasText(email)) {
-            dynamicQueryBuilder.and(user.email.eq(email));
-        }
-
-        if (ledgerCode != null) {
-            dynamicQueryBuilder.and(ledger.code.eq(ledgerCode));
-        }
-
-        if (startDate != null && endDate != null) {
-            dynamicQueryBuilder
-                    .and(ledger.date.goe(startDate))
-                    .and(ledger.date.loe(endDate));
-        }
-
-        return queryFactory.selectFrom(ledger)
-                .join(user).fetchJoin().on(user.eq(ledger.owner))
-                .where(dynamicQueryBuilder)
-                .orderBy(ledger.date.asc())
-                .fetch();
-
-        /**
-         * jpql 버전
-         */
-        /*
-        String jpql = "select l " +
-                "from Ledger l " +
-                "join fetch User u " +
-                "on l.owner = u " +
-                "where u.email = :email " +
-                "and l.date >= :startDate and l.date <= :endDate " +
-                "order by l.date asc";
 
 
-        return em.createQuery(jpql, Ledger.class)
-                .setParameter("email", email)
-                .setParameter("startDate", startDate)
-                .setParameter("endDate", endDate)
-                .getResultList();
-         */
-    }
 
     @Override
     public Optional<Ledger> findLedgerByIdAndUserEmail(Long ledgerId, String email) {
