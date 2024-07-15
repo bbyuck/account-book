@@ -70,14 +70,7 @@ public class LedgerCustomRepositoryImpl implements LedgerCustomRepository {
 
         dynamicQueryBuilder.and(user.status.eq(UserStatus.ACTIVE));
 
-        queryFactory.selectFrom(
-                new QLedgerDto(
-                        ledger.id
-                        , ledger.owner.userCouple.nickname
-                        , ledger.code
-                , ledger.amount
-                , ledger.description
-                , ))
+
 
         return null;
     }
