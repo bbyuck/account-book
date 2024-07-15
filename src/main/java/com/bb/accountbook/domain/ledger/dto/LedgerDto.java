@@ -2,6 +2,7 @@ package com.bb.accountbook.domain.ledger.dto;
 
 import com.bb.accountbook.common.model.codes.LedgerCode;
 import com.bb.accountbook.entity.Ledger;
+import com.querydsl.core.annotations.QueryProjection;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -41,5 +42,6 @@ public class LedgerDto {
             this.category = new LedgerCategoryDto(ledger.getLedgerCategory());
         }
     }
+
 
 }

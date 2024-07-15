@@ -3,6 +3,8 @@ package com.bb.accountbook.domain.ledger.repository.custom.impl;
 import com.bb.accountbook.common.model.codes.LedgerCode;
 import com.bb.accountbook.common.model.status.UserCoupleStatus;
 import com.bb.accountbook.common.model.status.UserStatus;
+import com.bb.accountbook.domain.ledger.dto.LedgerDto;
+import com.bb.accountbook.domain.ledger.dto.QLedgerDto;
 import com.bb.accountbook.domain.ledger.repository.custom.LedgerCustomRepository;
 import com.bb.accountbook.entity.Ledger;
 import com.bb.accountbook.entity.QUser;
@@ -48,6 +50,39 @@ public class LedgerCustomRepositoryImpl implements LedgerCustomRepository {
     }
 
     @Override
+    public List<LedgerDto> findCouplePeriodLedgerDto(Long coupleId, LocalDate startDate, LocalDate endDate, LedgerCode ledgerCode) {
+        BooleanBuilder dynamicQueryBuilder = new BooleanBuilder();
+
+        if (coupleId != null) {
+            dynamicQueryBuilder.and(couple.id.eq(coupleId));
+        }
+        if (ledgerCode != null) {
+            dynamicQueryBuilder.and(ledger.code.eq(ledgerCode));
+        }
+
+        dynamicQueryBuilder.and(userCouple.status.eq(UserCoupleStatus.ACTIVE));
+
+        if (startDate != null && endDate != null) {
+            dynamicQueryBuilder
+                    .and(ledger.date.goe(startDate))
+                    .and(ledger.date.loe(endDate));
+        }
+
+        dynamicQueryBuilder.and(user.status.eq(UserStatus.ACTIVE));
+
+        queryFactory.selectFrom(
+                new QLedgerDto(
+                        ledger.id
+                        , ledger.owner.userCouple.nickname
+                        , ledger.code
+                , ledger.amount
+                , ledger.description
+                , ))
+
+        return null;
+    }
+
+    @Override
     public List<Ledger> findCouplePeriodLedger(Long coupleId, LocalDate startDate, LocalDate endDate, LedgerCode ledgerCode) {
         BooleanBuilder dynamicQueryBuilder = new BooleanBuilder();
 
@@ -66,8 +101,8 @@ public class LedgerCustomRepositoryImpl implements LedgerCustomRepository {
                     .and(ledger.date.loe(endDate));
         }
 
-
         dynamicQueryBuilder.and(user.status.eq(UserStatus.ACTIVE));
+
         return queryFactory.selectFrom(ledger)
                 .join(user).fetchJoin().on(user.eq(ledger.owner))
                 .join(userCouple).fetchJoin().on(user.eq(userCouple.user))
@@ -169,7 +204,6 @@ public class LedgerCustomRepositoryImpl implements LedgerCustomRepository {
                 .setParameter("ledgerCode", LedgerCode.S)
                 .getResultList();
     }
-
 
 
     @Override

@@ -49,6 +49,7 @@ public class CustomService {
         });
     }
 
+    @Transactional(readOnly = true)
     public String getCustomColor(String email) {
         try {
             Custom custom = findCustom(email, CustomCode.COLOR);
