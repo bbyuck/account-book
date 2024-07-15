@@ -1,6 +1,7 @@
 package com.bb.accountbook.domain.ledger.service.impl;
 
 import com.bb.accountbook.common.exception.GlobalException;
+import com.bb.accountbook.common.log.target.ExecutionTimeLog;
 import com.bb.accountbook.common.model.codes.ErrorCode;
 import com.bb.accountbook.common.model.codes.LedgerCode;
 import com.bb.accountbook.common.util.DateTimeUtil;
@@ -193,6 +194,7 @@ public class LedgerServiceImpl implements LedgerService {
 
     @Override
     @Transactional(readOnly = true)
+    @ExecutionTimeLog
     public List<Ledger> findMonthlyLedger(MonthlyLedgerRequestDto requestDto) {
         return coupleService.isActiveCouple(requestDto.getEmail())
                 ? findCoupleMonthlyLedger(requestDto)

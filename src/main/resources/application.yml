@@ -77,8 +77,9 @@ key:
 
 logging:
   level:
-    com.bb.accountbook: debug
-    org.springframework: debug
+    com.bb.com.bb.accountbook.common.log: info
+    com.bb.accountbook: error
+    org.springframework: error
     org.hibernate:
       type:
         descriptor.sql: trace

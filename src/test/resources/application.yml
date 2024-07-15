@@ -81,7 +81,6 @@ decorator:
 
 logging:
   level:
-    com:
-      bb:
-        accountbook: debug
+    com.bb.accountbook.common.log: info
+    com.bb.accountbook: error
     p6spy: debug

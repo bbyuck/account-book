@@ -86,7 +86,7 @@ class LedgerServiceTest {
                 .email(manEmail)
                 .yearMonth("202404")
                 .build());
-        List<Ledger> coupleMonthlyLedger = ledgerService.findCoupleMonthlyLedger(MonthlyLedgerRequestDto.builder()
+        List<Ledger> coupleMonthlyLedger = ledgerService.findMonthlyLedger(MonthlyLedgerRequestDto.builder()
                 .email(womanEmail)
                 .yearMonth("202404")
                 .build());
