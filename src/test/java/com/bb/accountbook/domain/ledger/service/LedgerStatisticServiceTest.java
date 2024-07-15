@@ -37,8 +37,8 @@ class LedgerStatisticServiceTest {
 
         // then
         assertThat(statistic.getExpenditure()).isEqualTo(300000L);
-        assertThat(statistic.getAmountsPerCategory()).isEmpty();
-        assertThat(statistic.getNoCategoryAmount()).isEqualTo(300000L);
+        assertThat(statistic.getAmountsPerCategory().size()).isEqualTo(1);
+        assertThat(statistic.getAmountsPerCategory().get(0).getCategory().getLedgerCategoryName()).isEqualTo("카테고리 없음");
     }
 
 }

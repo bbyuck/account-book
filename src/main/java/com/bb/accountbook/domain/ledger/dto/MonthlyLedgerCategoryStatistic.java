@@ -1,5 +1,6 @@
 package com.bb.accountbook.domain.ledger.dto;
 
+import com.bb.accountbook.common.model.codes.LedgerCode;
 import com.bb.accountbook.entity.LedgerCategory;
 import lombok.Data;
 import lombok.Getter;
@@ -35,7 +36,6 @@ public class MonthlyLedgerCategoryStatistic {
     @Setter
     private List<AmountPerCategory> amountsPerCategory;
     private int topCount;
-    private Long noCategoryAmount;
 
     public MonthlyLedgerCategoryStatistic(int topCount) {
         this.topCount = topCount;
@@ -43,7 +43,6 @@ public class MonthlyLedgerCategoryStatistic {
         this.income = 0L;
         this.expenditure = 0L;
         this.amountsPerCategory = new ArrayList<>();
-        this.noCategoryAmount = 0L;
     }
 
     public void addSave(Long amount) {
@@ -58,9 +57,7 @@ public class MonthlyLedgerCategoryStatistic {
         this.income += amount;
     }
 
-    public void addNoCategoryAmount(Long amount) {
-        this.noCategoryAmount += amount;
-    }
+
 
     @Data
     public static class AmountPerCategory {
@@ -69,6 +66,11 @@ public class MonthlyLedgerCategoryStatistic {
 
         public AmountPerCategory(LedgerCategory ledgerCategory) {
             this.category = new LedgerCategoryDto(ledgerCategory);
+            this.amount = 0L;
+        }
+
+        public AmountPerCategory(LedgerCode ledgerCode) {
+            this.category = new LedgerCategoryDto(null, "카테고리 없음", null, null, ledgerCode);
             this.amount = 0L;
         }
 

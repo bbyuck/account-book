@@ -43,13 +43,15 @@ public class LedgerStatisticServiceImpl implements LedgerStatisticService {
             }
 
             if (ledger.getLedgerCategory() == null) {
-                statistic.addNoCategoryAmount(ledger.getAmount());
+                tempMap.putIfAbsent(
+                        -1L,
+                        new MonthlyLedgerCategoryStatistic.AmountPerCategory(ledger.getCode()));
+                tempMap.get(-1L).add(ledger.getAmount());
             }
             else {
                 tempMap.putIfAbsent(
                         ledger.getLedgerCategory().getId()
                         , new MonthlyLedgerCategoryStatistic.AmountPerCategory(ledger.getLedgerCategory()));
-
                 tempMap.get(ledger.getLedgerCategory().getId()).add(ledger.getAmount());
             }
         }
