@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 @Builder
 public class MonthlyLedgerRequestDto {
-    private LedgerCode ledgerCode;
     private String email;
+    private LedgerCode ledgerCode;
     private String yearMonth;
 }
