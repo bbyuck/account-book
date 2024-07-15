@@ -4,11 +4,8 @@ import com.bb.accountbook.common.model.codes.LedgerCode;
 import com.bb.accountbook.common.model.status.UserCoupleStatus;
 import com.bb.accountbook.common.model.status.UserStatus;
 import com.bb.accountbook.domain.ledger.dto.LedgerDto;
-import com.bb.accountbook.domain.ledger.dto.QLedgerDto;
 import com.bb.accountbook.domain.ledger.repository.custom.LedgerCustomRepository;
 import com.bb.accountbook.entity.Ledger;
-import com.bb.accountbook.entity.QUser;
-import com.bb.accountbook.entity.QUserCouple;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
@@ -47,32 +44,6 @@ public class LedgerCustomRepositoryImpl implements LedgerCustomRepository {
                 .setParameter("startDate", startDate)
                 .setParameter("endDate", endDate)
                 .getResultList();
-    }
-
-    @Override
-    public List<LedgerDto> findCouplePeriodLedgerDto(Long coupleId, LocalDate startDate, LocalDate endDate, LedgerCode ledgerCode) {
-        BooleanBuilder dynamicQueryBuilder = new BooleanBuilder();
-
-        if (coupleId != null) {
-            dynamicQueryBuilder.and(couple.id.eq(coupleId));
-        }
-        if (ledgerCode != null) {
-            dynamicQueryBuilder.and(ledger.code.eq(ledgerCode));
-        }
-
-        dynamicQueryBuilder.and(userCouple.status.eq(UserCoupleStatus.ACTIVE));
-
-        if (startDate != null && endDate != null) {
-            dynamicQueryBuilder
-                    .and(ledger.date.goe(startDate))
-                    .and(ledger.date.loe(endDate));
-        }
-
-        dynamicQueryBuilder.and(user.status.eq(UserStatus.ACTIVE));
-
-
-
-        return null;
     }
 
     @Override
