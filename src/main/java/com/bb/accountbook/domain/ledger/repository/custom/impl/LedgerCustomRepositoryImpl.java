@@ -4,9 +4,10 @@ import com.bb.accountbook.common.model.codes.LedgerCode;
 import com.bb.accountbook.common.model.status.UserCoupleStatus;
 import com.bb.accountbook.common.model.status.UserStatus;
 import com.bb.accountbook.domain.ledger.repository.custom.LedgerCustomRepository;
-import com.bb.accountbook.entity.*;
+import com.bb.accountbook.entity.Ledger;
+import com.bb.accountbook.entity.QUser;
+import com.bb.accountbook.entity.QUserCouple;
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -17,10 +18,10 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import static com.bb.accountbook.entity.QCouple.*;
-import static com.bb.accountbook.entity.QLedger.*;
-import static com.bb.accountbook.entity.QUser.*;
-import static com.bb.accountbook.entity.QUserCouple.*;
+import static com.bb.accountbook.entity.QCouple.couple;
+import static com.bb.accountbook.entity.QLedger.ledger;
+import static com.bb.accountbook.entity.QUser.user;
+import static com.bb.accountbook.entity.QUserCouple.userCouple;
 
 @Repository
 @RequiredArgsConstructor
@@ -64,15 +65,13 @@ public class LedgerCustomRepositoryImpl implements LedgerCustomRepository {
                     .and(ledger.date.goe(startDate))
                     .and(ledger.date.loe(endDate));
         }
-        dynamicQueryBuilder.and(user.status.eq(UserStatus.ACTIVE));
 
+
+        dynamicQueryBuilder.and(user.status.eq(UserStatus.ACTIVE));
         return queryFactory.selectFrom(ledger)
-                .join(user).fetchJoin()
-                .on(ledger.owner.eq(user))
-                .join(userCouple).fetchJoin()
-                .on(userCouple.user.eq(user))
-                .join(couple).fetchJoin()
-                .on(userCouple.couple.eq(couple))
+                .join(user).fetchJoin().on(user.eq(ledger.owner))
+                .join(userCouple).fetchJoin().on(user.eq(userCouple.user))
+                .join(couple).fetchJoin().on(couple.eq(userCouple.couple))
                 .where(dynamicQueryBuilder)
                 .orderBy(ledger.date.asc())
                 .fetch();
@@ -224,8 +223,7 @@ public class LedgerCustomRepositoryImpl implements LedgerCustomRepository {
         }
 
         return queryFactory.selectFrom(ledger)
-                .join(user).fetchJoin()
-                .on(ledger.owner.eq(user))
+                .join(user).fetchJoin().on(user.eq(ledger.owner))
                 .where(dynamicQueryBuilder)
                 .orderBy(ledger.date.asc())
                 .fetch();
