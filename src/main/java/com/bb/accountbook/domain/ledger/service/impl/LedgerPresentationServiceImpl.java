@@ -26,7 +26,7 @@ public class LedgerPresentationServiceImpl implements LedgerPresentationService 
         MonthlyLedgerResponseDto dataDto = new MonthlyLedgerResponseDto(yearMonth);
 
         Map<Long, String> userColorMap = new HashMap<>();
-        monthlyLedgers.parallelStream()
+        monthlyLedgers
                 .forEach(ledger -> {
                     switch (ledger.getCode()) {
                         case I -> dataDto.addTotalIncome(ledger.getAmount());
