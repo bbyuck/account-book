@@ -69,8 +69,8 @@ public class MonthlyLedgerCategoryStatistic {
             this.amount = 0L;
         }
 
-        public AmountPerCategory(LedgerCode ledgerCode) {
-            this.category = new LedgerCategoryDto(null, "카테고리 없음", null, null, ledgerCode);
+        public AmountPerCategory() {
+            this.category = new LedgerCategoryDto(null, "카테고리 없음", null, null, null);
             this.amount = 0L;
         }
 

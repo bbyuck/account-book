@@ -45,7 +45,7 @@ public class LedgerStatisticServiceImpl implements LedgerStatisticService {
             if (ledger.getLedgerCategory() == null) {
                 tempMap.putIfAbsent(
                         -1L,
-                        new MonthlyLedgerCategoryStatistic.AmountPerCategory(ledger.getCode()));
+                        new MonthlyLedgerCategoryStatistic.AmountPerCategory());
                 tempMap.get(-1L).add(ledger.getAmount());
             }
             else {
