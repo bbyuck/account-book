@@ -24,7 +24,7 @@ public class LedgerStatisticServiceImpl implements LedgerStatisticService {
 
     private final LedgerCategoryService ledgerCategoryService;
 
-    private static final int STATISTIC_TOP_COUNT = 5;
+    private static final int STATISTIC_TOP_COUNT = 10;
 
     @Override
     @Transactional(readOnly = true)
