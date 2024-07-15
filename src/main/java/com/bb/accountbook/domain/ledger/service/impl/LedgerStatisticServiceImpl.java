@@ -58,7 +58,7 @@ public class LedgerStatisticServiceImpl implements LedgerStatisticService {
 
         statistic.setAmountsPerCategory(
                 tempMap.values().stream().sorted(
-                        Comparator.comparingLong(MonthlyLedgerCategoryStatistic.AmountPerCategory::getAmount)
+                        (e1, e2) -> Long.compare(e2.getAmount(), e1.getAmount())
                 ).collect(Collectors.toList())
         );
 

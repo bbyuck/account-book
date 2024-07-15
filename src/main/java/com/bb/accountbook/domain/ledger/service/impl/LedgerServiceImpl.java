@@ -1,15 +1,12 @@
 package com.bb.accountbook.domain.ledger.service.impl;
 
 import com.bb.accountbook.common.exception.GlobalException;
-import com.bb.accountbook.common.log.target.ExecutionTimeLog;
 import com.bb.accountbook.common.model.codes.ErrorCode;
 import com.bb.accountbook.common.model.codes.LedgerCode;
 import com.bb.accountbook.common.util.DateTimeUtil;
 import com.bb.accountbook.domain.couple.service.CoupleService;
 import com.bb.accountbook.domain.ledger.dto.AssetDto;
-import com.bb.accountbook.domain.ledger.dto.LedgerDto;
 import com.bb.accountbook.domain.ledger.dto.MonthlyLedgerRequestDto;
-import com.bb.accountbook.domain.ledger.dto.MonthlyLedgerResponseDto;
 import com.bb.accountbook.domain.ledger.repository.LedgerRepository;
 import com.bb.accountbook.domain.ledger.service.LedgerCategoryService;
 import com.bb.accountbook.domain.ledger.service.LedgerService;
@@ -22,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.bb.accountbook.common.model.codes.ErrorCode.ERR_CPL_003;
@@ -191,7 +187,6 @@ public class LedgerServiceImpl implements LedgerService {
 
     @Override
     @Transactional(readOnly = true)
-    @ExecutionTimeLog
     public List<Ledger> findMonthlyLedger(MonthlyLedgerRequestDto requestDto) {
         return coupleService.isActiveCouple(requestDto.getEmail())
                 ? findCoupleMonthlyLedger(requestDto)
