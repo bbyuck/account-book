@@ -1,6 +1,7 @@
 package com.bb.accountbook.common.util;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
 import java.util.Set;
 
@@ -63,5 +64,17 @@ public class DateTimeUtil {
             return true;
         }
         return false;
+    }
+
+    public static boolean isOneYearOrMoreApart(LocalDate date1, LocalDate date2) {
+        // date1이 더 이후의 날짜로 설정하기 위해 순서를 정리.
+        LocalDate startDate = (date1.isBefore(date2)) ? date1 : date2;
+        LocalDate endDate = (date1.isBefore(date2)) ? date2 : date1;
+
+        // Period를 사용하여 두 날짜 사이의 차이를 계산.
+        Period period = Period.between(startDate, endDate);
+
+        // 두 날짜 사이의 차이가 1년 이상인지 체크.
+        return period.getYears() >= 1;
     }
 }

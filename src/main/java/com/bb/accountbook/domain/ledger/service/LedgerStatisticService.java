@@ -1,11 +1,10 @@
 package com.bb.accountbook.domain.ledger.service;
 
 
-import com.bb.accountbook.common.model.codes.LedgerCode;
 import com.bb.accountbook.domain.ledger.dto.MonthlyLedgerCategoryStatistic;
 import com.bb.accountbook.domain.ledger.dto.MonthlyLedgerRequestDto;
-
-import java.util.List;
+import com.bb.accountbook.domain.ledger.dto.PeriodLedgerCodeStatistic;
+import com.bb.accountbook.domain.ledger.dto.PeriodLedgerStatisticRequestDto;
 
 /**
  * 가계부 통계 서비스
@@ -27,8 +26,10 @@ public interface LedgerStatisticService {
      * 막대 그래프
      *
      * 수입/소득/저축 월 단위 변화 추이 확인
+     * @param requestDto
+     * @return
      */
-
+    PeriodLedgerCodeStatistic findPeriodStatisticPerLedgerCode(PeriodLedgerStatisticRequestDto requestDto);
 
 
 }

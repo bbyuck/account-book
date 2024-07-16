@@ -20,6 +20,8 @@ public enum ErrorCode {
     ERR_SYS_001("API를 찾을 수 없습니다.", SC_NOT_FOUND),
     ERR_SYS_002("정적 자원을 찾을 수 없습니다.", SC_NOT_FOUND),
     ERR_SYS_003("파라미터의 입력이 올바르지 않습니다.", SC_BAD_REQUEST),
+    ERR_SYS_004("시작일자가 종료일자보다 이후입니다.", SC_BAD_REQUEST),
+    ERR_SYS_005("최대 조회 기간은 1년입니다.", SC_BAD_REQUEST),
 
 
     /**

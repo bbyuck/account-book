@@ -5,6 +5,8 @@ import com.bb.accountbook.common.model.codes.LedgerCode;
 import com.bb.accountbook.common.validation.presentation.constraints.YearMonth;
 import com.bb.accountbook.domain.ledger.dto.MonthlyLedgerCategoryStatistic;
 import com.bb.accountbook.domain.ledger.dto.MonthlyLedgerRequestDto;
+import com.bb.accountbook.domain.ledger.dto.PeriodLedgerCodeStatistic;
+import com.bb.accountbook.domain.ledger.dto.PeriodLedgerStatisticRequestDto;
 import com.bb.accountbook.domain.ledger.service.LedgerStatisticService;
 import com.bb.accountbook.security.SecurityContextProvider;
 import jakarta.validation.Valid;
@@ -30,6 +32,12 @@ public class LedgerStatisticController {
                 .yearMonth(yearMonth)
                 .ledgerCode(ledgerCode)
                 .build()));
+    }
+
+    @GetMapping("/api/v1/ledger/statistic/period/categorization")
+    public ApiResponse<PeriodLedgerCodeStatistic> findPeriodCategoriztionStatistic(PeriodLedgerStatisticRequestDto requestDto) {
+        requestDto.setEmail(securityContextProvider.getCurrentEmail());
+        return new ApiResponse<>(ledgerStatisticService.findPeriodStatisticPerLedgerCode(requestDto));
     }
 
 }

@@ -57,7 +57,7 @@ cors:
 
 jwt:
   secret: local1234local1234local1234local1234local1234local1234local1234local1234local1234local1234local1234local1234
-  access-token-expiration-time: 15 # 15초
+  access-token-expiration-time: 1209600 # 15초
   refresh-token-expiration-time: 1209600 # 14일
   iss: local-iss
 
@@ -78,8 +78,8 @@ key:
 logging:
   level:
     com.bb.accountbook.common.log: info
-    com.bb.accountbook: error
-    org.springframework: error
+    com.bb.accountbook: debug
+    org.springframework: debug
     org.hibernate:
       type:
         descriptor.sql: trace
