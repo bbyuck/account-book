@@ -88,6 +88,16 @@ public class LedgerStatisticServiceImpl implements LedgerStatisticService {
                 , requestDto.getEndYear()
                 , requestDto.getEndMonth());
 
+        int months = (requestDto.getEndYear() - requestDto.getStartYear()) * 12 + (requestDto.getEndMonth() - requestDto.getStartMonth()) + 1;
+        Map<String, PeriodLedgerCodeStatistic.MonthlyAmount> amountMap = new HashMap<>();
+
+        for (int i = 0; i < months; i++) {
+            int curYear = requestDto.getStartMonth() + i > 12 ? requestDto.getStartYear() + ((requestDto.getStartMonth() + i) / 13) : requestDto.getStartYear();
+            int curMonth = (requestDto.getStartMonth() + i) % 13;
+
+            amountMap.put(PeriodLedgerCodeStatistic.getKey(curYear, curMonth), new PeriodLedgerCodeStatistic.MonthlyAmount(curYear, curMonth));
+        }
+
         List<Ledger> periodLedgers;
         LocalDate startDate = DateTimeUtil.getMonthlyStartDate(requestDto.getStartYear(), requestDto.getStartMonth());
         LocalDate endDate = DateTimeUtil.getMonthlyEndDate(requestDto.getEndYear(), requestDto.getEndMonth());
@@ -111,32 +121,36 @@ public class LedgerStatisticServiceImpl implements LedgerStatisticService {
             periodLedgers = ledgerRepository.findPersonalPeriodLedgerByEmail(requestDto.getEmail(), startDate, endDate, null);
         }
 
-        AtomicInteger currentYear = new AtomicInteger(requestDto.getStartYear());
-        AtomicInteger currentMonth = new AtomicInteger(requestDto.getStartMonth());
-
-        periodLedgers.stream().forEach(periodLedger -> {
+        periodLedgers.forEach(periodLedger -> {
             LocalDate ledgerDate = periodLedger.getDate();
 
             int year = ledgerDate.getYear();
             int month = ledgerDate.getMonthValue();
 
-            PeriodLedgerCodeStatistic.MonthlyAmount monthlyAmount;
-
-            if (year != currentYear.get() || month != currentMonth.get() || statistic.getMonthlyAmounts().isEmpty()) {
-                monthlyAmount = new PeriodLedgerCodeStatistic.MonthlyAmount(year, month);
-                statistic.getMonthlyAmounts().add(monthlyAmount);
-
-                currentYear.set(year);
-                currentMonth.set(month);
-            }
-
+            PeriodLedgerCodeStatistic.MonthlyAmount monthlyAmount = amountMap.get(PeriodLedgerCodeStatistic.getKey(year, month));
             switch(periodLedger.getCode()) {
-                case E -> statistic.addExpenditure(periodLedger.getAmount());
-                case I -> statistic.addIncome(periodLedger.getAmount());
-                case S -> statistic.addSave(periodLedger.getAmount());
+                case E -> {
+                    statistic.addExpenditure(periodLedger.getAmount());
+                    monthlyAmount.addExpenditure(periodLedger.getAmount());
+                }
+                case I -> {
+                    statistic.addIncome(periodLedger.getAmount());
+                    monthlyAmount.addIncome(periodLedger.getAmount());
+                }
+                case S -> {
+                    statistic.addSave(periodLedger.getAmount());
+                    monthlyAmount.addSave(periodLedger.getAmount());
+                }
                 default -> {}
             }
         });
+
+        statistic.setMonthlyAmounts(amountMap.values().stream().sorted((e1, e2) -> {
+            if (e1.getYear() == e2.getYear()) {
+                return Integer.compare(e1.getMonth(), e2.getMonth());
+            }
+            return Integer.compare(e1.getYear(), e2.getYear());
+        }).collect(Collectors.toList()));
 
         return statistic;
     }

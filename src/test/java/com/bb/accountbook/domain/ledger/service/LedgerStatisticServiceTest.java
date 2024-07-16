@@ -81,7 +81,7 @@ class LedgerStatisticServiceTest {
                         .endMonth(invalidEndMonth)
                         .build()
         ));
-        assertThat(statistic.getMonthlyAmounts().size()).isEqualTo(1);
+        assertThat(statistic.getMonthlyAmounts().size()).isEqualTo(4);
     }
 
 }

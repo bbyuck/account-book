@@ -17,19 +17,24 @@ public class PeriodLedgerCodeStatistic {
     private Long periodSave = 0L;
     private List<MonthlyAmount> monthlyAmounts = new ArrayList<>();
 
+    public static String getKey(int year, int month) {
+        return year + "-" + month;
+    }
+
     public void addIncome(Long amount) {
         periodIncome += amount;
-        monthlyAmounts.get(monthlyAmounts.size() - 1).addIncome(amount);
     }
 
     public void addExpenditure(Long amount) {
         periodExpenditure += amount;
-        monthlyAmounts.get(monthlyAmounts.size() - 1).addExpenditure(amount);
     }
 
     public void addSave(Long amount) {
         periodSave += amount;
-        monthlyAmounts.get(monthlyAmounts.size() - 1).addSave(amount);
+    }
+
+    private String key(int year, int month) {
+        return year + "-" + month;
     }
 
     public PeriodLedgerCodeStatistic(int startYear, int startMonth, int endYear, int endMonth) {
@@ -37,6 +42,8 @@ public class PeriodLedgerCodeStatistic {
         this.startMonth = startMonth;
         this.endYear = endYear;
         this.endMonth = endMonth;
+
+
     }
 
     @Data
@@ -55,17 +62,16 @@ public class PeriodLedgerCodeStatistic {
             this.monthlySave = 0L;
         }
 
-        void addIncome(Long amount) {
+        public void addIncome(Long amount) {
             monthlyIncome += amount;
         }
 
-        void addExpenditure(Long amount) {
+        public void addExpenditure(Long amount) {
             monthlyExpenditure += amount;
         }
 
-        void addSave(Long amount) {
+        public void addSave(Long amount) {
             monthlySave += amount;
         }
-
     }
 }
