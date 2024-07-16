@@ -2,15 +2,18 @@ package com.bb.accountbook.domain.ledger.service;
 
 import com.bb.accountbook.common.exception.GlobalException;
 import com.bb.accountbook.common.model.codes.LedgerCode;
-import com.bb.accountbook.domain.ledger.dto.MonthlyLedgerCategoryStatistic;
-import com.bb.accountbook.domain.ledger.dto.MonthlyLedgerRequestDto;
-import com.bb.accountbook.domain.ledger.dto.PeriodLedgerCodeStatistic;
-import com.bb.accountbook.domain.ledger.dto.PeriodLedgerStatisticRequestDto;
+import com.bb.accountbook.domain.couple.service.CoupleService;
+import com.bb.accountbook.domain.ledger.dto.*;
+import com.bb.accountbook.domain.ledger.repository.LedgerRepository;
+import com.bb.accountbook.entity.Couple;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.time.LocalDate;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,6 +23,12 @@ class LedgerStatisticServiceTest {
 
     @Autowired
     LedgerStatisticService ledgerStatisticService;
+
+    @Autowired
+    LedgerRepository ledgerRepository;
+
+    @Autowired
+    CoupleService coupleService;
 
     @Test
     @DisplayName("커플 월 - 카테고리 통계 조회")
@@ -82,6 +91,21 @@ class LedgerStatisticServiceTest {
                         .build()
         ));
         assertThat(statistic.getMonthlyAmounts().size()).isEqualTo(4);
+    }
+
+    @Test
+    @DisplayName("Group by로 성능 개선된 통계 조회")
+    public void findPeriodStatisticV2() throws Exception {
+        // given
+        String email = "man3@naver.com";
+        Couple couple = coupleService.findCoupleByUserEmail(email);
+
+        // when
+        List<MonthlyAmountDto> periodMonthlyAmounts = ledgerRepository.findCouplePeriodMonthlyAmounts(couple.getId(), LocalDate.of(2024, 1, 1), LocalDate.of(2024, 12, 31));
+
+
+        // then
+        Assertions.assertThat(periodMonthlyAmounts.size()).isEqualTo(3);
     }
 
 }

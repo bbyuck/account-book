@@ -35,7 +35,7 @@ public class LedgerStatisticController {
     }
 
     @GetMapping("/api/v1/ledger/statistic/period/categorization")
-    public ApiResponse<PeriodLedgerCodeStatistic> findPeriodCategoriztionStatistic(PeriodLedgerStatisticRequestDto requestDto) {
+    public ApiResponse<PeriodLedgerCodeStatistic> findPeriodCategorizationStatistic(PeriodLedgerStatisticRequestDto requestDto) {
         requestDto.setEmail(securityContextProvider.getCurrentEmail());
         return new ApiResponse<>(ledgerStatisticService.findPeriodStatisticPerLedgerCode(requestDto));
     }

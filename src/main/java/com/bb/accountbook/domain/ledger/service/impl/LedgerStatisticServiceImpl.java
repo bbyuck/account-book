@@ -4,10 +4,7 @@ import com.bb.accountbook.common.exception.GlobalException;
 import com.bb.accountbook.common.model.codes.ErrorCode;
 import com.bb.accountbook.common.util.DateTimeUtil;
 import com.bb.accountbook.domain.couple.service.CoupleService;
-import com.bb.accountbook.domain.ledger.dto.MonthlyLedgerCategoryStatistic;
-import com.bb.accountbook.domain.ledger.dto.MonthlyLedgerRequestDto;
-import com.bb.accountbook.domain.ledger.dto.PeriodLedgerCodeStatistic;
-import com.bb.accountbook.domain.ledger.dto.PeriodLedgerStatisticRequestDto;
+import com.bb.accountbook.domain.ledger.dto.*;
 import com.bb.accountbook.domain.ledger.repository.LedgerRepository;
 import com.bb.accountbook.domain.ledger.service.LedgerService;
 import com.bb.accountbook.domain.ledger.service.LedgerStatisticService;
@@ -60,8 +57,7 @@ public class LedgerStatisticServiceImpl implements LedgerStatisticService {
                         -1L,
                         new MonthlyLedgerCategoryStatistic.AmountPerCategory());
                 tempMap.get(-1L).add(ledger.getAmount());
-            }
-            else {
+            } else {
                 tempMap.putIfAbsent(
                         ledger.getLedgerCategory().getId()
                         , new MonthlyLedgerCategoryStatistic.AmountPerCategory(ledger.getLedgerCategory()));
@@ -98,10 +94,8 @@ public class LedgerStatisticServiceImpl implements LedgerStatisticService {
             amountMap.put(PeriodLedgerCodeStatistic.getKey(curYear, curMonth), new PeriodLedgerCodeStatistic.MonthlyAmount(curYear, curMonth));
         }
 
-        List<Ledger> periodLedgers;
         LocalDate startDate = DateTimeUtil.getMonthlyStartDate(requestDto.getStartYear(), requestDto.getStartMonth());
         LocalDate endDate = DateTimeUtil.getMonthlyEndDate(requestDto.getEndYear(), requestDto.getEndMonth());
-
 
         if (startDate.isAfter(endDate)) {
             log.debug("startDate가 endDate보다 이후입니다. ====== startDate={} / endDate={}", startDate, endDate);
@@ -111,37 +105,34 @@ public class LedgerStatisticServiceImpl implements LedgerStatisticService {
             log.debug("기간 조회 최대 기간은 1년입니다.====== startDate={} / endDate={}", startDate, endDate);
             throw new GlobalException(ErrorCode.ERR_SYS_005);
         }
+        List<MonthlyAmountDto> periodMonthlyAmounts;
 
 
         if (coupleService.isActiveCouple(requestDto.getEmail())) {
             Couple couple = coupleService.findCoupleByUserEmail(requestDto.getEmail());
-            periodLedgers = ledgerRepository.findCouplePeriodLedger(couple.getId(), startDate, endDate, null);
+            periodMonthlyAmounts = ledgerRepository.findCouplePeriodMonthlyAmounts(couple.getId(), startDate, endDate);
+        } else {
+            periodMonthlyAmounts = ledgerRepository.findPersonalPeriodMonthlyAmounts(requestDto.getEmail(), startDate, endDate);
         }
-        else {
-            periodLedgers = ledgerRepository.findPersonalPeriodLedgerByEmail(requestDto.getEmail(), startDate, endDate, null);
-        }
 
-        periodLedgers.forEach(periodLedger -> {
-            LocalDate ledgerDate = periodLedger.getDate();
+        periodMonthlyAmounts.forEach(periodMonthlyAmount -> {
+            PeriodLedgerCodeStatistic.MonthlyAmount monthlyAmount = amountMap.get(PeriodLedgerCodeStatistic.getKey(periodMonthlyAmount.getYear(), periodMonthlyAmount.getMonth()));
 
-            int year = ledgerDate.getYear();
-            int month = ledgerDate.getMonthValue();
-
-            PeriodLedgerCodeStatistic.MonthlyAmount monthlyAmount = amountMap.get(PeriodLedgerCodeStatistic.getKey(year, month));
-            switch(periodLedger.getCode()) {
+            switch (periodMonthlyAmount.getLedgerCode()) {
                 case E -> {
-                    statistic.addExpenditure(periodLedger.getAmount());
-                    monthlyAmount.addExpenditure(periodLedger.getAmount());
+                    statistic.addExpenditure(periodMonthlyAmount.getAmount());
+                    monthlyAmount.addExpenditure(periodMonthlyAmount.getAmount());
                 }
                 case I -> {
-                    statistic.addIncome(periodLedger.getAmount());
-                    monthlyAmount.addIncome(periodLedger.getAmount());
+                    statistic.addIncome(periodMonthlyAmount.getAmount());
+                    monthlyAmount.addIncome(periodMonthlyAmount.getAmount());
                 }
                 case S -> {
-                    statistic.addSave(periodLedger.getAmount());
-                    monthlyAmount.addSave(periodLedger.getAmount());
+                    statistic.addSave(periodMonthlyAmount.getAmount());
+                    monthlyAmount.addSave(periodMonthlyAmount.getAmount());
                 }
-                default -> {}
+                default -> {
+                }
             }
         });
 

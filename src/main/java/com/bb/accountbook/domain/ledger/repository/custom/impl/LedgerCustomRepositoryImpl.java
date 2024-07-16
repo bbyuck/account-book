@@ -4,9 +4,7 @@ import com.bb.accountbook.common.model.codes.CustomCode;
 import com.bb.accountbook.common.model.codes.LedgerCode;
 import com.bb.accountbook.common.model.status.UserCoupleStatus;
 import com.bb.accountbook.common.model.status.UserStatus;
-import com.bb.accountbook.domain.ledger.dto.LedgerDto;
-import com.bb.accountbook.domain.ledger.dto.QLedgerCategoryDto;
-import com.bb.accountbook.domain.ledger.dto.QLedgerDto;
+import com.bb.accountbook.domain.ledger.dto.*;
 import com.bb.accountbook.domain.ledger.repository.custom.LedgerCustomRepository;
 import com.bb.accountbook.entity.Ledger;
 import com.bb.accountbook.entity.QIcon;
@@ -224,8 +222,6 @@ public class LedgerCustomRepositoryImpl implements LedgerCustomRepository {
     }
 
 
-
-
     @Override
     public Optional<Ledger> findLedgerByIdAndUserEmail(Long ledgerId, String email) {
         String jpql = "select l " +
@@ -249,5 +245,35 @@ public class LedgerCustomRepositoryImpl implements LedgerCustomRepository {
         return em.createQuery(jpql)
                 .setParameter("ledgerCategoryId", ledgerCategoryId)
                 .executeUpdate();
+    }
+
+    @Override
+    public List<MonthlyAmountDto> findCouplePeriodMonthlyAmounts(Long coupleId, LocalDate startDate, LocalDate endDate) {
+        return queryFactory.select(new QMonthlyAmountDto(ledger.date.year(), ledger.date.month(), ledger.amount.sum(), ledger.code))
+                .from(ledger)
+                .leftJoin(user).fetchJoin().on(user.eq(ledger.owner))
+                .leftJoin(userCouple).fetchJoin().on(user.eq(userCouple.user))
+                .leftJoin(couple).fetchJoin().on(couple.eq(userCouple.couple))
+                .where(
+                        couple.id.eq(coupleId)
+                                .and(ledger.date.goe(startDate).and(ledger.date.loe(endDate)))
+                )
+                .groupBy(ledger.date.year(), ledger.date.month(), ledger.code)
+                .orderBy(ledger.date.year().asc(), ledger.date.month().asc())
+                .fetch();
+    }
+
+    @Override
+    public List<MonthlyAmountDto> findPersonalPeriodMonthlyAmounts(String email, LocalDate startDate, LocalDate endDate) {
+        return queryFactory.select(new QMonthlyAmountDto(ledger.date.year(), ledger.date.month(), ledger.amount.sum(), ledger.code))
+                .from(ledger)
+                .leftJoin(user).fetchJoin().on(user.eq(ledger.owner))
+                .where(
+                        user.email.eq(email)
+                                .and(ledger.date.goe(startDate).and(ledger.date.loe(endDate)))
+                )
+                .groupBy(ledger.date.year(), ledger.date.month(), ledger.code)
+                .orderBy(ledger.date.year().asc(), ledger.date.month().asc())
+                .fetch();
     }
 }

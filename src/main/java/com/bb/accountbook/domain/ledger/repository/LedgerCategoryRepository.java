@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface LedgerCategoryRepository extends JpaRepository<LedgerCategory, Long>, LedgerCategoryCustomRepository {
+
 }
