@@ -19,13 +19,13 @@ public class IconController {
     private final IconService iconService;
 
     @GetMapping("/api/v1/icons")
-    public ApiResponse<IconFindResponseDto> findIcons() {
-        return new ApiResponse<>(new IconFindResponseDto(iconService.findAllIcons().stream().map(IconDto::new).collect(Collectors.toList())));
+    public IconFindResponseDto findIcons() {
+        return new IconFindResponseDto(iconService.findAllIcons().stream().map(IconDto::new).collect(Collectors.toList()));
     }
 
     @PostMapping("/api/v1/icon")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ApiResponse<IconInsertResponseDto> insertIcons(@RequestBody MultiIconInsertRequestDto requestDto) {
-        return new ApiResponse<>(new IconInsertResponseDto(iconService.insertIcons(requestDto)));
+    public IconInsertResponseDto insertIcons(@RequestBody MultiIconInsertRequestDto requestDto) {
+        return new IconInsertResponseDto(iconService.insertIcons(requestDto));
     }
 }

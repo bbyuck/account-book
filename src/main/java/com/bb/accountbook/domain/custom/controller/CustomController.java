@@ -1,6 +1,6 @@
 package com.bb.accountbook.domain.custom.controller;
 
-import com.bb.accountbook.common.model.ApiResponse;
+import com.bb.accountbook.common.model.OnSuccess;
 import com.bb.accountbook.domain.custom.dto.CustomColorDto;
 import com.bb.accountbook.domain.custom.dto.CustomCreateRequestDto;
 import com.bb.accountbook.domain.custom.dto.CustomCreateResponseDto;
@@ -28,24 +28,23 @@ public class CustomController {
 
     private final SecurityContextProvider securityContextProvider;
 
+    @OnSuccess(SUC_CUS_000)
     @PostMapping("/api/v1/custom")
-    public ApiResponse<CustomCreateResponseDto> createCustom(@RequestBody CustomCreateRequestDto requestDto) {
+    public CustomCreateResponseDto createCustom(@RequestBody CustomCreateRequestDto requestDto) {
         Long customId = customService.saveCustom(securityContextProvider.getCurrentEmail(), requestDto.getCustomCode(), requestDto.getCustomValue());
-        return new ApiResponse<>(new CustomCreateResponseDto(customId), SUC_CUS_000);
+        return new CustomCreateResponseDto(customId);
     }
 
     @GetMapping("/api/v1/custom")
-    public ApiResponse<List<CustomDto>> findCustoms() {
-        return new ApiResponse<>(
-                customService.findOwnCustoms(securityContextProvider.getCurrentEmail())
-                        .stream()
-                        .map(custom -> new CustomDto(custom.getId(), custom.getCode(), custom.getValue()))
-                        .collect(Collectors.toList())
-        );
+    public List<CustomDto> findCustoms() {
+        return customService.findOwnCustoms(securityContextProvider.getCurrentEmail())
+                .stream()
+                .map(custom -> new CustomDto(custom.getId(), custom.getCode(), custom.getValue()))
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/api/v1/custom/color")
-    public ApiResponse<CustomColorDto> findCustomColor() {
-        return new ApiResponse<>(new CustomColorDto(customService.getCustomColor(securityContextProvider.getCurrentEmail())));
+    public CustomColorDto findCustomColor() {
+        return new CustomColorDto(customService.getCustomColor(securityContextProvider.getCurrentEmail()));
     }
 }

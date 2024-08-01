@@ -25,11 +25,11 @@ public class UserAdminController {
     private final SecurityContextProvider securityContextProvider;
 
     @PostMapping("/api/admin/v1/authenticate")
-    public ApiResponse<AdminLoginResponseDto> loginForAdmin(@RequestBody @Valid LoginDto loginDto, HttpServletResponse response) {
+    public AdminLoginResponseDto loginForAdmin(@RequestBody @Valid LoginDto loginDto, HttpServletResponse response) {
         TokenDto tokenDto = userService.authenticateAdmin(loginDto.getEmail(), loginDto.getPassword());
         userService.updateAuth(securityContextProvider.getCurrentEmail(), tokenDto, loginDto.isAutoLogin());
         response.addHeader("Authorization", "Bearer " + tokenDto.getAccessToken());
 
-        return new ApiResponse<>(new AdminLoginResponseDto(tokenDto, loginDto.getEmail()));
+        return new AdminLoginResponseDto(tokenDto, loginDto.getEmail());
     }
 }

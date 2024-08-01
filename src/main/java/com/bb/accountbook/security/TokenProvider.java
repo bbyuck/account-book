@@ -1,11 +1,11 @@
 package com.bb.accountbook.security;
 
-import com.bb.accountbook.common.exception.GlobalException;
 import com.bb.accountbook.domain.user.dto.TokenDto;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.SecurityException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,8 +25,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
-
-import static com.bb.accountbook.common.model.codes.ErrorCode.*;
 
 @Component
 public class TokenProvider implements InitializingBean {

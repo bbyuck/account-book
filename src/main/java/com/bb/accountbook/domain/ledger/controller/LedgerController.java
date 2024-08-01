@@ -1,6 +1,6 @@
 package com.bb.accountbook.domain.ledger.controller;
 
-import com.bb.accountbook.common.model.ApiResponse;
+import com.bb.accountbook.common.model.OnSuccess;
 import com.bb.accountbook.common.validation.presentation.constraints.YearMonth;
 import com.bb.accountbook.domain.ledger.dto.*;
 import com.bb.accountbook.domain.ledger.service.LedgerPresentationService;
@@ -28,19 +28,21 @@ public class LedgerController {
 
     private final SecurityContextProvider securityContextProvider;
 
+    @OnSuccess(SUC_LED_000)
     @PostMapping("/api/v1/ledger")
-    public ApiResponse<LedgerInsertResponseDto> insertLedger(@RequestBody @Valid LedgerInsertRequestDto requestDto) {
-        return new ApiResponse<>(new LedgerInsertResponseDto(
+    public LedgerInsertResponseDto insertLedger(@RequestBody @Valid LedgerInsertRequestDto requestDto) {
+        return new LedgerInsertResponseDto(
                 ledgerService.insertLedger(requestDto.getLedgerCategoryId(),
                         securityContextProvider.getCurrentEmail(), requestDto.getLedgerCode(),
                         requestDto.getLedgerDate(),
                         requestDto.getLedgerAmount(),
-                        requestDto.getLedgerDescription())), SUC_LED_000);
+                        requestDto.getLedgerDescription()));
     }
 
+    @OnSuccess(SUC_LED_001)
     @PutMapping("/api/v1/ledger/{ledgerId}")
-    public ApiResponse<LedgerUpdateResponseDto> updateLedger(@PathVariable("ledgerId") Long ledgerId, @RequestBody @Valid LedgerUpdateRequestDto requestDto) {
-        return new ApiResponse<>(new LedgerUpdateResponseDto(
+    public LedgerUpdateResponseDto updateLedger(@PathVariable("ledgerId") Long ledgerId, @RequestBody @Valid LedgerUpdateRequestDto requestDto) {
+        return new LedgerUpdateResponseDto(
                 ledgerService.updateLedger(
                         securityContextProvider.getCurrentEmail(),
                         ledgerId,
@@ -48,69 +50,70 @@ public class LedgerController {
                         requestDto.getLedgerDate(),
                         requestDto.getLedgerAmount(),
                         requestDto.getLedgerDescription(),
-                        requestDto.getLedgerCategoryId())), SUC_LED_001);
+                        requestDto.getLedgerCategoryId()));
     }
 
     @GetMapping("/api/v1/ledger/{ledgerId}")
-    public ApiResponse<LedgerDto> findLedger(@PathVariable("ledgerId") Long ledgerId) {
-        return new ApiResponse<>(new LedgerDto(ledgerService.findLedger(securityContextProvider.getCurrentEmail(), ledgerId)));
+    public LedgerDto findLedger(@PathVariable("ledgerId") Long ledgerId) {
+        return new LedgerDto(ledgerService.findLedger(securityContextProvider.getCurrentEmail(), ledgerId));
     }
 
+    @OnSuccess(SUC_LED_002)
     @DeleteMapping("/api/v1/ledger/{ledgerId}")
-    public ApiResponse<LedgerDeleteResponseDto> deleteLedger(@PathVariable("ledgerId") Long ledgerId) {
-        return new ApiResponse<>(new LedgerDeleteResponseDto(ledgerService.deleteLedger(securityContextProvider.getCurrentEmail(), ledgerId)), SUC_LED_002);
+    public LedgerDeleteResponseDto deleteLedger(@PathVariable("ledgerId") Long ledgerId) {
+        return new LedgerDeleteResponseDto(ledgerService.deleteLedger(securityContextProvider.getCurrentEmail(), ledgerId));
     }
 
     @GetMapping("/api/v1/personal/ledger/{ledgerId}")
-    public ApiResponse<LedgerDto> findPersonalLedger(@PathVariable("ledgerId") Long ledgerId) {
-        return new ApiResponse<>(new LedgerDto(ledgerService.findPersonalLedger(securityContextProvider.getCurrentEmail(), ledgerId)));
+    public LedgerDto findPersonalLedger(@PathVariable("ledgerId") Long ledgerId) {
+        return new LedgerDto(ledgerService.findPersonalLedger(securityContextProvider.getCurrentEmail(), ledgerId));
     }
 
     @GetMapping("/api/v1/couple/ledger/{ledgerId}")
-    public ApiResponse<LedgerDto> findCoupleLedger(@PathVariable("ledgerId") Long ledgerId, @RequestParam("ci") Long coupleId) {
-        return new ApiResponse<>(new LedgerDto(ledgerService.findCoupleLedger(coupleId, ledgerId)));
+    public LedgerDto findCoupleLedger(@PathVariable("ledgerId") Long ledgerId, @RequestParam("ci") Long coupleId) {
+        return new LedgerDto(ledgerService.findCoupleLedger(coupleId, ledgerId));
     }
 
     @GetMapping("/api/v1/monthly/ledger")
-    public ApiResponse<MonthlyLedgerResponseDto> findMonthlyLedger(@RequestParam("ym") @Valid @YearMonth String yearMonth) {
+    public MonthlyLedgerResponseDto findMonthlyLedger(@RequestParam("ym") @Valid @YearMonth String yearMonth) {
         List<Ledger> monthlyLedger = ledgerService.findMonthlyLedger(
                 MonthlyLedgerRequestDto.builder()
                         .email(securityContextProvider.getCurrentEmail())
                         .yearMonth(yearMonth)
                         .build());
-        return new ApiResponse<>(ledgerPresentationService.getMonthlyLedgerResponseDto(monthlyLedger, yearMonth));
+        return ledgerPresentationService.getMonthlyLedgerResponseDto(monthlyLedger, yearMonth);
     }
 
     @GetMapping("/api/v1/monthly/couple/ledger")
-    public ApiResponse<MonthlyLedgerResponseDto> findCoupleMonthlyLedger(@RequestParam("ym") @Valid @YearMonth String yearMonth) {
+    public MonthlyLedgerResponseDto findCoupleMonthlyLedger(@RequestParam("ym") @Valid @YearMonth String yearMonth) {
         List<Ledger> monthlyLedgers = ledgerService.findCoupleMonthlyLedger(
                 MonthlyLedgerRequestDto.builder()
                         .email(securityContextProvider.getCurrentEmail())
                         .yearMonth(yearMonth)
                         .build()
         );
-        return new ApiResponse<>(ledgerPresentationService.getMonthlyLedgerResponseDto(monthlyLedgers, yearMonth));
+        return ledgerPresentationService.getMonthlyLedgerResponseDto(monthlyLedgers, yearMonth);
     }
 
     @GetMapping("/api/v1/monthly/personal/ledger")
-    public ApiResponse<MonthlyLedgerResponseDto> findPersonalMonthlyLedger(@RequestParam("ym") @Valid @YearMonth String yearMonth) {
+    public MonthlyLedgerResponseDto findPersonalMonthlyLedger(@RequestParam("ym") @Valid @YearMonth String yearMonth) {
         List<Ledger> monthlyLedgers = ledgerService.findPersonalMonthlyLedger(
                 MonthlyLedgerRequestDto.builder()
                         .email(securityContextProvider.getCurrentEmail())
                         .yearMonth(yearMonth)
                         .build()
         );
-        return new ApiResponse<>(ledgerPresentationService.getMonthlyLedgerResponseDto(monthlyLedgers, yearMonth));
+        return ledgerPresentationService.getMonthlyLedgerResponseDto(monthlyLedgers, yearMonth);
     }
 
     @GetMapping("/api/v1/personal/asset")
-    public ApiResponse<AssetDto> findPersonalAsset() {
-        return new ApiResponse<>(ledgerService.findPersonalAsset(securityContextProvider.getCurrentEmail()));
+    public AssetDto findPersonalAsset() {
+        return ledgerService.findPersonalAsset(securityContextProvider.getCurrentEmail());
     }
 
     @GetMapping("/api/v1/couple/asset")
-    public ApiResponse<AssetDto> findCoupleAsset() {
-        return new ApiResponse<>(ledgerService.findCoupleAsset(securityContextProvider.getCurrentEmail()));
+    public AssetDto findCoupleAsset() {
+        return ledgerService.findCoupleAsset(securityContextProvider.getCurrentEmail());
     }
 
 }

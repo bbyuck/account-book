@@ -1,6 +1,5 @@
 package com.bb.accountbook.domain.ledger.controller;
 
-import com.bb.accountbook.common.model.ApiResponse;
 import com.bb.accountbook.common.model.codes.LedgerCode;
 import com.bb.accountbook.common.validation.presentation.constraints.YearMonth;
 import com.bb.accountbook.domain.ledger.dto.MonthlyLedgerCategoryStatistic;
@@ -24,20 +23,20 @@ public class LedgerStatisticController {
     private final SecurityContextProvider securityContextProvider;
 
     @GetMapping("/api/v1/ledger/statistic/monthly/categorization")
-    public ApiResponse<MonthlyLedgerCategoryStatistic> findMonthlyCategorizationStatistic(@RequestParam("ym") @Valid @YearMonth String yearMonth
+    public MonthlyLedgerCategoryStatistic findMonthlyCategorizationStatistic(@RequestParam("ym") @Valid @YearMonth String yearMonth
             , @RequestParam(value = "ledgerCode", required = false) LedgerCode ledgerCode) {
-        return new ApiResponse<>(ledgerStatisticService.findCategoryStatisticPerLedgerCode(MonthlyLedgerRequestDto
+        return ledgerStatisticService.findCategoryStatisticPerLedgerCode(MonthlyLedgerRequestDto
                 .builder()
                 .email(securityContextProvider.getCurrentEmail())
                 .yearMonth(yearMonth)
                 .ledgerCode(ledgerCode)
-                .build()));
+                .build());
     }
 
     @GetMapping("/api/v1/ledger/statistic/period/categorization")
-    public ApiResponse<PeriodLedgerCodeStatistic> findPeriodCategorizationStatistic(PeriodLedgerStatisticRequestDto requestDto) {
+    public PeriodLedgerCodeStatistic findPeriodCategorizationStatistic(PeriodLedgerStatisticRequestDto requestDto) {
         requestDto.setEmail(securityContextProvider.getCurrentEmail());
-        return new ApiResponse<>(ledgerStatisticService.findPeriodStatisticPerLedgerCode(requestDto));
+        return ledgerStatisticService.findPeriodStatisticPerLedgerCode(requestDto);
     }
 
 }
