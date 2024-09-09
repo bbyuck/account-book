@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class CheckController {
 
-    @PostMapping("api/checkt/authentication")
+    @PostMapping("api/check/authentication")
     public void checkAuthenticationError(@RequestBody CheckDto checkDto) {
         log.error("check : {}", checkDto);
     }
