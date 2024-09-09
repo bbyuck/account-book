@@ -57,7 +57,7 @@ cors:
 
 jwt:
   secret: local1234local1234local1234local1234local1234local1234local1234local1234local1234local1234local1234local1234
-  access-token-expiration-time: 1209600 # 15초
+  access-token-expiration-time: 20 # 15초
   refresh-token-expiration-time: 1209600 # 14일
   iss: local-iss
 
